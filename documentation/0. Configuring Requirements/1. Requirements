@@ -1,0 +1,231 @@
+1. Requirements
+
+Para este proyecto vamos a emplear la versión de Laravel 5.5 para poder sumergirnos de lo basico a lo complejo desde cero.
+
+- Entorno de desarrollo.
+-----------------------
+
+Curso de Laravel desde cero
+
+Para desarrollar aplicaciones de PHP con Laravel necesitamos primero instalar y configurar un conjunto de herramientas que nos facilitan el trabajo de creación de nuevas aplicaciones. Por un lado, requerimos tener un entorno de desarrollo en nuestro equipo que cumpla con los requerimientos del framework y por otro, es recomendable configurar y conocer las formas de acceder a una aplicación creada en dicho entorno. En esta primera sección te guiaremos para que prepares tu equipo y así empieces a desarrollar con Laravel.
+
+En mi caso especifico estoy corriendo un Servidor Web Bajo windows con:
+- AppServe -v 9.3.0
+- Apache Web Server Version 2.4.41
+- PHP Script Language Version 7.3.10
+- MySQL Database Version 8.0.17
+- phpMyAdmin Database Manager Version 4.9.1
+
+Este entorno de trabajo lo podremos descargar desde:
+	https://www.appserv.org/en/download/
+	https://sourceforge.net/projects/appserv/
+
+
+
+Para desarrollar con Laravel 5.5 puedes hacerlo desde Windows, Linux o MacOs siempre que tengas un servidor web con PHP 7 o superior.
+
+A esto nosotros le llamamos entorno de desarrollo y existe una gran variedad de ellos, cada uno con un nivel de complejidad distinto al otro, desde el más básico instalando manualmente Apache o Nginx, PHP, MySQL, etc., así como instalar herramientas como XAMPP, WAMP, MAMP, etc., hasta otras más complicadas como Laravel Homestead
+
+En el caso especificao trabajaremos con AppServ por ser el que tiene menor complicación en su configuración general con Equipo de 64 bits, pero puede elegir la herramienta que mas le acomode a sus necesidades.
+
+
+Laravel Homestead
+=================
+
+Si desea trabajar con Laravel Homestead que en realidad es una máquina virtual que viene lista para el desarrollo de proyectos con Laravel y otras tecnologías de PHP como Symfony y Statamic. Al ser una máquina virtual nos va a permitir ejecutar nuestros proyectos sin necesidad de instalar PHP, MySQL, etc. en nuestra máquina local.
+
+
+Laravel Homestead
+
+Laravel Homestead es una máquina virtual que viene lista para el desarrollo de proyectos con Laravel y otras tecnologías de PHP como Symfony y Statamic. Al ser una máquina virtual nos va a permitir ejecutar nuestros proyectos sin necesidad de instalar PHP, MySQL, etc. en nuestra máquina local. En esta primera lección de la serie de Laravel Homestead, aprenderás cómo instalar y configurar todo lo que necesitas para poder comenzar a desarrollar tus proyectos con ayuda de Homestead.
+
+Homestead funciona sobre VirtualBox utilizando Vagrant:
+
+    VirtualBox es la herramienta que nos permite crear máquinas virtuales.
+    Vagrant es una manera elegante y sencilla de administrar y provisionar máquinas virtuales, como por ejemplo Laravel Homestead.
+
+Prerrequisitos de instalación Laravel Homestead
+
+Asegúrate de tener una llave SSH en tu computador, si no la tienes, puedes generarla con: ssh-keygen -t rsa -b 4096 -C "correo@dominio.com"
+
+Para poder utilizar máquinas virtuales es muy probable que debas habilitar la virtualización por hardware (VT-x) en tu equipos, lo cual normalmente se hace desde el BIOS.
+
+Homestead funciona sobre VirtualBox utilizando Vagrant:
+
+    VirtualBox es la herramienta que nos permite crear máquinas virtuales.
+    Vagrant es una manera elegante y sencilla de administrar y provisionar máquinas virtuales, como por ejemplo Laravel Homestead.
+
+
+Instalación de Laravel Homestead:
+
+    1. Descarga VirtualBox: el archivo a descargar varía dependiendo del sistema operativo.
+    	https://www.virtualbox.org/wiki/Downloads
+    
+    2. Descarga Vagrant: de nuevo el archivo a descargar depende del sistema operativo
+    	https://www.vagrantup.com/downloads
+
+    3. Instala VirtualBox: siguiendo los pasos del instalador
+    4. Instala Vagrant: siguiendo los pasos del instalador
+    5. Abre VirtualBox para comprobar que ha sido descargado correctamente
+    6. Agrega el Box de Laravel Homestead con el siguiente comando en la terminal: 
+    	vagrant box add laravel/homestead y espera a que finalice la descarga.
+    
+    7. Comprueba que ha sido instalado con éxito con vagrant box list
+    8. Instala Laravel Homestead clonando su repositorio de git con: 
+    	git clone https://github.com/laravel/homestead.git ~/Homestead
+    
+    9. Abre la URL https://github.com/laravel/homestead en el navegador y comprueba cuál es la última versión estable de Homestead, por último, de vuelta a la terminal, realiza un checkout de dicha versión, por ejemplo para la versión que yo estoy usando el comando es git checkout v6.3.0. Puedes aprender más sobre manejo de Git en nuestro Curso de Git y GitHub.
+    Accede al directorio donde instalaste Homestead por ejemplo con cd ~/Homestead
+    Ahora ejecuta el comando bash init.sh para que se cree el archivo de configuración Homestead.yaml (este archivo de configuración será creado dentro del directorio de Homestead). 
+
+
+Configuración de Laravel Homestead
+------------------------------------
+
+    - Abre el archivo con nano o cualquier otro editor, por ejemplo desde la terminal con: nano ~/Homestead/Homestead.yaml
+    - Edita los valores que haga falta, por ejemplo puedes modificar el directorio de proyectos en caso que no coincida con el que estés usando actualmente. Cuando estés listo guarda el 	archivo.
+    - Crea un Virtual Host modificando el archivo /etc/hosts, de nuevo utilizando el editor de tu preferencia. Es posible que necesites utilizar sudo para editar el archivo, por 	
+    	ejemplo: sudo nano /etc/hosts luego agrega la IP y el dominio en una nueva línea, por ejemplo: 192.168.10.10 my-project.app
+
+Iniciar la máquina virtual
+-----------------------------
+
+    - Vamos al directorio donde instalamos Homestead, por ejemplo: cd ~/Homestead
+    - Desde allí iniciamos la máquina virtual con vagrant run. Vagrant configurará nuestra máquina virtual utilizando el archivo de configuración de Homestead.
+    - Ahora puedes probar el proyecto abriendo el dominio (por ejemplo my-project.app) en el navegador.
+
+Conectándonos a nuestra máquina virtual con SSH
+-----------------------------
+
+    - Vamos nuevamente al directorio Homestead desde la consola con cd ~/Homestead
+    - Ejecutamos el comando vagrant ssh
+    - Podemos salir de la máquina virtual ejecutando exit
+
+Detener la máquina virtual
+--------------------
+Puedes detener la máquina virtual desde el directorio de Homestead con vagrant halt
+
+
+
+Laragon, entorno de desarrollo para Laravel con Windows
+=====================================================
+
+
+Laragon es una suite de desarrollo para PHP que funciona sobre Windows diseñado especialmente para trabajar con Laravel. Similar a otras herramientas como Xampp o Wampp, Laragon nos permite crear un entorno de desarrollo con estas características:
+
+    Cmder (Consola para Windows), Git, Node.js, npm, SSH, Putty, PHP 7 / 5.6, Extensiones de PHP, xDebug, Composer, Apache, MariaDB/MySQL, phpMyAdmin, Soporte para Laravel [Lumen] y la 
+    Gestión automatica de Virtualhosts.
+
+Laragon no es un sustituto a Homestead, puesto que esta última es una herramienta soportada oficialmente por Laravel y como tal es la opción más recomendada, sin embargo, Homestead es una máquina virtual de 64 bits que consume una cantidad considerable de recursos como espacio en disco y memoria RAM. Si tu máquina no cumple con los requisitos para utilizar Homestead (requisitos como la capacidad de virtualización a 64 bits), Laragon puede ser una buena alternativa.
+
+Instalación de Laragon
+
+Puedes descargar el archivo ejecutable desde la web oficial de Laragon: 
+	https://laragon.org/
+
+Una vez descargado puedes ejecutar el archivo e iniciar la instalación.
+
+Laragon posee una utilidad realmente interesante que permite crear automáticamente virtual hosts para cada proyecto, así por ejemplo en lugar de ingresar desde el navegador a un proyecto con localhost/tu-proyecto, puedes usar una url más legible como tu-proyecto.dev. Si deseas activar esta función debes indicarlo durante la instalación.
+
+Una vez finalizada la instalación puedes ejecutar Laragon.
+
+    Ejecuta este programa como administrador si seleccionaste la opción «Auto create virtual hosts» durante la instalación, de lo contrario el programa no podrá crear los virtual hosts de forma automática. Si cambias de idea sobre el manejo automático de virtual hosts puedes desactivar esta opción desde la pestaña de preferencias.
+
+Ahora puedes arrancar el servidor haciendo click sobre el botón «Start all». Para comprobar que tu servidor esta funcionando correctamente puedes ir a /localhost desde el navegador
+
+Creando un proyecto de Laravel con Laragon
+
+Para crear un nuevo proyecto haces clic en Menu > Laravel > Create project > Laravel (puedes escoger la versión de Laravel o lumen que quieras instalar).
+
+A continuación Laragon abrirá una nueva consola y ejecutará automáticamente el comando para instalar Laravel con Composer.
+
+
+    - Puedes ver el directorio del proyecto haciendo click en Menu > Root.
+    -   Si deseas tener más control a la hora de crear un proyecto, puedes usar la consola directamente.
+
+Cómo se mencione anteriormente, Laragon crea automáticamente el virtual host por nosotros. En mi caso he creado un proyecto llamado klvst3r-laragon, lo que quiere decir que Laragon ha creado la dirección klvst3r-laragon.dev».
+
+En tan solo unos pocos minutos puedes instalar un completo entorno de desarrollo sobre Windows y crear tu primer proyecto de Laravel sin ningún inconveniente. 
+
+
+Existen otros entornos de desarrollo bajo sistemas operativos Linux y Mac OS, por lo que en proyectos desarrollados bajo esos sistema operativos se describira como hacer las instalaciones respectivas y no saturar la presente guía.
+
+Asi pues, los procedimientos anteriores puedes resultar un tanto complejos, en nuestro caso trabajaremos con un Servidor Virtual, las configuraciones necesarias se detallaran en el siguiente archivo de la sección de "Configuring Requirements", ya que en esta sección solo estamos con lo requisitos para la puesta en marcha mediante la instalación de las herramientas necesarias y trabajaremos con un Servidor Virtual, aun asi sera necesario instalar Composer.
+
+
+Composer
+========
+
+ Laravel utiliza Composer para manejar sus dependencias. ¿Qué significa esto? Pues el framework Laravel hace uso de una colección de paquetes o componentes propios y de terceros para agregarle funcionalidades a las aplicaciones. Por tanto, necesitamos un gestor de dependencias que se encargue automáticamente de crear proyectos, instalar, actualizar o eliminar componentes y a su vez las dependencias de éstos. Esta herramienta es Composer, el manejador de dependencias de PHP.
+
+
+Página oficial de Composer.
+	https://getcomposer.org/
+
+Iniciando a trabajar con Composer
+	https://getcomposer.org/doc/00-intro.md#globally
+
+Instrucciones Oficiales en la Instalación de Composer.
+	https://getcomposer.org/doc/00-intro.md#globally
+
+
+Instalar Composer en Windows
+---------------------------
+
+Esta es la forma más fácil de configurar Composer en su máquina con el sistema Operativo Windows.
+
+Descargue y ejecute Composer-Setup.exe . Instalará la última versión de Composer y configurará su PATH para que pueda llamar composerdesde cualquier directorio en su línea de comando.
+
+    Nota: Cierra tu terminal actual. Probar el uso con una nueva terminal: esto es importante ya que la RUTA solo se carga cuando se inicia la terminal.
+
+Instalación manual
+-------------------
+
+Cambie a un directorio en su PATHy ejecute el instalador siguiendo las instrucciones de la página de descarga para descargar composer.phar.
+
+Cree un nuevo archivo composer.bat junto a composer.phar:
+
+Usando cmd.exe:
+	C:\bin> echo @php "%~dp0composer.phar" %*>composer.bat
+
+Usando PowerShell:
+
+	PS C:\bin> Set-Content composer.bat '@php "%~dp0composer.phar" %*'
+
+Agregue el directorio a su variable de entorno PATH si aún no lo está. Para obtener información sobre cómo cambiar su variable PATH, consulte este artículo y/o utilice el motor de búsqueda que prefiera.
+
+Cierra tu terminal actual. Pruebe el uso con una nueva terminal:
+
+	C:\Users\username>composer -V
+		Composer version 2.2.6 2022-02-04 17:00:38
+
+Ahora que ha instalado Composer, ¡está listo para usarlo!
+
+
+Git para Windows
+
+Git es un software de control de versiones diseñado por Linus Torvalds, pensando en la eficiencia, la confiabilidad y compatibilidad del mantenimiento de versiones de aplicaciones cuando estas tienen un gran número de archivos de código fuente. Su propósito es llevar registro de los cambios en archivos de computadora incluyendo coordinar el trabajo que varias personas realizan sobre archivos compartidos en un repositorio de código.
+
+Al principio, Git se pensó como un motor de bajo nivel sobre el cual otros pudieran escribir la interfaz de usuario o front end como Cogito o StGIT. 3​ Sin embargo, Git se ha convertido desde entonces en un sistema de control de versiones con funcionalidad plena. 
+
+Por lo que sera una herramienta vital para el desarrollo de nuestros proyectos.
+
+La referencia oficial se encuentra en:
+	https://git-scm.com/book/es/v2
+
+¿Qué es un control de versiones, y por qué debería importarte? 
+----------------------
+
+Un control de versiones es un sistema que registra los cambios realizados en un archivo o conjunto de archivos a lo largo del tiempo, de modo que puedas recuperar versiones específicas más adelante. Dicho sistema te permite regresar a versiones anteriores de tus archivos, regresar a una versión anterior del proyecto completo, comparar cambios a lo largo del tiempo, ver quién modificó por última vez algo que pueda estar causando problemas, ver quién introdujo un problema y cuándo, y mucho más.
+
+Si deseamos abundar un poco más en esta tecnología podremos revisar la información al respecto:
+	https://git-scm.com/video/what-is-version-control
+
+Instalación de Git en Windows
+------------------------
+ La forma más oficial está disponible para ser descargada en el sitio web de Git. Solo tienes que visitar http://git-scm.com/download/win y la descarga empezará automáticamente.
+	https://git-scm.com/download/win
+
+Otra forma de obtener Git fácilmente es mediante la instalación de GitHub para Windows. El instalador incluye la versión de línea de comandos y la interfaz de usuario de Git. Además funciona bien con Powershell y establece correctamente "caching" de credenciales y configuración CRLF adecuada. Aprenderemos acerca de todas estas cosas un poco más adelante, pero por ahora es suficiente mencionar que éstas son cosas que deseas. Puedes descargar este instalador del sitio web de GitHub para Windows en http://windows.github.com.
+
+Con esto concluimos la primera sección de requerimientos iniciales.
