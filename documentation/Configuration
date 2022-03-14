@@ -1,0 +1,137 @@
+1. git
+
+Quick setup — if you’ve done this kind of thing before
+or
+
+Get started by creating a new file or uploading an existing file. We recommend every repository include a README, LICENSE, and .gitignore.
+…or create a new repository on the command line
+
+echo "# CRUDLaravel5.5" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git branch -M main
+git remote add origin git@github.com:Klvst3r/CRUDLaravel5.5.git
+git push -u origin main
+
+…or push an existing repository from the command line
+
+git remote add origin git@github.com:Klvst3r/CRUDLaravel5.5.git
+git branch -M main
+git push -u origin main
+
+…or import code from another repository
+
+You can initialize this repository with code from a Subversion, Mercurial, or TFS project.
+
+2. Virtual host
+	https://github.com/Klvst3r/laravel/blob/main/doc/1.Install%20and%20Config/3.%20Crear%20un%20host%20virtual
+
+...
+<VirtualHost _default_:80>
+DocumentRoot "${SRVROOT}/htdocs"
+#ServerName www.example.com:80
+  ServerName klvst3r.io
+  Redirect / http://klvst3r.io/dev/CRUDLaravel5.5/public/
+</VirtualHost>
+...
+<VirtualHost *:80>
+   DocumentRoot "C:\AppServ\www\dev\CRUDLaravel5.5\public"
+    ServerName klvst3r.io
+    Redirect / http://klvst3r.io/dev/CRUDLaravel5.5/public/
+    ServerAlias klvst3r.io
+    <Directory "C:\AppServ\www\dev\CRUDLaravel5.5\public/">
+      Options Indexes FollowSymLinks
+      AllowOverride All
+      Order Deny, Allow
+      Allow from all
+    </Directory>
+</VirtualHost>
+...
+
+3. httpd.conf
+
+...
+ServerRoot "${SRVROOT}"
+
+Redirect / http://klvst3r.io/dev/CRUDLaravel5.5/public/
+...
+LoadModule rewrite_module modules/mod_rewrite.so
+...
+DocumentRoot "C:/AppServ/www/dev/CRUDLaravel5.5/public"
+...
+<Directory "C:/AppServ/www/dev/CRUDLaravel5.5/public">
+...
+ Redirect permanent /dev/CRUDLaravel5.5/public http://klvst3r.io
+ ...
+  <Directory «C:/AppServ/www/dev/CRUDLaravel5.5/public»>
+        Options FollowSymLinks
+        AllowOverride All
+        Order deny,allow
+        Allow from all
+        Satisfy all
+    </Directory>
+
+
+4. Instalacion de Larael 5.5 doc
+
+	https://laravel.com/docs/5.5
+
+5. Configuracion de Githib
+	https://github.com/Klvst3r/GitHub/blob/master/0.%20Primeros%20Pasos%20con%20GitHub/Primeros%20pasos%20con%20Github
+	https://docs.github.com/es/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token
+	https://docs.github.com/en/get-started/getting-started-with-git/setting-your-username-in-git
+
+
+6. Token con Github
+	https://docs.github.com/es/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token
+
+7. Fundamentos con Github
+	https://git-scm.com/book/es/v2/Fundamentos-de-Git-Trabajar-con-Remotos
+
+8. Appserv
+	https://www.appserv.org/en/download/
+	https://sourceforge.net/projects/appserv/
+
+
+8.1 Problemas con Windows
+	https://www.tuexperto.com/2019/08/05/error-msvcp140-dll-falta-archivo-descargar-instalar/
+
+
+9. Git para Windows
+	https://git-scm.com/download/win
+
+10.  Composer
+
+	https://styde.net/instalacion-de-composer-y-laravel/
+
+
+	https://getcomposer.org/download/
+
+	https://getcomposer.org/download/
+	https://getcomposer.org/doc/00-intro.md#globally
+
+	https://getcomposer.org/doc/00-intro.md#installation-windows
+
+11. Laavl 5.5 - CRUD
+	https://styde.net/laravel-5/
+	https://styde.net/laravel-5/
+
+	https://styde.net/crea-un-panel-de-control-con-laravel/
+
+12. Redirecciones con Apache
+	https://www.tuexperto.com/2019/08/05/error-msvcp140-dll-falta-archivo-descargar-instalar/
+	https://www.neoguias.com/configurando-htaccess-redirecciones/
+	https://www.osmosislatina.com/apache/acceso.htm
+	https://help.dreamhost.com/hc/es/articles/215747748--Como-puedo-redireccionar-y-sobreescribir-mis-URL-con-un-archivo-htaccess-
+	https://www.ionos.es/digitalguide/servidores/configuracion/redirects-de-apache/
+	https://code.tutsplus.com/es/articles/apache-aliasing-and-redirection--net-28606
+	https://www.paulbernal.com/general/como-redirigir-http-a-https-en-apache/
+	https://flotadigital.com/club/tutoriales/windows/configurar-redireccion-a-otro-dominio-en-apache-2-4-windows-server-2019/
+
+	Test
+	https://www.e-quipos.es/blog/apache-redirigir-desde-http-a-https-en-todas-sus-variantes
+
+	https://www.enmimaquinafunciona.com/pregunta/157380/apache---como-redirigir-a-una-pagina-determinada-en-el-archivo-httpdconf
+
+	
