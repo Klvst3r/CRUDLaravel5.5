@@ -20,13 +20,55 @@ Este entorno de trabajo lo podremos descargar desde:
 	https://www.appserv.org/en/download/
 	https://sourceforge.net/projects/appserv/
 
-
-
 Para desarrollar con Laravel 5.5 puedes hacerlo desde Windows, Linux o MacOs siempre que tengas un servidor web con PHP 7 o superior.
 
 A esto nosotros le llamamos entorno de desarrollo y existe una gran variedad de ellos, cada uno con un nivel de complejidad distinto al otro, desde el más básico instalando manualmente Apache o Nginx, PHP, MySQL, etc., así como instalar herramientas como XAMPP, WAMP, MAMP, etc., hasta otras más complicadas como Laravel Homestead
 
 En el caso especificao trabajaremos con AppServ por ser el que tiene menor complicación en su configuración general con Equipo de 64 bits, pero puede elegir la herramienta que mas le acomode a sus necesidades.
+
+Problemas de instalación:
+----------------------
+En algunas ocaciones puede generar errores la instalacion como ejemplo tenemos dos especificas.
+
+El error relacionado con el archivo MSVCP140.dll se trata, junto al error 0x00000e9 de arranque de Windows, de uno errores más comunes de Windows 10, Windows 8 y Windows 7. El fallo en cuestión aparece cuando se inicia un determinado programa, y el mensaje de error reza algo como «El programa no puede iniciarse porque falta msvcp140.dll en el equipo. Intente reinstalar el programa para corregir este problema» o «The program can’t start because msvcp140.dll is missing». 
+
+El problema reside en que el error persiste incluso si reinstalamos el programa afectado. 
+
+¿Cómo podemos solucionar el error Falta el archivo MSVCP140.dll? ¿Dónde podemos descargar MSVCP140.dll? ¿En qué ruta se debe instalar?. 
+
+Cómo instalar el MSVCP140.dll en Windows
+
+El error MSVCP140.dll suele estar a menudo relacionado con las librerías Visual C++ para Visual Studio de Windows 10. En caso de que la librería en cuestión no exista o muestre algún tipo de error, lo más probable es que se nos muestre un error como el que nos atañe en esta ocasión
+
+Para solucionar el MSVCP140.dll lo único que tendremos que hacer es descargar nuevamente la librería e instalarla posteriormente en nuestro ordenador, no sin antes comprobar en Sistema el número de bits de nuestra versión de Windows (32 o 64 bits).
+
+Una vez hayamos comprobado dicho dato, descargaremos la versión correspondiente de Visual C++ a través de este enlace. Finalmente instalaremos la herramienta como si de un programa común se tratase y reiniciaremos Windows.
+
+Visual C++ Redistributable para Visual Studio 2015 
+    https://www.microsoft.com/es-es/download/details.aspx?id=48145
+
+Dónde descargar MSVCP140.dll para Windows
+
+En el remoto caso de que lo anterior no nos haya funcionado, lo siguiente que tendremos que hacer será descargar el archivo MSVCP140.dll manualmente siempre y cuando hayamos instalado Visual C++ en nuestro ordenador.
+
+    Descargar MSVCP140.dll para sistemas de 32 bits (https://www.tuexperto.com/wp-content/uploads/2019/08/msvcp140-32-bits.zip)
+    Descargar MSVCP140.dll para sistemas de 64 bits (https://www.tuexperto.com/wp-content/uploads/2019/08/msvcp140-64-bits.zip)
+
+Cuando hayamos descargado el archivo correspondiente a nuestro tipo de sistema, lo descomprimiremos en alguna ruta localizable del ordenador. Acto seguido, haremos click derecho sobre el icono del programa que muestra el error «Falta MSVCP140.dll» y pulsaremos sobre Abrir la ubicación del archivo.
+
+Finalmente moveremos el archivo en cuestión a la carpeta de origen del programa afectado. Se recomienda, además, copiar el archivo en la siguiente ruta para evitar que otros programas caigan en el mismo error:
+
+    C:\Windows\System32\
+
+
+Para ello, abriremos el citado programa escribiendo CMD en el buscador de Windows y haciendo click derecho sobre el mismo para ejecutar la herramienta con privilegios de administración. Una vez dentro, escribiremos el siguiente comando:
+
+    sfc /scannow
+
+Automáticamente Windows comenzará a buscar y reparar todos los archivos dañados o perdidos del sistema. 
+
+Tras esto, debemos reiniciar el equipo preferentemente y cualquier error relacionado con las librerías de Windows debería haber sido solventado.
+
 
 
 Laravel Homestead
@@ -201,9 +243,17 @@ Cierra tu terminal actual. Pruebe el uso con una nueva terminal:
 
 Ahora que ha instalado Composer, ¡está listo para usarlo!
 
+Referencias de composer
+---------
+Instalación en Windows
+    https://getcomposer.org/doc/00-intro.md#installation-windows
+
+Configuración Global
+        https://getcomposer.org/doc/00-intro.md#globally
+
 
 Git para Windows
-
+------------------
 Git es un software de control de versiones diseñado por Linus Torvalds, pensando en la eficiencia, la confiabilidad y compatibilidad del mantenimiento de versiones de aplicaciones cuando estas tienen un gran número de archivos de código fuente. Su propósito es llevar registro de los cambios en archivos de computadora incluyendo coordinar el trabajo que varias personas realizan sobre archivos compartidos en un repositorio de código.
 
 Al principio, Git se pensó como un motor de bajo nivel sobre el cual otros pudieran escribir la interfaz de usuario o front end como Cogito o StGIT. 3​ Sin embargo, Git se ha convertido desde entonces en un sistema de control de versiones con funcionalidad plena. 

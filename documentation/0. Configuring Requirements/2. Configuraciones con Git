@@ -1,0 +1,62 @@
+2. Configuraciones con Git
+
+Configurando Git por primera vez
+-----------------------
+Ahora que ya se tiene Git en su sistema, va a querer hacer algunas cosas para personalizar su entorno de Git. Es necesario hacer estas cosas solamente una vez en tu computadora, y se mantendrán entre actualizaciones. También puede cambiarlas en cualquier momento volviendo a ejecutar los comandos correspondientes.
+
+Git trae una herramienta llamada git config, que le permite obtener y establecer variables de configuración que controlan el aspecto y funcionamiento de Git. Estas variables pueden almacenarse en tres sitios distintos:
+
+ - Archivo /etc/gitconfig: Contiene valores para todos los usuarios del sistema y todos sus repositorios. Si pasa la opción --system a git config, lee y escribe específicamente en este 	archivo.
+
+ - Archivo ~/.gitconfig o ~/.config/git/config: Este archivo es específico de su usuario. Puede hacer que Git lea y escriba específicamente en este archivo pasando la opción --global.
+
+  - Archivo config en el directorio de Git (es decir, .git/config) del repositorio que estés utilizando actualmente: Este archivo es específico del repositorio actual.
+
+Cada nivel sobrescribe los valores del nivel anterior, por lo que los valores de .git/config tienen preferencia sobre los de /etc/gitconfig.
+
+En sistemas Windows, Git busca el archivo .gitconfig en el directorio $HOME (para mucha gente será (C:\Users\$USER). También busca el archivo /etc/gitconfig, aunque esta ruta es relativa a la raíz MSys, que es donde decidiste instalar Git en tu sistema Windows cuando se ejecuto el instalador.
+
+La Identidad en Git
+--------------------
+
+Lo primero que deberá hacer cuando instales Git es establecer su nombre de usuario y dirección de correo electrónico. Esto es importante porque los "commits" de Git usan esta información, y es introducida de manera inmutable en los commits que envía:
+
+	$ git config --global user.name "Klvst3r"
+	$ git config --global user.email klvstr3r@klvst3r.io
+
+De nuevo, sólo necesita hacer esto una vez si especificas la opción --global, ya que Git siempre usará esta información para todo lo que hagas en ese sistema. Si se quiere sobrescribir esta información con otro nombre o dirección de correo para proyectos específicos, puede ejecutar el comando sin la opción --global cuando esté en ese proyecto.
+
+Muchas de las herramientas de interfaz gráfica le ayudarán a hacer esto la primera vez que la use.
+
+El Editor
+-----------
+
+Ahora que su identidad está configurada, puedes elegir el editor de texto por defecto que se utilizará cuando Git necesite que introduzcas un mensaje. Si no indicas nada, Git usará el editor por defecto de tu sistema, que generalmente es Vim. Si quieres usar otro editor de texto como Emacs, puedes hacer lo siguiente:
+
+$ git config --global core.editor emacs
+
+Nota
+
+Vim y Emacs son editores de texto frecuentemente usados por desarrolladores en sistemas basados en Unix como Linux y Mac. Si no está familiarizado con ninguno de estos editores o está en un sistema Windows, durante la instalación grafica se realiza esta configuración, pero puede establecerse la siguiente linea:
+
+
+$ git config --global core.editor="C:\\Program Files\\Sublime Text\\subl.exe" -w
+
+Si quieres comprobar tu configuración, puedes usar el comando git config --list para mostrar todas las propiedades que Git ha configurado:
+
+$ git config --list
+user.name=Klvst3r
+user.email=klvst3r@klvst3r.io
+color.status=auto
+color.branch=auto
+color.interactive=auto
+color.diff=auto
+...
+
+Puede que vea claves repetidas, porque Git lee la misma clave de distintos archivos (/etc/gitconfig y ~/.gitconfig, por ejemplo). En estos casos, Git usa el último valor para cada clave única que ve.
+
+También puede comprobar el valor que Git utilizará para una clave específica ejecutando git config <key>:
+
+$ git config user.name
+	Klvst3r
+

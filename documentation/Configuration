@@ -89,29 +89,9 @@ DocumentRoot "C:/AppServ/www/dev/CRUDLaravel5.5/public"
 7. Fundamentos con Github
 	https://git-scm.com/book/es/v2/Fundamentos-de-Git-Trabajar-con-Remotos
 
-8. Appserv
-	https://www.appserv.org/en/download/
-	https://sourceforge.net/projects/appserv/
 
 
-8.1 Problemas con Windows
-	https://www.tuexperto.com/2019/08/05/error-msvcp140-dll-falta-archivo-descargar-instalar/
 
-
-9. Git para Windows
-	https://git-scm.com/download/win
-
-10.  Composer
-
-	https://styde.net/instalacion-de-composer-y-laravel/
-
-
-	https://getcomposer.org/download/
-
-	https://getcomposer.org/download/
-	https://getcomposer.org/doc/00-intro.md#globally
-
-	https://getcomposer.org/doc/00-intro.md#installation-windows
 
 11. Laavl 5.5 - CRUD
 	https://styde.net/laravel-5/
