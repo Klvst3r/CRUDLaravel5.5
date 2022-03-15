@@ -1,0 +1,153 @@
+3. Virtual Host Configuration
+
+Un host virtual simula un servidor real de forma que al entrar a la URL entrariamos al diminio configurado.
+
+Para el presente proyecto la configuración actual del servidor virtual sera en el sistema operativo Windows.
+
+Aunque es una tarea paralela de configuración del host virtual asi como la instalación de Laravel, para efectos de orden y no entrar en conflicto que es primero, si la instalación de Laravel y despues la configuración del host virtual, para efectos practicos, la configuración del host virtual sera primero y el paaso inmediato posterior la instalación de Laravel.
+
+Configuración de un Virtual Host en Windows
+----------
+
+Requisitos:
+
+Para poder crear y utilizar un servidor virtual en Windos, el requisito es tener un servidor web apache y permisos de configuración en el sistema.
+
+Para crear un host virtual debemos ir a la carpeta del servidor, tomando en cuenta que el entorno de desarrollo empleada es Appserv, aunque con cualquier plataforma debe funcionar la configuración actual.
+
+1. Archivo de configuración de Apache
+
+La ruta que podremos utilizar es:
+
+ 	C:\AppServ\Apache24\conf\httpd.conf
+
+Abrimos con cualquier editor que tengamos y buscamos la sección:
+
+ # Virtual hosts
+
+Descomentar la siguiente linea de las directrices
+ 	# Include conf/extra/httpd-vhosts.conf
+a:
+	Include conf/extra/httpd-vhosts.conf
+
+2. Archivo de configuración de Host Virtuales
+En este archivo estaran configurados los host virtuales.
+
+Ir ahora a la carpeta 
+	/extra
+
+Dentro de la ruta:
+	C:\AppServ\Apache24\conf\extra\httpd-vhosts.conf
+
+Abrimos el archivo
+	httpd-vhosts.conf
+
+Dentro del archivo de configuración, agregamos al final del archivo
+
+Considerando anticipadamente que nuestro proyecto se llamara: "CRUDLaravel5.5"
+
+	<VirtualHost *:80>
+	   DocumentRoot "C:\AppServ\www\dev\CRUDLaravel5.5\public"
+	    ServerName klvst3r.io
+	    ServerAlias klvst3r.io
+	    <Directory "C:\AppServ\www\dev\CRUDLaravel5.5\public">
+	      Options Indexes FollowSymLinks MultiViews
+	      AllowOverride All
+	      Order allow, deny
+	      Allow from all
+	    </Directory>
+	</VirtualHost>
+
+
+4. Configuración de mor_rewrite
+
+"mod_rewrite" de Apache es una forma efectiva y fácil de manipular URLs. La manipulación de una URL se realiza desde el lado del servidor. Explicado de forma básica, con mod_rewrite, las URLs limpias y fáciles de usar se convierten en sitios web. Como su nombre lo indica, este módulo realiza una reescritura de las URLs. Puede ser una excelente opción para limpiar las URLs de la aplicación web.
+
+El módulo mod_rewrite es un módulo del servidor web Apache que por defecto está instalado en todos los servicios web. Este módulo mod_rewrite permite crear direcciones URL alternativas a las dinámicas generadas por la programación de nuestros sitio web, de tal modo que sean más legibles y fáciles de recordar.
+
+Activar rewrite_mod
+Configuramos el Rewrite module de apache en la sección 
+
+En 
+C:\AppServ\Apache24\conf\httpd.conf
+
+Descomentamos
+    LoadModule rewrite_module modules/mod_rewrite.so
+
+Agregamos estas lineas al final
+    
+    <Directory «C:/AppServ/www/dev/CRUDLaravel5.5/public»>
+		Options Indexes FollowSymLinks MultiViews
+		AllowOverride All
+		Order allow, deny
+		Allow from all
+		Satisfy all
+	</Directory>
+
+Se encuentra la configuración para activar este modulo en Apache
+
+5. Nombre del host
+
+El hosts es un archivo de texto pequeño pero extremadamente útil que almacena nombres de host con sus correspondientes direcciones IP. Con él se define qué nodos activan el nombre de host en una red. Al convertir los nombres de hosts en direcciones IP numéricas, el archivo hosts se convierte en una herramienta elemental de los protocolos de red, ya que solo puede trabajar con ellas. El archivo hosts se encuentra en todos los sistemas operativos de PC, Mac y dispositivos móviles, y solo pueden modificarlo los administradores del sistema. Cada vez que se quiere acceder a una página web, el equipo revisa primero el archivo hosts por si hubiera una entrada que le corresponda o una regla definida.
+
+Ahora debmos de buscar el archivo de host; para indicar que cuando cambiamos de localhost o carguemos la URL configurada en el Host Virtual o dominio en el navegador web nos redirija al localhost y a la carpeta de Laravel, tomando en consideración que el nombre del virtual host configurado para efectos practicos es "klvst3r.io"
+
+Configruación del archivo host en Windows
+El hosts es un archivo de texto simple que en Windows se abre y modifica con el editor estándar, que para conservar y guardar los datos debe editarse como administrador. Lo primero que se lee es la descripción que el sistema operativo hace del archivo. A continuación se definen las direcciones IP con sus nombres de dominio (host name), cada una en una línea. Es importante que ambos datos estén separados por al menos un espacio vacío. También pueden incluirse comentarios precedidos por el símbolo de la almohadilla (#). La red lee los datos que contiene el archivo ignorando los espacios vacíos. 
+
+	C:\Windows\System32\drivers\etc\host
+
+Agregamos al final la siguiente linea
+	127.0.0.1       klvst3r.io
+
+Reiniciamos el servicio de Apache
+
+
+Por ultimo cargamos en el navegador le URL designada:
+    klvst3r.io
+
+
+Podemos redireccionar la pagina inicial del dominio de la siguiente manera
+Renombramos el index.php de raiz
+
+
+index.php -> index_backup.php
+
+Creamos un archivo 
+    indx.php
+
+Con el sguiente codigo:
+<?php
+header("Status: 301 Moved Permanently");
+header("Location: /Udemy/Laravel5/public");
+exit;
+?>
+
+Ahora cada que apuntemos a 
+    klvst3r.io
+
+Nos llevara al proyecto principal en desarrollo
+
+
+Resumen del archivo de configuración: "httpd.conf"
+--------------
+...
+ServerRoot "${SRVROOT}"
+
+Redirect / http://klvst3r.io/dev/CRUDLaravel5.5/public/
+...
+LoadModule rewrite_module modules/mod_rewrite.so
+...
+DocumentRoot "C:/AppServ/www/dev/CRUDLaravel5.5/public"
+...
+<Directory "C:/AppServ/www/dev/CRUDLaravel5.5/public">
+...
+ Redirect permanent /dev/CRUDLaravel5.5/public http://klvst3r.io
+ ...
+		<Directory «C:/AppServ/www/dev/CRUDLaravel5.5/public»>
+			Options Indexes FollowSymLinks MultiViews
+			AllowOverride All
+			Order allow, deny
+			Allow from all
+			Satisfy all
+		</Directory>

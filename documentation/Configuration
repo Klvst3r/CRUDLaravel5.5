@@ -24,53 +24,6 @@ git push -u origin main
 
 You can initialize this repository with code from a Subversion, Mercurial, or TFS project.
 
-2. Virtual host
-	https://github.com/Klvst3r/laravel/blob/main/doc/1.Install%20and%20Config/3.%20Crear%20un%20host%20virtual
-
-...
-<VirtualHost _default_:80>
-DocumentRoot "${SRVROOT}/htdocs"
-#ServerName www.example.com:80
-  ServerName klvst3r.io
-  Redirect / http://klvst3r.io/dev/CRUDLaravel5.5/public/
-</VirtualHost>
-...
-<VirtualHost *:80>
-   DocumentRoot "C:\AppServ\www\dev\CRUDLaravel5.5\public"
-    ServerName klvst3r.io
-    Redirect / http://klvst3r.io/dev/CRUDLaravel5.5/public/
-    ServerAlias klvst3r.io
-    <Directory "C:\AppServ\www\dev\CRUDLaravel5.5\public/">
-      Options Indexes FollowSymLinks
-      AllowOverride All
-      Order Deny, Allow
-      Allow from all
-    </Directory>
-</VirtualHost>
-...
-
-3. httpd.conf
-
-...
-ServerRoot "${SRVROOT}"
-
-Redirect / http://klvst3r.io/dev/CRUDLaravel5.5/public/
-...
-LoadModule rewrite_module modules/mod_rewrite.so
-...
-DocumentRoot "C:/AppServ/www/dev/CRUDLaravel5.5/public"
-...
-<Directory "C:/AppServ/www/dev/CRUDLaravel5.5/public">
-...
- Redirect permanent /dev/CRUDLaravel5.5/public http://klvst3r.io
- ...
-  <Directory «C:/AppServ/www/dev/CRUDLaravel5.5/public»>
-        Options FollowSymLinks
-        AllowOverride All
-        Order deny,allow
-        Allow from all
-        Satisfy all
-    </Directory>
 
 
 4. Instalacion de Larael 5.5 doc
@@ -99,19 +52,4 @@ DocumentRoot "C:/AppServ/www/dev/CRUDLaravel5.5/public"
 
 	https://styde.net/crea-un-panel-de-control-con-laravel/
 
-12. Redirecciones con Apache
-	https://www.tuexperto.com/2019/08/05/error-msvcp140-dll-falta-archivo-descargar-instalar/
-	https://www.neoguias.com/configurando-htaccess-redirecciones/
-	https://www.osmosislatina.com/apache/acceso.htm
-	https://help.dreamhost.com/hc/es/articles/215747748--Como-puedo-redireccionar-y-sobreescribir-mis-URL-con-un-archivo-htaccess-
-	https://www.ionos.es/digitalguide/servidores/configuracion/redirects-de-apache/
-	https://code.tutsplus.com/es/articles/apache-aliasing-and-redirection--net-28606
-	https://www.paulbernal.com/general/como-redirigir-http-a-https-en-apache/
-	https://flotadigital.com/club/tutoriales/windows/configurar-redireccion-a-otro-dominio-en-apache-2-4-windows-server-2019/
 
-	Test
-	https://www.e-quipos.es/blog/apache-redirigir-desde-http-a-https-en-todas-sus-variantes
-
-	https://www.enmimaquinafunciona.com/pregunta/157380/apache---como-redirigir-a-una-pagina-determinada-en-el-archivo-httpdconf
-
-	
