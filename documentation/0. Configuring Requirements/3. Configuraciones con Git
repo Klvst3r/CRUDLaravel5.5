@@ -16,7 +16,7 @@ Cada nivel sobrescribe los valores del nivel anterior, por lo que los valores de
 
 En sistemas Windows, Git busca el archivo .gitconfig en el directorio $HOME (para mucha gente será (C:\Users\$USER). También busca el archivo /etc/gitconfig, aunque esta ruta es relativa a la raíz MSys, que es donde decidiste instalar Git en tu sistema Windows cuando se ejecuto el instalador.
 
-La Identidad en Git
+La Identidad en Git, configurando el nombre de usuario en Git
 --------------------
 
 Lo primero que deberá hacer cuando instales Git es establecer su nombre de usuario y dirección de correo electrónico. Esto es importante porque los "commits" de Git usan esta información, y es introducida de manera inmutable en los commits que envía:
@@ -285,3 +285,61 @@ También es una buena práctica trabajar cada bloque en una rama independiente a
 
 Si desea trabajar con repositorios privados pero no deseas pagar por una suscripción en GitHub puedes usar Bitbucket es muy recomendado, su funcionamiento es genial y permite crear repositorios privados de forma gratuita, el concepto es el mismo por lo que te será fácil aplicar lo que viste aquí sin ningún problema.
 
+
+Crear un token de acceso personal
+----------------------
+
+En ocaciones sera comun establecer momunicación con el repositorio de github, ya sea desde un equipo remoto o bien desde una aplicación o servicio, y como requisito necesario es logearse a github mediante las credenciales respectiva.
+
+Un metodo de autenticarse con github es mediante un token de acceso personal por lo que vermemos como poder crear una llave de acceso con esta opción:
+
+Para crear un token de acceso personal para utilizar como contraseña con la línea de comandos o con la API es necesario establecerlo mediante el CLI de GitHub para autenticarte en GitHub en la línea de comandos, se puede omitir el generar un token de acceso personal y autenticarse a través del buscador web en su lugar.
+
+Los tokens de acceso personal (PAT) son una alternativa al uso de contraseñas para la autenticación en GitHub cuando utilizas la API de GitHub o la línea de comandos.
+
+Si se quiere utilizar un PAT para acceder a los recursos que pertenecen a una organización que utiliza el SSO de SAML, debe autorizarlo. 
+
+Como medida precautoria de seguridad, GitHub elimina automáticamente los tokens de acceso personal que no se hayan utilizado en un año. Para proporcionar seguridad adicional, le recomendamos ampliamente agregar un vencimiento a tus tokens de acceso personal.
+
+Un token sin alcances asignados solo puede acceder a información pública. Para usar tu token para acceder a repositorios desde la línea de comando, selecciona repo. Para obtener más información, consulta la sección "Alcances disponibles".
+
+
+Crear un token desde github
+---------------
+- Verifica tu dirección de correo electrónico, si aún no ha sido verificada.
+
+	1. En la esquina superior derecha de cualquier página, da clic en tu foto de perfil y después da clic en Configuración.
+	2. En la sección de "Acceso" de la barra lateral, haz clic en "Correos electrónicos".
+	3. Debajo de su dirección de correo electrónico, dar clic en Reenviar correo de verificación. 
+		Si todo es exitoso la leyenda sera algo como "Your email was verified"
+
+- Posterior a la verificación de correo. En la esquina superior derecha de cualquier página, da clic en tu foto de perfil y después da clic en Configuración.
+- En la barra lateral izquierda, haz clic en "Ajustes de desarrollador".
+- En la barra lateral izquierda, da clic en Tokens de acceso personal. 
+- Haz clic en Generar un nuevo token. Generar el botón para el nuevo token
+- Asígnale a tu token un nombre descriptivo. 
+- Para dar un vencimiento a tu token, selecciona el menú desplegable de Vencimiento y luego haz clic en uno predeterminado o utiliza el selector de calendario. 
+- Selecciona los alcances o permisos que deseas otorgarle a este token. Para usar tu token para acceder a repositorios desde la línea de comando, selecciona repo.
+- Haz clic en Generar token. 
+- Para utilizar tu token o autenticarte en una organización que utilice el inicio de sesión único de SAML, autoriza el token
+
+
+Usar un token en la línea de comando
+------------------
+Una vez que se tenga un token, puede ingresarlo en lugar de su contraseña cuando realice operaciones de Git a través de HTTPS.
+
+Por ejemplo, en la línea de comando ingresará lo siguiente:
+
+	$ git clone https://github.com/username/repo.git
+	Username: your_username
+	Password: your_token
+
+Los tokens de acceso personal solo se pueden usar para operaciones HTTPS Git. Si su repositorio usa una URL SSH remota, necesitarás pasar de la URL SSH remota a HTTPS.
+
+Si no se te solicita su nombre de usuario y contraseña, tus credenciales pueden estar almacenadas en la caché de su computadora. 
+Puedes actualizar tus credenciales en la keychain para reemplazar su contraseña anterior con el token.
+
+En vez de ingresar su PAT manualmente para cada operación de HTTPS de Git, puedes almacenarlo en caché con un cliente de Git. Git almacenará sus credenciales temporalmente en la memoria hasta que haya pasado un intervalo de vencimiento. 
+También puede almacenar el token en un archivo de texto simple que pueda leer Git antes de cada solicitud. 
+
+Con estos simples pasos podremos trabajar ya con nuestro sistema de control de versiones.

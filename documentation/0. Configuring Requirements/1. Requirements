@@ -198,84 +198,12 @@ Asi pues, los procedimientos anteriores puedes resultar un tanto complejos, en n
 Composer
 ========
 
- Laravel utiliza Composer para manejar sus dependencias. ¿Qué significa esto? Pues el framework Laravel hace uso de una colección de paquetes o componentes propios y de terceros para agregarle funcionalidades a las aplicaciones. Por tanto, necesitamos un gestor de dependencias que se encargue automáticamente de crear proyectos, instalar, actualizar o eliminar componentes y a su vez las dependencias de éstos. Esta herramienta es Composer, el manejador de dependencias de PHP.
+Composer es un gestor de paquetes que puede ser utilizado con npm
+
+Instalar Composer
+
+Composer es una herramienta para gestionar las dependencias en PHP. Permite declarar las librerías de las cuales el proyecto depende o se necesita y se instala en el proyecto por uno mismo.
+
+Para ello va a ser necesario instalar Composer, en la sección siguiente trataremos a fondo el tema de este administrador de dependencias.
 
 
-Página oficial de Composer.
-	https://getcomposer.org/
-
-Iniciando a trabajar con Composer
-	https://getcomposer.org/doc/00-intro.md#globally
-
-Instrucciones Oficiales en la Instalación de Composer.
-	https://getcomposer.org/doc/00-intro.md#globally
-
-
-Instalar Composer en Windows
----------------------------
-
-Esta es la forma más fácil de configurar Composer en su máquina con el sistema Operativo Windows.
-
-Descargue y ejecute Composer-Setup.exe . Instalará la última versión de Composer y configurará su PATH para que pueda llamar composerdesde cualquier directorio en su línea de comando.
-
-    Nota: Cierra tu terminal actual. Probar el uso con una nueva terminal: esto es importante ya que la RUTA solo se carga cuando se inicia la terminal.
-
-Instalación manual
--------------------
-
-Cambie a un directorio en su PATHy ejecute el instalador siguiendo las instrucciones de la página de descarga para descargar composer.phar.
-
-Cree un nuevo archivo composer.bat junto a composer.phar:
-
-Usando cmd.exe:
-	C:\bin> echo @php "%~dp0composer.phar" %*>composer.bat
-
-Usando PowerShell:
-
-	PS C:\bin> Set-Content composer.bat '@php "%~dp0composer.phar" %*'
-
-Agregue el directorio a su variable de entorno PATH si aún no lo está. Para obtener información sobre cómo cambiar su variable PATH, consulte este artículo y/o utilice el motor de búsqueda que prefiera.
-
-Cierra tu terminal actual. Pruebe el uso con una nueva terminal:
-
-	C:\Users\username>composer -V
-		Composer version 2.2.6 2022-02-04 17:00:38
-
-Ahora que ha instalado Composer, ¡está listo para usarlo!
-
-Referencias de composer
----------
-Instalación en Windows
-    https://getcomposer.org/doc/00-intro.md#installation-windows
-
-Configuración Global
-        https://getcomposer.org/doc/00-intro.md#globally
-
-
-Git para Windows
-------------------
-Git es un software de control de versiones diseñado por Linus Torvalds, pensando en la eficiencia, la confiabilidad y compatibilidad del mantenimiento de versiones de aplicaciones cuando estas tienen un gran número de archivos de código fuente. Su propósito es llevar registro de los cambios en archivos de computadora incluyendo coordinar el trabajo que varias personas realizan sobre archivos compartidos en un repositorio de código.
-
-Al principio, Git se pensó como un motor de bajo nivel sobre el cual otros pudieran escribir la interfaz de usuario o front end como Cogito o StGIT. 3​ Sin embargo, Git se ha convertido desde entonces en un sistema de control de versiones con funcionalidad plena. 
-
-Por lo que sera una herramienta vital para el desarrollo de nuestros proyectos.
-
-La referencia oficial se encuentra en:
-	https://git-scm.com/book/es/v2
-
-¿Qué es un control de versiones, y por qué debería importarte? 
-----------------------
-
-Un control de versiones es un sistema que registra los cambios realizados en un archivo o conjunto de archivos a lo largo del tiempo, de modo que puedas recuperar versiones específicas más adelante. Dicho sistema te permite regresar a versiones anteriores de tus archivos, regresar a una versión anterior del proyecto completo, comparar cambios a lo largo del tiempo, ver quién modificó por última vez algo que pueda estar causando problemas, ver quién introdujo un problema y cuándo, y mucho más.
-
-Si deseamos abundar un poco más en esta tecnología podremos revisar la información al respecto:
-	https://git-scm.com/video/what-is-version-control
-
-Instalación de Git en Windows
-------------------------
- La forma más oficial está disponible para ser descargada en el sitio web de Git. Solo tienes que visitar http://git-scm.com/download/win y la descarga empezará automáticamente.
-	https://git-scm.com/download/win
-
-Otra forma de obtener Git fácilmente es mediante la instalación de GitHub para Windows. El instalador incluye la versión de línea de comandos y la interfaz de usuario de Git. Además funciona bien con Powershell y establece correctamente "caching" de credenciales y configuración CRLF adecuada. Aprenderemos acerca de todas estas cosas un poco más adelante, pero por ahora es suficiente mencionar que éstas son cosas que deseas. Puedes descargar este instalador del sitio web de GitHub para Windows en http://windows.github.com.
-
-Con esto concluimos la primera sección de requerimientos iniciales.
