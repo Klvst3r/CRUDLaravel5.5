@@ -1,4 +1,4 @@
-3. Virtual Host Configuration
+4. Virtual Host Configuration
 
 Un host virtual simula un servidor real de forma que al entrar a la URL entrariamos al diminio configurado.
 
