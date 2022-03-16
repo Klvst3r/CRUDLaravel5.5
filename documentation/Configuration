@@ -63,6 +63,18 @@ git push -u origin --tags
 
 
 
+Creando un repositorio vacion en GitLab
+
+cd existing_repo
+git remote add origin https://gitlab.com/Klvst3r/siop.git
+git branch -M main
+git push -uf origin main
+
+
+
+
+
+
 4. Instalacion de Larael 5.5 doc
 
 	https://laravel.com/docs/5.5
