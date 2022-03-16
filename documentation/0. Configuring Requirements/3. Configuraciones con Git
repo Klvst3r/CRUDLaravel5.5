@@ -60,3 +60,228 @@ También puede comprobar el valor que Git utilizará para una clave específica 
 $ git config user.name
 	Klvst3r
 
+
+Empezando el trabajo con Git
+======================
+
+
+Configuración rápida al iniciar un nuevo proyecto.
+
+Comience creando un nuevo archivo o cargando un archivo existente. Recomendamos que cada repositorio incluya un LÉAME, LICENCIA y .gitignore.
+
+Creando un proyecto desde un repositorio local a remoto con Github, tomando como ejemplo de proyecto "CRUDLaravel5.5."
+
+a) Para crear un nuevo repositorio en la línea de comandos
+-----------
+	echo "# CRUDLaravel5.5" >> README.md
+	git init
+	git add README.md
+	git commit -m "first commit"
+	git branch -M main
+	git remote add origin git@github.com:Klvst3r/CRUDLaravel5.5.git
+	git push -u origin main
+
+
+b)Para insertar un repositorio existente desde la línea de comando
+-----------
+	git remote add origin git@github.com:Klvst3r/CRUDLaravel5.5.git
+	git branch -M main
+	git push -u origin main
+
+
+c) Importar código de otro repositorio como GitLab
+-------------
+Puede inicializar este repositorio con código de un proyecto de Subversion, Mercurial o TFS.
+
+
+
+Configuraciones generales con GitLab
+======================
+
+
+También puede cargar archivos existentes desde su computadora siguiendo las instrucciones a continuación.
+Configuración global de Git
+
+	git config --global user.name "Klvst3r"
+	git config --global user.email "klvst3r@gmail.com"
+
+
+- Crear un nuevo repositorio desde gitlab
+
+	git clone https://gitlab.com/Klvst3r/CRUDLaravel5.5.git
+	cd siop
+	git switch -c main
+	touch README.md
+	git add README.md
+	git commit -m "add README"
+	git push -u origin main
+
+- Empujar una carpeta existente
+
+	cd existing_folder
+	git init --initial-branch=main
+	git remote add origin https://gitlab.com/Klvst3r/CRUDLaravel5.5.git
+	git add .
+	git commit -m "Initial commit"
+	git push -u origin main
+
+- Empuje un repositorio Git existente
+
+	cd existing_repo
+	git remote rename origin old-origin
+	git remote add origin https://gitlab.com/Klvst3r/CRUDLaravel5.5.git
+	git push -u origin --all
+	git push -u origin --tags
+
+
+
+- Creando un repositorio vacion en GitLab
+
+	cd existing_repo
+	git remote add origin https://gitlab.com/Klvst3r/CRUDLaravel5.5.git
+	git branch -M main
+	git push -uf origin main
+
+Observaciones:
+En algunas ocaciones vamos a necesitar importar el proyecto de un equipo a otro, sin afectar los cambios, en lo personal suelo hacer lo siguiente.
+
+1. Se realiza la conación del proyecto y en la plataforma referida por ejemplo de git mediante ssh:
+	git clone git@github.com:Klvst3r/CRUDLaravel5.5.git
+
+2. En la carpeta local renombramos el proyecto teniando en consideración que se tiene un proyecto paralelo cfreado en la plaforma destino, tomaremos como ejemplo el nombre del proyecto "local.CRUDLaravel5.5.git"	
+
+3. Se mueve el contenidio de una carpeta a otra.
+	cd local.CRUDLaravel5.5
+	mv *.* ..\CRUDLaravel5.5
+
+4. Ya con el nuevo contenido nos movemos a la carpeta reciente.
+	cd ..
+	cd CRUDLaravel5.5
+
+5. Retomamos el proyecto	
+	git status
+	git add .
+	git commit -m "Reiniciando proyecto"
+	git push -u origin main
+	
+Con estos pasos tendremos la nueva versión disponible para actualizarse en el reposioterio remoto.
+
+
+
+Primeros pasos con el proyecto:
+---------------------
+
+Git es un sistema de control de versiones muy potente y sin duda el más usado en la actualidad que nos permite llevar un registro histórico de todos los cambios realizados en cada uno de los archivos a lo largo del desarrollo de un proyecto. A su vez, git ofrece una gran solución a la hora de trabajar de forma colaborativa como parte de un equipo de desarrollo, permitiendo que cada persona escriba código de forma independiente que puede ser integrado y compartido de manera muy fácil y rápida.
+
+Git, GitHub y Gitlab
+
+GitHubes una plataforma web que nos permite alojar código fuente de forma gratuita en la nube haciendo uso del sistema de control de versiones Git. Funciona como una red social donde se pueden compartir proyectos con la idea de que otros usuarios colaboren con el desarrollo.
+
+El registro básico de GitHub es gratuito y nos da acceso a la creación de repositorios públicos de forma ilimitada, para repositorios privados se debe adquirir un plan de pago.
+
+Crear un repositorio en GitHub
+
+Lo primero que se debe hacer es crear una cuenta de usuario ingresando al siguiente enlace
+
+https://github.com/
+
+y configurar las variables globales de git en local, como nombre de usuario.
+
+$ git config --global user.name "tu_usuario"
+$ git config --global user.email tu@email.com
+
+
+Una vez hecho esto podemos proceder a nuestro primer repositorio. Desde la barra de navegación hacemos click en enlace “New repository”
+
+menu-nuevo-repositorio
+
+En el siguiente formulario especificamos los detalles del proyecto y es recomendable siempre incluir el archivo readme.md desde el inicio donde se escribirán las instrucciones de instalación, uso e información sobre la licencia del código que contiene el repositorio, solo debemos darle check en “Initialize this repository with a REDAME”.
+
+	nuevo-repositorio-git
+
+Luego de esto ya tendremos creado nuestro primer repositorio en GitHub, Buen trabajo!!!
+
+	vista-repositorio-github
+
+Desde esta pantalla podemos realizar varias acciones relacionadas al repo recién creado que iremos explicando en su momento a lo largo de esta serie.
+
+	Clonar repositorio en local
+
+Debemos tener instalado Git en nuestra máquina local, si aun no lo tienes puedes descargarlo desde el siguiente enlace para Windows, linux o mac.
+
+	http://git-scm.com/downloads
+
+Una vez instalado abrimos la consola de comandos (si estas en windows usa el Git Bash).
+
+Si usas la consola de git desde Windos puedes pegar código haciendo click derecho en la cabecera de la ventana.
+
+Creamos un directorio que contendrá el código del proyecto y nos posicionamos dentro de él y ejecutamos git init para trabajar con el control de versiones, tomando como ejemplo que el nombre del proyecto es "CRUDLaravel5.5"
+
+	$ mkdir CRUDLaravel5.5
+	$ cd CRUDLaravel5.5
+	$ git init
+	$ mkdir CRUDLaravel5.5
+	$ cd CRUDLaravel5.5
+	$ git init
+
+
+Clonar un repositorio
+--------------
+Para clonar el repo hacemos uso de la url que vemos resaltada en la imagen anterior y desde la consola le indicamos a git que ese es nuestro repo remoto.
+
+	$ git remote add origin https://github.com/klvst3r/CRUDLaravel5.5.git
+
+
+Ahora copiamos el código que tenemos en remoto (en este caso esta únicamente el archivo readme.md) a nuestra máquina
+
+$ git pull origin main
+
+
+"main" es la rama principal de nuestro proyecto y es la rama en donde deben ir únicamente los cambios finales y versiones terminadas del código sin bugs. a nivel local también se crea por defecto una rama master. 
+
+Si todo sale bien podremos ver algo como esto en la carpeta del proyecto.
+
+	ls-CRUDLaravel5.5-repo-git
+
+Cambios y primer commit
+---------------------
+Veamos un ejemplo rápido:
+
+Podemos crear un archivo index.html y escribir dentro de él algo simple como “Hola mundo” y ver que sucede con git.
+
+	$ git status
+
+Nos dice que tenemos un archivo sin seguimiento, debemos agregarlo a la lista de seguimiento para enviarlo posteriormente
+
+	$ git add index.html
+
+
+si queremos agregar todos los archivos pendientes podemos usar
+
+	$ git add -A
+ o bien:
+
+	$ git add .
+
+y verificamos nuevamente el status
+
+	$ git status
+
+Los commit son básicamente los cambios que registramos a lo largo del desarrollo, cada commit debe ir acompañado de un mensaje, ya que tenemos listos nuestros cambios podemos registrar y enviar nuestro primer commit.
+
+	$ git commit -m "este es mi primer comit sobre la creacion del archivo index.html"
+
+
+y para enviarlo al repo remoto
+
+	$ git push origin master
+
+
+ahora podemos ingresar nuevamente a GitHub y ver los cambios
+
+Cada commit será un estado en la línea de tiempo del proyecto a la que podemos volver si algo sale mal, es recomendable trabajar en bloques pequeños de desarrollo y hacer commit sobre cada bloque terminado, por ejemplo puedes iniciar con “login de usuarios” y luego enviar “login terminado”.
+
+También es una buena práctica trabajar cada bloque en una rama independiente antes de fusionarlo con la rama master, hablaremos del uso de ramas más adelante.
+
+Si desea trabajar con repositorios privados pero no deseas pagar por una suscripción en GitHub puedes usar Bitbucket es muy recomendado, su funcionamiento es genial y permite crear repositorios privados de forma gratuita, el concepto es el mismo por lo que te será fácil aplicar lo que viste aquí sin ningún problema.
+
