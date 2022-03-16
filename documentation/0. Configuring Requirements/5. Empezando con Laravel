@@ -1,0 +1,47 @@
+5. Empezando con Laravel
+==================
+
+Laravel es un marco de aplicación web con una sintaxis expresiva y elegante. Un marco web proporciona una estructura y un punto de partida para crear su aplicación, lo que le permite concentrarse en crear algo increíble mientras nos preocupamos por los detalles.
+
+Laravel se esfuerza por brindar una experiencia de desarrollador increíble al mismo tiempo que brinda características poderosas, como una inyección de dependencia completa, una capa de abstracción de base de datos expresiva, colas y trabajos programados, pruebas unitarias y de integración, y más.
+
+Ya sea que sea nuevo en PHP o marcos web o tenga años de experiencia, Laravel es un marco que puede crecer con usted. Lo ayudaremos a dar sus primeros pasos como desarrollador web o lo impulsaremos a medida que lleva su experiencia al siguiente nivel. No podemos esperar a ver lo que construyes.
+
+
+----
+¿Por que Laravel?
+
+Hay una variedad de herramientas y marcos disponibles para usted cuando crea una aplicación web. Sin embargo, creemos que Laravel es la mejor opción para crear aplicaciones web completas y modernas.
+
+# Un marco progresivo
+
+Nos gusta llamar a Laravel un marco "progresivo". Con eso queremos decir que Laravel crece contigo. Si recién está dando sus primeros pasos en el desarrollo web, la amplia biblioteca de documentación, guías y tutoriales en video de Laravel lo ayudará a aprender las cuerdas sin sentirse abrumado.
+
+Videos de referencia en:
+https://laracasts.com/
+
+
+Si es un desarrollador sénior, Laravel le brinda herramientas sólidas para inyección de dependencia , pruebas unitarias , colas , eventos en tiempo real y más. 
+Laravel está optimizado para crear aplicaciones web profesionales y está listo para manejar cargas de trabajo empresariales.
+
+Service container: https://laravel.com/docs/9.x/container
+Unit Testing: https://laravel.com/docs/9.x/testing
+Queues: https://laravel.com/docs/9.x/queues
+Real-Time Events: https://laravel.com/docs/9.x/broadcasting
+
+
+
+# Un marco escalable
+
+Laravel es increíblemente escalable. Gracias a la naturaleza fácil de escalar de PHP y el soporte integrado de Laravel para sistemas de caché distribuidos rápidos como Redis, escalar horizontalmente con Laravel es muy sencillo. De hecho, las aplicaciones de Laravel se han escalado fácilmente para manejar cientos de millones de solicitudes por mes.
+
+¿Necesita escalado extremo? 
+-----------------
+Las plataformas como Laravel Vapor le permiten ejecutar su aplicación Laravel a una escala casi ilimitada en la última tecnología sin servidor de AWS.
+
+Un marco comunitario
+Laravel Vapor: https://vapor.laravel.com/
+Laravel: https://github.com/laravel/framework
+
+
+Laravel combina los mejores paquetes en el ecosistema de PHP para ofrecer el marco disponible más robusto y fácil de usar para desarrolladores. Además, miles de talentosos desarrolladores de todo el mundo han contribuido al marco . Quién sabe, tal vez incluso te conviertas en colaborador de Laravel.
