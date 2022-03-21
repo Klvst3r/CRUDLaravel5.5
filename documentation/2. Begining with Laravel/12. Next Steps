@@ -1,0 +1,64 @@
+12. Proximos pasos
+
+Ahora que ha creado su proyecto Laravel, es posible que se pregunte qué aprender a continuación. Primero, recomendamos familiarizarse con el funcionamiento de Laravel leyendo la siguiente documentación:
+
+    Request Lifecycle [Solicitud de ciclo de vida]
+    Configuration [Configuración]
+    Directory Structure [Estructura de directorios]
+    Service Container [Contenedor de servicio]
+    Facades [fachadas]
+
+La forma en que desea usar Laravel también dictará los próximos pasos en su viaje. Hay una variedad de formas de usar Laravel, y exploraremos dos casos de uso principales para el marco a continuación.
+
+A) Laravel El marco de pila completa
+-----------------------------------
+
+Laravel puede servir como un marco de trabajo completo. Por marco de "pila completa" queremos decir que utilizará Laravel para enrutar solicitudes a su aplicación y renderizar su interfaz a través de plantillas Blade o utilizando una tecnología híbrida de aplicación de una sola página como Inertia.js . Esta es la forma más común de usar el marco de Laravel.
+
+    Plantillas: https://laravel.com/docs/9.x/blade
+    Inertia.js: https://inertiajs.com/
+
+
+Si así es como planea usar Laravel, puede consultar nuestra documentación sobre enrutamiento , vistas o el ORM Eloquent . Además, es posible que le interese obtener información sobre paquetes comunitarios como Livewire e Inertia.js. 
+    Routing: https://laravel.com/docs/9.x/routing
+    Views: https://laravel.com/docs/9.x/views
+    Eloquent: https://laravel.com/docs/9.x/eloquent
+
+    Livewire:  	https://laravel-livewire.com/
+    Inertia.js: https://inertiajs.com/
+
+Estos paquetes le permiten usar Laravel como un marco de trabajo completo mientras disfruta de muchos de los beneficios de la interfaz de usuario que brindan las aplicaciones de JavaScript de una sola página.
+
+Si está utilizando Laravel como un marco de trabajo de pila completa, también le recomendamos encarecidamente que aprenda a compilar el CSS y JavaScript de su aplicación utilizando Laravel Mix .
+
+    Laravel Mix: https://laravel.com/docs/9.x/mix
+
+Si desea obtener una ventaja inicial en la creación de su aplicación, consulte uno de nuestros kits oficiales de inicio de aplicaciones .
+
+    application starter kits:	https://laravel.com/docs/9.x/starter-kits
+
+
+b) Laravel El backend de la API
+-------------------------------
+
+Laravel también puede servir como un backend API para una aplicación de una sola página de JavaScript o una aplicación móvil. Por ejemplo, puede usar Laravel como backend de API para su aplicación Next.js. 
+
+    Next.js: https://nextjs.org/
+
+
+En este contexto, puede usar Laravel para proporcionar autenticación y almacenamiento/recuperación de datos para su aplicación, mientras aprovecha los poderosos servicios de Laravel, como colas, correos electrónicos, notificaciones y más.
+
+    Authentication: https://laravel.com/docs/9.x/sanctum
+
+Si así es como planea usar Laravel, puede consultar nuestra documentación sobre enrutamiento , Laravel Sanctum y Eloquent ORM .
+
+    Routing: https://laravel.com/docs/9.x/routing
+    Laravel Sanctum: https://laravel.com/docs/9.x/sanctum
+    Eloquent ORM:	https://laravel.com/docs/9.x/eloquent
+
+¿Necesita una ventaja inicial para montar su backend de Laravel y su frontend de Next.js? Laravel Breeze ofrece una pila de API , así como una implementación de interfaz de Next.js para que pueda comenzar en minutos.
+    API Stack: https://laravel.com/docs/9.x/starter-kits#breeze-and-next
+    Next.js: 	https://github.com/laravel/breeze-next
+    frontend implementation: https://github.com/laravel/breeze-next
+
+En resumen: Laravel es un marco de aplicación web con una sintaxis expresiva y elegante. Creemos que el desarrollo debe ser una experiencia placentera y creativa para ser realmente satisfactorio. Laravel intenta eliminar el dolor del desarrollo al facilitar las tareas comunes utilizadas en la mayoría de los proyectos web.
