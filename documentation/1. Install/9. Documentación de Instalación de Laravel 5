@@ -1,0 +1,111 @@
+9. Documentación de Instalación de LAravel 5.5
+
+Es importante destacar que la documentación referida es una versión antigua de Laravel. 
+Considere actualizar su proyecto a Laravel 9.x.
+
+	https://laravel-com.translate.goog/docs/9.x?_x_tr_sl=en&_x_tr_tl=es&_x_tr_hl=en&_x_tr_pto=wapp
+
+Instalación
+
+    Instalación
+        Requisitos del servidor
+        Instalando Laravel
+        Configuración
+    Configuración del servidor web
+        Bonitas URL
+
+Instalación
+
+Requisitos del servidor
+
+El marco de Laravel tiene algunos requisitos del sistema. Por supuesto, la máquina virtual Laravel Homestead satisface todos estos requisitos , por lo que se recomienda enfáticamente que utilice Homestead como su entorno de desarrollo local de Laravel.
+
+Sin embargo, si no está utilizando Homestead, deberá asegurarse de que su servidor cumpla con los siguientes requisitos:
+- PHP >= 7.0.0 - Extensión PHP OpenSSL - Extensión PHP PDO - Extensión PHP Mbstring - Extensión PHP Tokenizer - Extensión PHP XML
+
+Instalando Laravel
+
+Laravel utiliza Composer para administrar sus dependencias. Entonces, antes de usar Laravel, asegúrese de tener Composer instalado en su máquina.
+
+A través del instalador de Laravel
+
+Primero, descargue el instalador de Laravel usando Composer:
+
+           composer global require "laravel/installer"
+           
+
+Asegúrese de colocar el directorio bin de proveedores de todo el sistema de composer $PATHen su sistema para que su sistema pueda ubicar el ejecutable de laravel. Este directorio existe en diferentes ubicaciones según su sistema operativo; sin embargo, algunas ubicaciones comunes incluyen:
+- macOS: `$HOME/.composer/vendor/bin` - Distribuciones GNU/Linux: `$HOME/.config/composer/vendor/bin`
+
+Una vez instalado, el laravel newcomando creará una nueva instalación de Laravel en el directorio que especifique. Por ejemplo, laravel new blogcreará un directorio llamado blogque contiene una nueva instalación de Laravel con todas las dependencias de Laravel ya instaladas:
+
+
+   laravel new blog
+           
+
+Vía Composer Create-Project
+
+Alternativamente, también puede instalar Laravel emitiendo el create-projectcomando Composer en su terminal:
+
+	composer create-project --prefer-dist laravel/laravel blog "5.5.*"
+           
+
+Servidor de desarrollo local
+
+Si tiene PHP instalado localmente y le gustaría usar el servidor de desarrollo incorporado de PHP para servir su aplicación, puede usar el servecomando Artisan. Este comando iniciará un servidor de desarrollo en http://localhost:8000:
+
+ 	php artisan serve
+           
+
+Por supuesto, hay opciones de desarrollo local más sólidas disponibles a través de Homestead y Valet .
+
+Configuración
+Directorio público
+
+Después de instalar Laravel, debe configurar el documento/raíz web de su servidor web para que sea el publicdirectorio. El index.phpen este directorio sirve como controlador frontal para todas las solicitudes HTTP que ingresan a su aplicación.
+Archivos de configuración
+
+Todos los archivos de configuración para el marco de Laravel se almacenan en el configdirectorio. Cada opción está documentada, así que siéntase libre de revisar los archivos y familiarizarse con las opciones disponibles para usted.
+Permisos de directorio
+
+Después de instalar Laravel, es posible que deba configurar algunos permisos. Los directorios dentro de storagey los bootstrap/cachedirectorios deben ser escribibles por su servidor web o Laravel no se ejecutará. Si está utilizando la máquina virtual de Homestead , estos permisos ya deberían estar configurados.
+Clave de aplicación
+
+Lo siguiente que debe hacer después de instalar Laravel es configurar la clave de su aplicación en una cadena aleatoria. Si instaló Laravel a través de Composer o el instalador de Laravel, el php artisan key:generatecomando ya configuró esta clave para usted.
+
+Normalmente, esta cadena debe tener 32 caracteres. La clave se puede configurar en el .envarchivo de entorno. Si no ha cambiado el nombre del .env.examplearchivo a .env, debe hacerlo ahora. ¡Si la clave de la aplicación no está configurada, sus sesiones de usuario y otros datos cifrados no estarán seguros!
+Configuración adicional
+
+Laravel casi no necesita otra configuración lista para usar. ¡Eres libre de comenzar a desarrollar! Sin embargo, es posible que desee revisar el config/app.phparchivo y su documentación. Contiene varias opciones como timezoney localeque puede que desee cambiar según su aplicación.
+
+También es posible que desee configurar algunos componentes adicionales de Laravel, como:
+- [Caché](/docs/{{version}}/cache#configuration) - [Base de datos](/docs/{{version}}/database#configuration) - [Sesión](/docs/{{version}}/ sesión#configuración)
+
+Configuración del servidor web
+
+Bonitas URL
+apache
+
+Laravel incluye un public/.htaccessarchivo que se usa para proporcionar direcciones URL sin el index.phpcontrolador frontal en la ruta. Antes de servir Laravel con Apache, asegúrese de habilitar el mod_rewritemódulo para .htaccessque el servidor respete el archivo.
+
+Si el .htaccessarchivo que se envía con Laravel no funciona con su instalación de Apache, pruebe esta alternativa:
+
+	Options +FollowSymLinks
+	RewriteEngine On
+	 
+	RewriteCond %{REQUEST_FILENAME} !-d
+	RewriteCond %{REQUEST_FILENAME} !-f
+	RewriteRule ^ index.php [L]
+           
+
+Nginx
+
+Si está utilizando Nginx, la siguiente directiva en la configuración de su sitio dirigirá todas las solicitudes al controlador frontal index.php:
+
+
+    location / {
+	    try_files $uri $uri/ /index.php?$query_string;
+	}
+           
+
+Por supuesto, al usar Homestead o Valet , se configurarán automáticamente bonitas URL.
