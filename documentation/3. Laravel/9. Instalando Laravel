@@ -1,0 +1,109 @@
+9. Instalando Laravel
+
+Una vez instalado composer ahora vamos a instalar Laravel
+
+Para ello nos dirigimos a la carpeta de nuestros poroyectos web:
+
+creando una carpeta 
+
+Ej.
+	mkdir Laravel
+
+Y empezamos a crear el proyecto de Laravel
+
+Mediante composer:
+
+	composer create-projet
+
+Indicando que paquete o que repositorio vamos a instalar en este caso
+
+	composer create-project laravel/laravel
+
+Que es el repositorio donde esta el repositorio del framework dandole un nombre donde se va a hacer la instalacion de Laravel y nuestro proyecto se llamara continuacndo el ejemplo CRUDLaravel5.5
+
+composer create-project laravel/laravel CRUDLaravel5.5 --prefer-dist
+
+--prefer-dist
+
+Esto descargara todos los paquetes y dependencias
+
+Una vez terminando la instalacion podremos probar el poryecto en la web en el navegador
+
+Al termino de la instalación probamos si ha marchado todo bien:
+
+En el navegador web ubicando la carpeta public y tomando en cuenta que se ha configurado ya nuestro Virtual Host:
+
+Ej.
+	http://klvst3r.io
+
+Si la configuración esta finalizada hara una redirección automatica hacia 
+	http://klvst3r.io/dev/CRUDLaravel/public/
+
+Como instalar una versión concreta
+
+Todas las versiones de Laravel 5 son iguales, se programa exactamente igual en todas, pero quizas puedan existir algunos micro cambios muy muy pequeños de una versión a otra, para instalar una versión especifica de Laravel debes lanzar el comando:
+
+	composer create-project laravel/laravel <nombre_proyecto> "<no_version.*>" 
+
+Donde proyecto, es el nombre de tu proyecto.
+
+Y donde 5.5, es la versión elegida.
+
+Yo utilizo esta versión porque es una de las mas estables y que mejor funciona, y ya te digo la manera de programar es igual en esta que en la 5.2, 5.3 y 5.4
+
+
+La salida final puede ser algo como lo que se muestra a continuacion
+
+----------- code ---------
+
+Generating autoload files
+Carbon 1 is deprecated, see how to migrate to Carbon 2.
+https://carbon.nesbot.com/docs/#api-carbon-2
+    You can run ".\vendor\bin\upgrade-carbon" to get help in updating carbon and other frameworks and libraries that depend on it.
+10 packages you are using are looking for funding.
+Use the `composer fund` command to find out more!
+> Illuminate\Foundation\ComposerScripts::postUpdate
+> php artisan optimize
+Generating optimized class loader
+> php artisan key:generate
+Application key [base64:bU/VEGb+wnUCFBaS+0YKqgAqe8uokzqgAtGVx8hpMeg=] set successfully.
+
+--------------------------------
+
+La salida en el navegador sera algo como:
+
+Laravel 5
+
+El ejemplo concreto realizado es de la siguiente manera:
+
+1. Creamos el proyecto en GitHub
+
+Proyecto:
+    Laravel5
+
+Clonamos el proyecto en nuestro directorio de desarrollohttp://klvst3r.io/dve/CRUDLaravel5.5/public/
+    $ git clone git@github.com:Klvst3r/CRUDLaravel5.5.git
+
+Pasamos contenido a una Carpeta Temporal
+    .git
+    README.md
+
+Borramos la carpeta local
+    rm -Rf Laravel5
+
+Creamos el proyecto local de Laravel5
+    $ composer create-project laravel/laravel CRUDLaravel5.5 "5.5.*"
+
+Se regresa el contenido de la carpeta
+    .git
+    README.md
+
+Agregamos nuevo contenido
+    git add .
+    git commit -m "Create Proyect"
+    git push origin main
+
+Visualizamos en navegador
+    http://klvst3r.io/dev/CRUDLaravel5.5/public/   
+
+Si todo esta correcto se visualizará correctamente el contenido en el proyecto.
