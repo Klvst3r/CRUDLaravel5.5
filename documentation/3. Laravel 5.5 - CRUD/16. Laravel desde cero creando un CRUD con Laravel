@@ -1,3 +1,99 @@
 16. Laravel desde cero creando un CRUD con Laravel 5.5
 
 https://styde.net/laravel-5/
+https://styde.net/laravel-5/#lecciones
+
+Bienvenido al Guia Básica de Laravel 5.5, en esta edición explicamos los fundamentos del framework Laravel a partir de la versión 5.5 LTS, incluyendo el ORM Eloquent, su sistema de migraciones, seeders y constructor de consultas, el sistema de plantillas Blade, rutas, controladores y mucho más; estos fundamentos son compatibles con las versiones siguientes del framework.
+
+Spn 40 lecciónes contenido aprenderás sobre los conceptos más importantes del framework más popular de PHP con los cuales podrás desarrollar aplicaciones de PHP modernas de una manera rápida y profesional.
+
+
+La presente guia se creara un sencillo pero funcional módulo CRUD de usuarios que podrá implementar en proyectos siguientes.
+
+Parte 1 - Primeros pasos con Laravel
+
+En esta primera parte del curso instalaremos el manejador de dependencias de PHP llamado Composer y con ayuda de éste instalaremos el framework Laravel. Además daremos nuestros primeros pasos con Laravel, crearemos las primeras rutas y las probaremos en el navegador y también de forma automatizada con un pequeño ejemplo en PHPUnit.
+
+    1 . Instalación de Composer y Laravel 
+    2 . Introducción a Laravel 
+    3 . Rutas 
+    4 . Pruebas 
+    5 . Controladores 
+
+Parte 2 - Vistas
+
+En esta segunda parte del curso aprenderá a crear plantillas completas usando Laravel y su motor de plantillas Blade. Veremos también la diferencia entre escribir plantillas con PHP plano VS Blade, así como los temas de rendimiento y de seguridad para prevenir ataques XSS.
+
+    6 . Vistas 
+    7 . Plantillas con Blade 
+    8 . Layouts con Blade 
+
+Parte 3 - Manejo de Bases de datos con Laravel
+
+En esta tercera parte veremos una introducción al manejo de base de datos con Laravel, usaremos la consola interactiva de Laravel, llamada Tinker, para probar el constructor de consultas del framework y su ORM Eloquent, crearemos nuestras primeras tablas, insertaremos datos, realizaremos consultas, veremos una introducción al manejo de relaciones entre tablas y registros con el framework y más.
+
+    9 . Introducción al manejo de base de datos 
+    10 . Modificar tablas ya existentes usando migraciones 
+    11 . Creación y asociación de tablas con el uso de migraciones y claves foráneas 
+    12 . Inserción de datos con el uso de Seeders 
+    13 . Constructor de consultas SQL 
+    14 . Introducción a Eloquent ORM 
+    15 . Usando Eloquent ORM de forma interactiva con Tinker 
+    16 . Manejo de atributos en Eloquent ORM 
+    17 . Relaciones con Eloquent ORM 
+    18 . Model Factories 
+
+Parte 4 - Módulo CRUD de usuarios: listado básico y detalles
+
+En esta tercera parte comenzaremos el desarrollo práctico de un módulo CRUD de usuarios con Laravel, para ello nos apoyaremos en el navegador pero también en el desarrollo con pruebas automatizadas.
+
+    19 . Introducción 
+    20 . Listado 
+    21 . Configuración y uso de base de datos con Laravel y PHPUnit 
+    22 . Detalles o perfil 
+    23 . Generar URLs 
+    24 . Manejo de errores 404 
+    25 . Enlace de modelos a rutas 
+
+Parte 5 - Módulo CRUD de usuarios: creación
+
+En esta cuarta parte trabajaremos en la C de CRUD, es decir en la creación de usuarios, para ello aprenderemos a escribir y manejar rutas de tipo POST y cómo validar peticiones del usuario para garantizar que nuestro sistema se mantenga seguro y con datos más reales.
+
+    26 . Rutas con POST y protección contra CSRF 
+    27 . Creación de usuarios con Laravel y TDD 
+    28 . Formulario para agregar usuarios 
+    29 . Validar datos de peticiones HTTP 
+    30 . Mostrar errores de validación 
+    31 . Uso de múltiples reglas de validación 
+
+Parte 6 - Módulo CRUD de usuarios : Actualización
+
+En esta cuarta parte trabajaremos en la U de CRUD, es decir en la actualización (Update) de usuarios, nuevamente usaremos reglas de validación y nos apoyaremos en pruebas tanto automatizadas con PHPUnit como manuales en el navegador para garantizar que nuestro módulo está funcionando con éxito en los escenarios principales.
+
+    32 . Formulario para editar usuarios 
+    33 . Actualización de usuarios
+    34 . Reglas de validación
+    35 . Campo opcional de contraseña 
+    36 . Validar que el email sea único 
+
+Parte 7 - Módulo CRUD de usuarios: Eliminación
+
+En esta quinta parte trabajaremos en la D de CRUD: Delete, es decir aprenderemos a eliminar usuarios, también nos tomaremos un momento para agregar enlaces que nos permitan navegar a través del módulo de usuarios en el navegador.
+
+    37 . Eliminar registros con Laravel y TDD 
+    38 . Agregando enlaces al módulo de usuarios 
+
+Parte 8 - Agregando estilos de Bootstrap 
+
+En esta sexta y última parte del curso vamos a agregar estilos de Bootstrap para que el módulo de usuarios, desarrollado en las partes anteriores, luzca mucho mejor.
+
+    39 . Agregar estilo al listado de usuarios 
+    40 . Agregar estilos al formulario 
+
+En lo siguiente podremos avanzar a un nivel intermedio y avanzado:
+
+    Creando un Panel de Control con Laravel 
+    Técnicas de Autorización con Laravel 
+
+
+Una vez finalizado este material podrás continuar ampliando sus habilidades de desarrollo a través del curso intermedio Crea un Panel de Control con Laravel.
