@@ -1,0 +1,172 @@
+14. Fundamentos de Git - Trabajar con Remotos
+
+Trabajar con Remotos
+---------------
+Para poder colaborar en cualquier proyecto Git, se necesita saber cómo gestionar repositorios remotos. Los repositorios remotos son versiones de su proyecto que están hospedadas en Internet o en cualquier otra red. Puede tener varios de ellos, y en cada uno tendrás generalmente permisos de solo lectura o de lectura y escritura. Colaborar con otras personas implica gestionar estos repositorios remotos enviando y trayendo datos de ellos cada vez que necesites compartir tu trabajo. Gestionar repositorios remotos incluye saber cómo añadir un repositorio remoto, eliminar los remotos que ya no son válidos, gestionar varias ramas remotas, definir si deben rastrearse o no y más. En esta sección, trataremos algunas de estas habilidades de gestión de remotos.
+
+Ver Sus Remotos
+--------------
+Para ver los remotos que se tiene configurados, se debe ejecutar el comando git remote. Mostrará los nombres de cada uno de los remotos que tienes especificados. Si has clonado su repositorio, debería ver al menos origin (origen, en inglés) - este es el nombre que por defecto Git le da al servidor del que has clonado:
+
+------------ Git Console -------------
+	$ git clone https://github.com/schacon/ticgit
+	Cloning into 'ticgit'...
+	remote: Reusing existing pack: 1857, done.
+	remote: Total 1857 (delta 0), reused 0 (delta 0)
+	Receiving objects: 100% (1857/1857), 374.35 KiB | 268.00 KiB/s, done.
+	Resolving deltas: 100% (772/772), done.
+	Checking connectivity... done.
+	$ cd ticgit
+	$ git remote
+	origin
+------------ Git Console -------------
+
+También puedes pasar la opción -v, la cual muestra las URLs que Git ha asociado al nombre y que serán usadas al leer y escribir en ese remoto:
+
+------------ Git Console -------------
+	$ git remote -v
+	origin	https://github.com/schacon/ticgit (fetch)
+	origin	https://github.com/schacon/ticgit (push)
+------------ Git Console -------------
+
+Si tiene más de un remoto, el comando los listará todos. Por ejemplo, un repositorio con múltiples remotos para trabajar con distintos colaboradores podría verse de la siguiente manera.
+
+------------ Git Console -------------
+	$ cd grit
+	$ git remote -v
+	bakkdoor  https://github.com/bakkdoor/grit (fetch)
+	bakkdoor  https://github.com/bakkdoor/grit (push)
+	cho45     https://github.com/cho45/grit (fetch)
+	cho45     https://github.com/cho45/grit (push)
+	defunkt   https://github.com/defunkt/grit (fetch)
+	defunkt   https://github.com/defunkt/grit (push)
+	koke      git://github.com/koke/grit.git (fetch)
+	koke      git://github.com/koke/grit.git (push)
+	origin    git@github.com:mojombo/grit.git (fetch)
+	origin    git@github.com:mojombo/grit.git (push)
+------------ Git Console -------------
+
+Esto significa que podemos traer contribuciones de cualquiera de estos usuarios fácilmente. Es posible que también tengamos permisos para enviar datos a algunos, aunque no podemos saberlo desde aquí.
+
+Ahora veremos explícitamente cómo hacerlo. Para añadir un remoto nuevo y asociarlo a un nombre que puedas referenciar fácilmente, ejecuta git remote add [nombre] [url]:
+
+------------ Git Console -------------
+	$ git remote
+	origin
+	$ git remote add pb https://github.com/paulboone/ticgit
+	$ git remote -v
+	origin	https://github.com/schacon/ticgit (fetch)
+	origin	https://github.com/schacon/ticgit (push)
+	pb	https://github.com/paulboone/ticgit (fetch)
+	pb	https://github.com/paulboone/ticgit (push)
+------------ Git Console -------------
+
+A partir de ahora puedes usar el nombre pb en la línea de comandos en lugar de la URL entera. Por ejemplo, si quiere traer toda la información que tiene Paul pero tú aún no tienes en tu repositorio, puedes ejecutar git fetch pb:
+
+------------ Git Console -------------
+	$ git fetch pb
+	remote: Counting objects: 43, done.
+	remote: Compressing objects: 100% (36/36), done.
+	remote: Total 43 (delta 10), reused 31 (delta 5)
+	Unpacking objects: 100% (43/43), done.
+	From https://github.com/paulboone/ticgit
+	 * [new branch]      master     -> pb/master
+	 * [new branch]      ticgit     -> pb/ticgit
+ ------------ Git Console -------------
+
+La rama maestra de Paul ahora es accesible localmente con el nombre pb/master - puede combinarla con alguna de sus ramas, o puede crear una rama local en ese punto si quieres inspeccionarla. 
+
+
+Traer y Combinar Remotos
+-----------------------
+Para obtener datos de sus proyectos remotos puede ejecutar:
+
+	$ git fetch [remote-name]
+
+El comando irá al proyecto remoto y se traerá todos los datos que aun no tiene de dicho remoto. Luego de hacer esto, tendrá referencias a todas las ramas del remoto, las cuales puedes combinar e inspeccionar cuando se quiera.
+
+Si clona un repositorio, el comando de clonar automáticamente añade ese repositorio remoto con el nombre “origin”. Por lo tanto, git fetch origin se trae todo el trabajo nuevo que ha sido enviado a ese servidor desde que lo clonaste (o desde la última vez que trajo datos). Es importante destacar que el comando git fetch solo trae datos a su repositorio local - ni lo combina automáticamente con su trabajo ni modifica el trabajo que lleva hecho. La combinación con su trabajo debes hacerla manualmente cuando estés listo.
+
+Si ha configurado una rama para que rastree una rama remota, puede usar el comando git pull para traer y combinar automáticamente la rama remota con tu rama actual. Es posible que este sea un flujo de trabajo mucho más cómodo y fácil para usted; y por defecto, el comando git clone le indica automáticamente a su rama maestra local que rastree la rama maestra remota (o como se llame la rama por defecto) del servidor del que has clonado. Generalmente, al ejecutar git pull traerá datos del servidor del que clono originalmente y se intentará combinar automáticamente la información con el código en el que este trabajando.
+
+Enviar a Tus Remotos
+----------------
+Cuando se tiene un proyecto que quiere compartir, debe enviarlo a un servidor. El comando para hacerlo es simple: 
+
+	git push [nombre-remoto] [nombre-rama]. 
+
+Si quiere enviar su rama master a su servidor origin (recuerda, clonar un repositorio establece esos nombres automáticamente), entonces puede ejecutar el siguiente comando y se enviarán todos los commits que hayas hecho al servidor:
+
+$ git push origin master
+
+Este comando solo funciona si clono de un servidor sobre el que tiene permisos de escritura y si nadie más ha enviado datos por el medio. Si alguien más clona el mismo repositorio que usted y envía información antes que usted, tu envío será rechazado. Tendrá que traer su trabajo y combinarlo con el suyo antes de que pueda enviar datos al servidor. 
+
+
+Inspeccionar un Remoto
+---------------
+Si quiere ver más información acerca de un remoto en particular, puede ejecutar el comando 
+
+	git remote show [nombre-remoto]. 
+
+Si ejecuta el comando con un nombre en particular, como origin, verá algo como lo siguiente:
+
+$ git remote show origin
+* remote origin
+  Fetch URL: https://github.com/schacon/ticgit
+  Push  URL: https://github.com/schacon/ticgit
+  HEAD branch: master
+  Remote branches:
+    master                               tracked
+    dev-branch                           tracked
+  Local branch configured for 'git pull':
+    master merges with remote master
+  Local ref configured for 'git push':
+    master pushes to master (up to date)
+
+El comando lista la URL del repositorio remoto y la información del rastreo de ramas. El comando  indica claramente que si está en la rama maestra y ejecutas el comando git pull, automáticamente combinará la rama maestra remota con su rama local, luego de haber traído toda la información de ella. También lista todas las referencias remotas de las que ha traído datos.
+
+Ejemplos como este son los que se encontrarás normalmente. Sin embargo, si usa Git de forma más avanzada, puede que obtenga mucha más información de un git remote show:
+
+$ git remote show origin
+* remote origin
+  URL: https://github.com/my-org/complex-project
+  Fetch URL: https://github.com/my-org/complex-project
+  Push  URL: https://github.com/my-org/complex-project
+  HEAD branch: master
+  Remote branches:
+    master                           tracked
+    dev-branch                       tracked
+    markdown-strip                   tracked
+    issue-43                         new (next fetch will store in remotes/origin)
+    issue-45                         new (next fetch will store in remotes/origin)
+    refs/remotes/origin/issue-11     stale (use 'git remote prune' to remove)
+  Local branches configured for 'git pull':
+    dev-branch merges with remote dev-branch
+    master     merges with remote master
+  Local refs configured for 'git push':
+    dev-branch                     pushes to dev-branch                     (up to date)
+    markdown-strip                 pushes to markdown-strip                 (up to date)
+    master                         pushes to master                         (up to date)
+
+Este comando le indica a cuál rama enviará información automáticamente cada vez que ejecutas git push, dependiendo de la rama en la que estés. También le muestra cuáles ramas remotas no tienes aún, cuáles ramas remotas tienes que han sido eliminadas del servidor, y varias ramas que serán combinadas automáticamente cuando ejecute git pull.
+
+
+Eliminar y Renombrar Remotos
+----------------
+Si quieres cambiar el nombre de la referencia de un remoto puedes ejecutar git remote rename. Por ejemplo, si quiere cambiar el nombre de pb a paul, puede hacerlo con git remote rename:
+
+$ git remote rename pb paul
+$ git remote
+origin
+paul
+
+Es importante destacar que al hacer esto también cambia el nombre de las ramas remotas. Por lo tanto, lo que antes estaba referenciado como pb/master ahora lo está como paul/master.
+
+Si por alguna razón quiere eliminar un remoto - ha cambiado de servidor o no quiere seguir utilizando un mirror o quizás un colaborador ha dejado de trabajar en el proyecto - puede usar :
+
+	git remote rm:
+
+$ git remote rm paul
+$ git remote
+origin
+
