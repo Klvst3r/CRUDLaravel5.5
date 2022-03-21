@@ -11,7 +11,7 @@ Dado que muchos de los valores de las opciones de configuración de Laravel pued
 
 El archivo .env no debe comprometerse con el control de código fuente de su aplicación, ya que cada desarrollador/servidor que use su aplicación podría requerir una configuración de entorno diferente. Además, esto sería un riesgo de seguridad en caso de que un intruso obtenga acceso a su repositorio de control de código fuente, ya que cualquier credencial confidencial quedaría expuesta.
 
-Para obtener más información sobre la .envconfiguración basada en archivos y entornos, consulte la documentación de configuración completa .
+Para obtener más información sobre la configuración del archivo .env basada en archivos y entornos, recomendamos consultar la documentación de configuración completa.
 	https://laravel.com/docs/9.x/configuration#environment-configuration
 
 Configuración de directorio

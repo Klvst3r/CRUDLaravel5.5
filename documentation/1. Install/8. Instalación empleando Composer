@@ -1,0 +1,234 @@
+8. Instalación empleando Composer
+
+Requisitos:
+
+- Un servidor Web
+- Composer
+
+
+Composer es un gestor de paquetes que puede ser utilizado con npm
+
+Instalar Composer
+-------------------
+
+Composer es una herramienta para gestionar las dependencias en PHP. Permite declarar las librerías de las cuales el proyecto depende o se necesita y se instala en el proyecto por uno mismo.
+
+Para ello va a ser necesario instalar Composer.
+
+Para instalar Composer en Windows debemos descargarlo de su página oficial y en la sección Windows Installer.
+
+URL:
+	https://getcomposer.org/download/
+
+El instalador, que requiere que PHP ya esté instalado, descargará Composer por usted y configurará su variable de entorno PATH para que pueda simplemente llamar composerdesde cualquier directorio.
+
+Descargue y ejecute Composer-Setup.exe : instalará la última versión de Composer cada vez que se ejecute.
+
+URL de descarga del ejecutable:
+	https://getcomposer.org/Composer-Setup.exe
+
+
+Instalación de línea de comandos
+--------------------
+Para instalar rápidamente Composer en el directorio actual, ejecute el siguiente script en su terminal. Para automatizar la instalación, use la guía sobre cómo instalar Composer mediante programación .
+
+----------------------terminal -----------------------------
+php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+php -r "if (hash_file('sha384', 'composer-setup.php') === '906a84df04cea2aa72f40b5f787e49f22d4c2f19492ac310e8cba5b96ac8b64115ac402c8cd292b8a03482574915d1a8') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+php composer-setup.php
+php -r "unlink('composer-setup.php');"
+----------------------terminal -----------------------------
+
+Este script de instalación simplemente verificará algunas php.iniconfiguraciones, le advertirá si están configuradas incorrectamente y luego descargará la última composer.pharen el directorio actual. Las 4 líneas anteriores serán, en orden:
+
+    Descargar el instalador al directorio actual
+    Verifique el instalador SHA-384, que también puede verificar aquí
+    Ejecute el instalador
+    Eliminar el instalador
+
+Lo más probable es que desee colocarlo composer.pharen un directorio en su RUTA, por lo que simplemente puede llamar composerdesde cualquier directorio ( instalación global ), usando, por ejemplo:
+
+	sudo mv composer.phar /usr/local/bin/compositor
+
+Para obtener más información, consulte las instrucciones sobre cómo instalar Composer globalmente .
+
+	https://getcomposer.org/doc/00-intro.md#globally
+
+
+
+ADVERTENCIA: No redistribuya el código de instalación. Cambiará con cada versión del instalador. En su lugar, enlace a esta página o compruebe cómo instalar Composer mediante programación .
+	https://getcomposer.org/doc/faqs/how-to-install-composer-programmatically.md
+
+
+Opciones de instalación notables
+-------------
+	--install-dir
+Puede instalar Composer en un directorio específico utilizando la |  --install-dir  |opción y proporcionando un directorio de destino. Ejemplo:
+
+	php composer-setup.php --install-dir=bin
+
+
+	--filename
+Puede especificar el nombre del archivo (predeterminado: composer.phar) usando la --filename opción. Ejemplo:
+php composer-setup.php --filename=composer
+
+	--versión
+Puede instalar Composer en una versión específica utilizando la --version opción y proporcionando una versión de destino. 	Ejemplo:
+	php composer-setup.php --version=1.0.0-alpha8
+
+	--help
+El instalador proporciona más opciones para entornos específicos, utilice la --helpopción para verlas todas.
+Descargar canales
+
+De forma predeterminada, el instalador composer self-update descargará solo la última versión estable. Sin embargo, puede seleccionar un canal de descarga diferente.
+
+Si desea ayudar a probar las versiones preliminares, puede usar la --previewmarca en el instalador o en la actualización automática.
+Para compilaciones de instantáneas, que se realizan a partir de la última confirmación de Composer, puede usar la 	
+	
+	--snapshotmarca.
+Para instalar mediante programación versiones principales específicas, puede usar el indicador --1o . --2Ejemplo:
+	php composer-setup.php --preview
+
+
+Descargar manual
+-----------------
+Si prefieres descargar el phar manualmente, aquí tienes las versiones disponibles:
+
+Latest Stable: https://getcomposer.org/download/latest-stable/composer.phar.sha256sum
+Latest Preview: https://getcomposer.org/download/latest-preview/composer.phar
+Latest Snapshot: https://getcomposer.org/composer.phar
+Latest 1.x: https://getcomposer.org/download/latest-1.x/composer.phar
+Latest 2.x: https://getcomposer.org/download/latest-2.x/composer.phar
+Latest 2.2.x LTS: https://getcomposer.org/download/latest-2.2.x/composer.phar
+
+La mayoria de las opciones especificas pueden ser encontradas en:
+	https://getcomposer.org/download/
+
+
+¿Cómo instalo Composer mediante programación?
+------------------
+Como se indica en la página de descarga, el script del instalador contiene una suma de verificación que cambia cuando cambia el código del instalador y, como tal, no se debe confiar en él a largo plazo.
+
+Una alternativa es usar este script que solo funciona con las utilidades de UNIX:
+
+----------------------code -----------------------------
+#!/bin/sh
+
+EXPECTED_CHECKSUM="$(php -r 'copy("https://composer.github.io/installer.sig", "php://stdout");')"
+php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+ACTUAL_CHECKSUM="$(php -r "echo hash_file('sha384', 'composer-setup.php');")"
+
+if [ "$EXPECTED_CHECKSUM" != "$ACTUAL_CHECKSUM" ]
+then
+    >&2 echo 'ERROR: Invalid installer checksum'
+    rm composer-setup.php
+    exit 1
+fi
+
+php composer-setup.php --quiet
+RESULT=$?
+rm composer-setup.php
+exit $RESULT
+
+----------------------code -----------------------------
+
+
+La secuencia de comandos saldrá con 1 en caso de falla, o 0 en caso de éxito, y estará en silencio si no ocurre ningún error.
+
+Alternativamente, si desea confiar en una copia exacta del instalador, puede obtener una versión específica del historial de GitHub. El hash de confirmación debería ser suficiente para darle unicidad y autenticidad siempre que pueda confiar en los servidores de GitHub. Por ejemplo:
+
+
+----------------------terminal -----------------------------
+wget https://raw.githubusercontent.com/composer/getcomposer.org/76a7060ccb93902cd7576b67264ad91c8a2700e2/web/installer -O - -q | php -- --quiet
+
+----------------------terminal -----------------------------
+
+
+Puede reemplazar el hash de confirmación por el último hash de confirmación en https://github.com/composer/getcomposer.org/commits/main
+
+Para un caso practica, procedemos a utilizar el instalador de Windows descargado:
+------------
+Al arrancar el instalador debemos seleccionar el tipo de instalación, utilizaremos el modo normal el cual instala Composer en una posicion fija para todos los ususarios, esto incluye un panel de control para desinstalar y es la opcion recomendada.
+
+La opcion "Developer Mode" toma el control y solo instala Composer, el desinstalador no sera incluido.
+
+
+En la segtunda ventada, se presenta la verificacion de configuracion:
+-------------
+Se necesita verificar PHP y otras configuraciones.
+
+Se puede escoger PHP de la linea de ocmandos a elegir.
+
+Nuestro instalador encontro la ruta autamatica del archivo de configuracion en :
+
+	C:\AppServ\php7\php.exe"
+
+Esta es la ruta de PHP en nuestro PATH. Continuamos.
+
+Se instala como tercera opcion y a continuacion pregunara por la configuración del Proxy.
+
+Seleccionar si es necesario un proxy.
+
+Para ello sera necesario la URL del proxy.
+
+Esto configurarara la variable de entorno:  "http_proxy". El cual será usada por Composer y otros porgramas para conectar a traves del servidor proxy.
+
+Todo listo para instalar!!
+
+La configuración esta ahora lista para descargar Composer e instalarlo en la computadora.
+
+Es momento de verificar las rutas de configuración, y hacer click sobre el boton de "install"
+
+Quedando nuestra configuracion:
+
+----------config--------------
+
+	PHP version 7.3.8
+	      C:\AppServ\php7\php.exe
+
+	Proxy: none
+
+------------------------------
+
+Corriendo el script de instalacion.
+Y genera una advertencia con el instalador.
+Para revisar las caracteristicas inferiores continar.
+
+-------- Issues -------------
+Some settings on your machine may cause stability issues with Composer.
+If you encounter issues, try to change the following:
+
+The Windows OneDrive folder is not supported on PHP versions below 7.2.23 and 7.3.10.
+Upgrade your PHP (7.3.8) to use this location with Composer.
+----------------------------
+
+Vamos a pasar por alto esto pues no vamos a trabajar con nuestro repositorio de Windows.
+
+La información final tambien es importante.
+
+Se debe abrir una nueva ventana de comandos de windows para usar composer para esta ocación, por que las variables de entorno han cambiado y las aplicaciones que corren puede que tengan complicaciones.
+
+Si esto no funciona, podemos hacer lo siguiente:
+- Cerrar todas las ventanas del Explorardor y abrir un alinea de comandos, o
+- Cerrar y reiniciar nuevamente, posteriormente abrir una nueva ventana de comandos.
+
+Como ultimo recurso pueden necesitar reiniciar la computadora.
+
+Procedemos para completar la configuración de Composer.
+
+La configuración y el instalador ha finalizado.
+Para usar, abrimos una nueva ventana de comandos y ejecutamos el comando "composer"
+
+$ composer
+   ______
+  / ____/___  ____ ___  ____  ____  ________  _____
+ / /   / __ \/ __ `__ \/ __ \/ __ \/ ___/ _ \/ ___/
+/ /___/ /_/ / / / / / / /_/ / /_/ (__  )  __/ /
+\____/\____/_/ /_/ /_/ .___/\____/____/\___/_/
+                    /_/
+Composer version 2.2.6 2022-02-04 17:00:38
+
+
+Finalizamos la instalación, se incluye documentación para futuras referencias.
+
+
