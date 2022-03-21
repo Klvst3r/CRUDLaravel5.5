@@ -1,0 +1,58 @@
+10. Migrando Proyectos
+
+Migrar proyecto desde github o bien de equipo a equipo
+
+Al hacer la clonación del proyecto en un servidor local, aun cumpliendo los requisitos de origen instalados, suele presentarse un error como se describe a continuación.
+
+Incluso suele suceder cuando se pasa de un proyecto a otro de computadora a computadora.
+
+Aun instanlado composer y laravel, cuando se intenta abrir incluso mediante php artisan serve, en la direccion del proyecto en htdocs en xampp/wamp/appserv manda unos errores como los siguientes:
+
+Windows
+--------
+Este mensaje suele versi asi si exportamos desde un equipo Windows e importamos a otro servidor
+
+Warning: require(C:\Appserv\htdocs\LaravelProyect\public/../../laravel/bootstrap/autoload.php): failed to open stream: No such file or directory in C:\Appserv\htdocs\LaravelProyect\public\index.php on line 34
+
+Fatal error: require(): Failed opening required 'C:\Appserv\htdocs\LaravelProyect\public/../../laravel/bootstrap/autoload.php' (include_path='C:\Appserv\php\PEAR') in C:\Appserv\htdocs\LaravelProyect\public\index.php on line 34
+
+si se esta manejando un proyecto desde un servidor como XAMPP/WAMP/Appserv, no es necesario utilizar la sentencia php artisan serve; puesto que se tiene un servidor local Apache corriendo y se podrá acceder al proyecto desde el navegador accesando a la ruta publica o bien con la configuración del Virtual Host configurado.
+
+
+Linux
+------
+Si estamos originando el proyecto desde un servidor en Linux el mensaje puiede cambiar de manera similar.
+
+Warning: require(/var/www/html/dev/Laravel/public/../vendor/autoload.php): Failed to open stream: No such file or directory in /var/www/html/dev/Laravel/public/index.php on line 34
+
+Fatal error: Uncaught Error: Failed opening required '/var/www/html/dev/Laravel/public/../vendor/autoload.php' (include_path='.:/usr/share/php') in /var/www/html/dev/Laravel/public/index.php:34 Stack trace: #0 {main} thrown in /var/www/html/dev/Laravel/public/index.php on line 34
+
+ahora bien.
+
+Esos mensajes de error es porque no ha instalado las librerias correspondientes,
+
+Solución:
+
+1. Ejecuta en la raiz de tu proyecto
+
+	composer install
+
+ej.
+	cd /var/www/html/dev/laravel/
+	composer install
+
+2. Seguido tendrás que copiar el archivo '.env.example' a '.env'
+
+	cp .env.example .env
+
+3. Luego ejecutar
+
+	php artisan key:generate
+
+4. Configurar la conexión a la base de datos.
+
+	php artisan migrate (si tiene seeders utiliza  --seed)
+
+5. Visualizar al proyecto desde la ruta adecuada en el navegador.
+
+	httpd://klvst3r.io
