@@ -1,0 +1,63 @@
+18. Introducción a Laravel
+
+Laravel es un framework para el desarrollo de aplicaciones web con PHP que nos permite construir aplicaciones modernas con una sintaxis elegante y expresiva. Éste fue creado por Taylor Otwell en el 2011 y para el presente proyecto se empleara la versión 5.5, a la fecha va por la versión 9. Para empezar a trabajar con Laravel se necesita preparar el entorno de desarrollo, IDE o editor de texto y otras herramientas como Composer que ayudarán a instalar y desarrollar aplicaciones web con este framework. Comenzaremos dando una breve introducción al framework y aprenderemos sobre el patrón de diseño Front Controller, el cual es usado por Laravel para procesar todas las peticiones que se hacen a la aplicación.
+
+Para instalar un nuevo proyecto de Laravel puede hacerlo de 2 maneras: con el comando create-project de Composer o con el instalador laravel new como se explicó anteriormente.  Pero hay algo más que se debe saber. El instalador de Laravel solo nos permite instalar la versión actual del framework (opción por defecto) y la versión en desarrollo con el comando laravel new mi-proyecto --dev
+
+Así que si se quiere instalar Laravel en una versión que no sea la última versión, entonces debe usar el comando create-project que nos da la opción de poder especificar la versión que queremos usar. De esta manera:
+
+composer create-project laravel/laravel nombre-proyecto "5.5.*"
+
+    Con esto estaríamos instalando un proyecto de Laravel 5.5
+
+El uso de un sistema de control de versiones como Git es primordial cuando se quiere desarrollar de manera profesional. Para realizar este proyecto Git es opcional, pues solo se usará para compartir el código. Pero si  se recomienda trabajar y actualizar el proyecto y subir las actualizaciones a nuestro repositorio en GitHub.    
+
+Por otro lado, algo clave para desarrollar eficientemente es tener un editor de texto o IDE bien configurado que nos facilite el trabajo de escribir el código de nuestra aplicación. Hay dos grandes grupos: IDE (Entorno de Desarrollo Integrado) y editores de texto. La diferencia principal es que los primeros vienen por defecto con múltiples herramientas como: autocompletado inteligente, resaltado de sintaxis, sistema de control de versiones, debugger, entre otras herramientas configuradas y listas para empezar a trabajar.  En cambio, los editores de texto son más ligeros y no vienen con todas las herramientas u opciones listas por defecto, sino que se debe instalarlas y configurarlas por medio de plugins y extensiones.
+
+Entre los IDEs para PHP tenemos a: PHPStorm, Zend Studio, Eclipse, NetBeans, Aptana Studio, etc. Entre los editores de texto están: Sublime Text, Atom, Visual Studio Code, NotePad++, etc.  ¡Elija uno con el cual se sienta cómodo y comience a desarrollar!
+
+El patrón de diseño Front Controller consiste en que un solo componente de la aplicación es el responsable de manejar de todas las peticiones HTTP que ésta recibe. Es decir, hay un solo punto de acceso para todas las peticiones.
+
+En Laravel esta función la cumple el archivo index.php que se encuentra en el directorio public. junto con el archivo .htaccess. Pues que -cuando usas el servidor web Apache- este último archivo se encarga de redirigir todas las peticiones a index.php
+
+El directorio public contiene además, las imágenes, archivos CSS y de Javascript que será públicos para los usuarios y visitantes de la aplicación, el resto de archivos donde se encuentra la lógica de la aplicación es inaccesible para ellos, es decir, son privados.
+
+------------
+
+Comenzaremos instalando nuestro proyecto en concreto llamado CRUDLaravel con la version del Framoweork 5.5
+	composer create-project laravel/laravel CRUDLaravel5.5 "5.5.*"
+
+empezamos con composer y la instruccion >>create-project<< por que deseamos crear un nuevo proyecto >>laravel/laravel<< por que es respecto al framework con el que vamos a trabajar, y seguido del nombre del proyecto, en nuestro caso sera >>CRUDLaravel5.5<<.Finalemnte agregamos la versión de Laravel "5.5.*" que es la version que queremos instalar. Para este momento la versión en desarrollo ya esta en la version 10.
+
+Es importante instalar la versión 5.5 LTS ejecutando el comando mencionado.
+
+Se descargan e instalan los componentes necesarios, finalizada la instalación limpiamos la consola y vamos a la carpeta del proyecto, para ello y como mencionamos en el documento "4. Virtual host configration" Se da la pauta para la configuración de nuestro Host Virtual con apache y poder correr nuestro proyecto de forma profesional.
+
+Es importante el seguimiento y actualización de estados con Git, por ello iniciamos un nuevo repositorio dentro de la carpeta del proyecto el cual es totalmente opcional, pero como nuestra intencion es sincronizar el proyecto desde los diversos equipos de ocmputo o bien establecer una linea de trabajo cn equipo, es por ello que se trabajara con un sistema de control de versiones.Esto nos dara la oportunidad de volver a descaragr el proyecto a futuro, y recordar la forma de trabajar con este Framework, revisando el codigo.
+
+	> git init
+
+La estructura de nuestro proyecto que lo conformas es algo como lo que sigue: 
+ > ls
+ README.md  artisan*    composer.json  config/    documentation/  phpunit.xml  resources/  server.php  tests/   webpack.mix.js
+ app/       bootstrap/  composer.lock  database/  package.json    public/      routes/     storage/    vendor/
+
+
+Todos ellos se agregan al nuevo repositorio 
+	> git add .
+
+Se raliza el primer commit
+	> git commit -m "First commit"
+
+Comenzamos a desarrollar con Laravel, en mi caso yo voy a optar a trabajr con sublime Text pero puede elejir la herramienta de trabajo que mejor le acomode.
+
+Si anteriormente no habiamos trabajado con un framework, estamos acostumbrados a realizar un desarrollo de pagina por pagina, por ejemplo un home.php, login.php, contacto.php equipo.php, portafolio.php, acercade.php, asi sucesivamente; esto trae ciertos problemas como puede ser el codigo duplicado, codigo espaguetti, entre otras complicaciones.
+
+Es por ello que Frameworks como Laravel, Synfony, entre muchos otros utilizan un patron de diseño llamado Frontend-Controller y este patron consiste en que tiene un solo punto de entrada a nuestra aplicación en el caso de Laravel es el archivo >>index.php<< todas las peticiones que realicemos al Frameworks que realicemos, llegaran a este archivo index.php.
+
+Vamos a empezar empleando la funcion de php, imprimiendo la URL que solicita el usuario de esta aplicación
+	die($_server[''])
+
+--------------
+https://styde.net/introduccion-a-laravel/
+min 2.53
