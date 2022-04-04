@@ -1,0 +1,206 @@
+17. Instalación de Composer y Laravel
+
+Se instalara el manejador de dependencias de PHP composer y con ayuda de éste se realizara la instalación del Framework Laravel. si iniciara en el entorno de trabajo, y se comenzara con las primeras rutas y se probaran en el navegador, y tambien de forma autimatizada con un pequeño ejemplo de PHPUnit.
+
+Preparación del entorno de desarrollo
+-------------------------------------
+Para desarrollar con Laravel 5.5 puedes hacerlo desde Windows, Linux o MacOs siempre que tengas un servidor web con PHP 7 o superior.
+
+A esto nosotros le llamamos entorno de desarrollo y existe una gran variedad de ellos, cada uno con un nivel de complejidad distinto al otro, desde el más básico instalando manualmente Apache o Nginx, PHP, MySQL, etc., así como instalar herramientas como XAMPP, WAMP, MAMP, etc., hasta otras más complicadas como Laravel Homestead
+
+Sin embargo, recomendamos las siguientes opciones para quienes estén iniciando, por su facilidad de instalación y uso:
+
+    En Windows puedes usar: Laragon, un entorno de desarrollo para Laravel en Windows
+    En Linux: Instalación de Laravel Valet en Linux
+    En MacOs: Laravel Valet
+
+Por otro lado, Laravel utiliza Composer para manejar sus dependencias. ¿Qué significa esto? Pues el framework Laravel hace uso de una colección de paquetes o componentes propios y de terceros para agregarle funcionalidades a las aplicaciones. Por tanto, necesitamos un gestor de dependencias que se encargue automáticamente de crear proyectos, instalar, actualizar o eliminar componentes y a su vez las dependencias de éstos. Esta herramienta es Composer, el manejador de dependencias de PHP.
+
+Instalarlo depende del sistema operativo que uses si es MacOs o Linux puedes seguir los pasos descritos en el video: descargar el archivo composer.phar con las instrucciones del sitio oficial y luego mover dicho archivo para que esté de forma global y así usar la herramienta desde cualquier directorio, siguiendo las instrucciones oficiales de Composer.
+
+Para Windows puedes descargar el instalador que ofrece Composer en su sitio web que se encargará de instalarlo para que lo puedas usar en cualquier parte del sistema. Si has decidido trabajar con Laragon no necesitas realizar esta instalación, puesto que viene incluido por defecto en este entorno de desarrollo.
+
+Puedes confirmar si tienes bien instalado Composer ejecutando en la consola desde cualquier directorio: composer y en caso de estar instalado, te mostrará un listado de todos los comandos disponibles.
+
+Para desarrollar aplicaciones de PHP con Laravel necesitamos primero instalar y configurar un conjunto de herramientas que nos facilitan el trabajo de creación de nuevas aplicaciones. Por un lado, requerimos tener un entorno de desarrollo en nuestro equipo que cumpla con los requerimientos del framework y por otro, es recomendable configurar y conocer las formas de acceder a una aplicación creada en dicho entorno. En esta primera lección te guiaremos para que se prepare el equipo y así empiezar a desarrollar con Laravel.
+
+Los la version con este proeyecto es con la version 5.5 en adelante. Lo que se debe considerar primero es la documentación de Larvel, que para esta version esta accesible desde:
+
+	https://laravel.com/docs/5.5
+
+En esta pagina podremos encontrar los requisitos del servidor que a saber son:
+
+ - PHP>= 7.0
+ - OpenSSL PHP Extensión
+ - PDO PHP Extension
+ - Mbstring PHP Extension
+ - Tokenizer PHP Extension
+ - XML PHP Extension
+
+ Para compro la version instalada de php lo hacemos con
+ 	> php -v 
+ 	PHP 7.3.10 (cli) (built: Sep 24 2019 11:59:22) ( ZTS MSVC15 (Visual C++ 2017) x64 )
+	Copyright (c) 1997-2018 The PHP Group
+	Zend Engine v3.3.10, Copyright (c) 1998-2018 Zend Technologies
+
+
+Laravel utiliza Composer, Composer es el manejador de dependencias para PHP, que podemos inspeccionar en la documentación. Composer no es exclusivo de PHP, tambien es empleado con NOde.js o JavaScript con NPM, Ruby y Python tienen diferentes manejadores de dependencias y esto es importante ya que no estamos en la epoca en la que acudiamos a Google y entramos a una pagina desconocida, buscando un archivo, descaraga, se descomprimia en la computadora y se sopiaba y pegaba al proyecto, sin saber si funcionaria para el proyecto.
+
+Ahora no vamos a hacer esto por que Laravel es un Framework profesional, ya que todas las dependencias seran subsanadas mediante este manejador de dependencias.
+
+Composer no solo permitira instalar compoenentes y paquetes, sino tambien crar nuevos proyectos y realizar actualizaciones de seguridad o actualizaciones entre versiones de Laravel, todo de una forma muy sencilla.
+
+Para instalar composer desde el sitio:
+	
+	https://getcomposer.org/download/
+
+Podemos correr en la terminal:
+	php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+	
+	php -r "if (hash_file('sha384', 'composer-setup.php') === '906a84df04cea2aa72f40b5f787e49f22d4c2f19492ac310e8cba5b96ac8b64115ac402c8cd292b8a03482574915d1a8') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+	
+	php composer-setup.php
+	
+	php -r "unlink('composer-setup.php');"
+
+En nuestro caso la instalación que hicimos fue mediante la instalación con el autoejecutable.
+
+Al termino de la instalación se desplegaran los comandos que pueden utilizarse mediante composer, aunque son varios algunos se utilizaran mas que otros.
+
+en la seccione "Getting Started" donde se explica que se puede instalar Composer de manera global. mediante la siguiente acción:
+
+	> mv composer.phar /usr/local/bin/composer
+Moviendo el archivo a la ruta especificada sin la extencion.
+
+Eso es todo.
+
+Instalación de Laravel
+----------------------
+Una vez listo el entorno de desarrollo, usaremos Composer para instalar Laravel de esta manera:
+
+composer create-project --prefer-dist laravel/laravel mi-proyecto
+
+Lo que significa que estamos creando un nuevo proyecto llamado mi-proyecto con el comando create-project de Composer a partir del paquete laravel/laravel, usando la opción --prefer-dist para que Composer descargue los archivos del repositorio de distribución.
+
+Hay una alternativa para instalar Laravel y es con su instalador, que también es un paquete, por tanto, también usaremos Composer para instalarlo de forma global con el comando:
+
+composer global require "laravel/installer"
+
+Luego, nos tenemos que asegurar que la variable de entorno PATH del sistema operativo tenga incluido el directorio donde se alojan los paquetes instalados globalmente y así se puedan ejecutar sin ningún problema, para ello debemos agregar su ruta:
+
+    Para MacOs y Linux la variable PATH la podemos definir en: ~/.bashrc o ~/.bash_profile donde la ruta a añadir al final de lo que tiene asignado la variable es: :$HOME/.composer/vendor/bin
+    Para Windows debes modificar la variable de entorno PATH para agregar la ruta ;C:\Users\tu-usuario\AppData\Roaming\Composer\vendor\bin
+
+
+
+La ventaja que nos da composer de instalarlo de manera global es que ahora podemos ejecutar los comandos desde cualquier directorio.
+
+Las instrucciones para Mac son muy similares para Linux que tambien se explican en la misma documentación oficial.
+
+Ahora podemos crar nuestro nuevo proyecto de Laravel, definiendo el comando, 
+
+	composer crate-project --profer-dist laravel/laravel mi-proyecto
+
+Como para nuestro caso especifico, ya tenemos actualizado Laravel debemos especificar la versión especifica:
+
+Veriones de Laravel 5 en Windows
+------------
+	composer create-project laravel/laravel mi-proyecto "5.5.*" 
+
+Con esto no nos tenemos que preocupar de saber si descargamos los componentes correctos, descomprimir y de instalar o configurar, de todo ese proceso se encarga Composer.
+
+composer se encarga de la descarga y de la configuración inicial del proyecto, con esto ya tenemos un nuevo proyecto de Laravel. Exploramos.
+
+Puedo ejecutar tambien:
+	> php artisan server
+	Laravel development server started: <http://127.0.0.1:8000>
+
+Para inicializar el servidor de desarrollo y ya podemos abrir el nuevo proyecto en el navegador.
+
+Con esto se ha finalizado la instalación.
+
+Existe otra forma de instalar Laravel
+
+De vuelta a la página de Laravel es instalar el proyecto a travez de su instalador y su instalador es un componente y este componente lo descargamos a traves de  composer 
+	> composer global require "laravel/installer"
+
+ Composer se encargara de todas las dependencias y adermas se instalara de forma global 	
+
+ nos vamos a la terminal y si hay un proyecto de ejemplo que quieramos eliminar lo hacemos con
+ 	> rm -rF mi-proyecto
+
+Ejecutamos:
+		> composer global require "laravel/installer"
+
+Para tener este componente de forma global, terminando la descarga debemos asegurarnos de que la ruta 
+	$HOME/.composer/vendor/bin
+
+Esta dentro del path de forma que el comando Laravel pueda ser encontrado y ejecutado en cualquier lugar de nuestro sistema 
+
+Por ello cpiamos la cadena:
+		$HOME/.composer/vendor/bin
+
+Regresamos al a consola y lo agregamos al perfil de	nuestra consola que puede estar por ejemplo en:
+	> touch ~/.bash_profile
+
+Es un archivo oculto dentro del directorio personal.
+	> nando ~/.bash_profile
+
+Dentro del archivo escribimos:
+	export PATH=$HOME/.composer/vendor/bin
+
+Pero tambien nos insteresa tener y conservar lo que ya estaba en path asi que se logra de la siguiente manera:
+		export PATH=$HOME/.composer/vendor/bin:$PATH
+
+Recordamos ademas que movimos composer a un directorio y queremos que ese directorio tambien este dentro del path para poder ejecutar composer en cualquier lugar del proyecto, agregamos dicho directorio de nuestro $PATH.
+
+Guardamos
+	CTRL-X
+y posterior a ello reiniciamos la consola para poder ejecutar el comando "laravel"			
+
+De manera particular es que se esta utilizando algo que se llama omycshell y el archivo de configuración esta dentro de otro archivo:
+	nano ~.zshrc
+
+Notamos que la primera linea tiene algo como:
+
+	export PATH=$HOME/buin:/usr/local/bin:~/.composer/vendor/bin:$PATH
+
+que son las configuraciones para agregar al PATH.
+
+Debemos asegurarnos esta ruta al PATH si se esta trabajando con Windows.
+
+Heco esto ya sera posible ejecutar el comando "laravel"
+
+Si no es asi, reiniciamos la consola:
+	source ~./zshrc
+
+Ya se al mediante bash o zshrc
+
+Hecho esto ahora si sera posible ejecutar el comando de laravel y para crear un nuevo proyecto ejecutamos:
+	> laravel new mi-projecto2
+
+Recibiremos los mensajes de la instalacion y ya estara en algunos segundo, ahora podremos ir a mi-projecto2
+
+Con artisan levantamos el servidor
+	> php artisan serve
+
+Accesamos ala ruta y ya estoy dentro de un nuevo proyecto de laravel, todo esto es lo inicial para comenzar  aprogramar.
+
+
+Bien, de esta manera ya tenemos disponible el instalador de Laravel, por tanto, podemos ejecutar desde cualquier directorio:
+
+laravel new nombre-proyecto
+
+y se instalará tal y como se hizo con el comando composer create-project.
+Abrir la aplicación creada
+
+Para ver y navegar por la aplicación recién creada podemos ejecutar el comando:
+
+php artisan serve
+
+Este comando ejecuta la aplicación en un servidor de desarrollo incluido por defecto en Laravel.  Por tanto debemos hacer clic en la URL que nos muestra para explorar la aplicación en el navegador.  Para detener la ejecución presiona Ctrl + C	
+
+Si se está usando el entorno de desarrollo Laravel Valet (tanto para Linux como para MacOs) o Laragon, estás herramientas crean un virtualhost por defecto por cada proyecto según el nombre de la carpeta.  Así para nuestro proyecto creado podemos visitar en el navegador http://mi-proyecto.dev y se podrá ver la aplicación funcionando.
+
+También, si se está usando Apache puede crear sus propios virtualhost.
+
