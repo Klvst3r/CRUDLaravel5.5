@@ -95,3 +95,87 @@ define('LARAVEL_START', microtime(true));
 |--------------------------------------------------------------------------
 | Register The Auto Loader
 |--------------------------		
+
+Es importante asegurar de habilitar "mod_rewrite" de Apache o .htaccess
+
+donde todas las solicitudes que no sean direcctorios sean redirigidas a index.php
+
+.htaccess
+
+RewriteRule ^ index.php [L]
+
+Si utilizamos otro servidor como NGNx hay que configurar para redirigir index.php y Frameworks como Laravel tambien introduce un concepto que puede ser nuevo para uno, que es el directorio publico de la aplicación; carpetas y archvos que estan dentro de este directorio seran publicos, como CSS o Js de la aplicación o el archivo .htaccess o favicon.ico. Todos estos son archivos publicos de la aplicación. Mientras que archivos como los modelos de Laravel config, o los archivos del Framework como tal que estan dentro del directorio vendor, todos estos archivos vana a ser privados puesto que estan fuera de la carpeta public y no va a haber accedo a estos archivos y esto es mpo medidas de seguridad.
+
+Por ello se recomienda que la configuración de Virtual Public apunte siempre al archivo publico
+
+	/directorio/del/proyecto/nombre-proyecto/public/
+
+Recapitulando:
+
+- Todas las peticiones del usuario se van a procesar del archivo index.php
+
+Aca es donde Laravel va a iniciar la aplicación.
+
+Generalmente no sera necesario tocar el archivo index.php. ´pero en algun momento se va a preguntar que hacer con la petición del usuario y una de las formas es indicarle a Laravel que hacer con cada petición mediante el archivo de >>routes.php<< Dentro de /routes 
+
+Y el archivo se llama 
+	web.php
+
+Aqui es donde se van a manejar las rutas de la aplicación al menos donde se creen para una API, que en este caso se manejaran mediante el archivo
+	api.php
+
+Por ello vamos a comenzar con 
+	/routes/web.php
+
+Esto ha sido fuente de inspiraciíon incluso para otros Frameworks, es la simplicidad con la que se escibe el codigo.
+
+Ej.
+
+	Route::get('/', function () {
+    	return view('welcome');
+	});
+
+Aqui se puede ver que se esta declarando una ruta del tipo get para la URL del home y que esta a su vez retorna una vista que en este caso se llama welcome.
+
+Esta vista welcome esta dentro del
+	/resources/views/welcome.blade.php  
+
+Blade es el sistema de plantillas de Laravel que se trara mas adelante  	
+
+abriendo el archivo 
+	welcome.blade.php
+
+Vemos que en el titulo podemos cambiar el mismo
+	
+	...
+	<title>Laravel with Klvst3r</title>
+	...
+	...
+	 <div class="content">
+                <div class="title m-b-md">
+                    Laravel with Klvst3r
+                </div>
+          </div>	
+    ...
+
+Al actualizar simplemente el navegador notaremos los cambios, aunque podemos crear nuestra propia plantilla de vista
+
+<!doctype html>
+<html lang="es">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Klvst3r's Personal Template</title>
+    <style>
+    </style>
+    <body>
+    	<h1>Klvst3r</h1>
+    </body>
+</html>
+            
+Pero si intentamos ingrasar a otra url como por ejemplo /contacto
+
+Tendremos un error 404, puesto que esta URL aun no existe. Podemos personalizar tambien la vista de error 404.
+
+            
