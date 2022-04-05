@@ -56,8 +56,42 @@ Si anteriormente no habiamos trabajado con un framework, estamos acostumbrados a
 Es por ello que Frameworks como Laravel, Synfony, entre muchos otros utilizan un patron de diseño llamado Frontend-Controller y este patron consiste en que tiene un solo punto de entrada a nuestra aplicación en el caso de Laravel es el archivo >>index.php<< todas las peticiones que realicemos al Frameworks que realicemos, llegaran a este archivo index.php.
 
 Vamos a empezar empleando la funcion de php, imprimiendo la URL que solicita el usuario de esta aplicación
-	die($_server[''])
+	die($_SERVER['REQUEST_URI']);
 
---------------
-https://styde.net/introduccion-a-laravel/
-min 2.53
+Dentro del navegador en la ruta del proyecto vamos a utiliar Laravel Valet que permite crear un Virtual Host de manera automatica, esta disponible para MAc y Linux, Windows.
+
+Tambien podemos utilizar el comando 
+	php artisan serve 
+
+Dentro del directorio del proyecto.
+
+Hemos perdido la pagina de Bienvenido
+
+Enla URL podemos ahora escribie
+	contacto
+	portafolio
+	usuarios
+
+O incluso 
+	usuario/klvst3r
+
+Todo dentro de index.php sin borrar contenido alguno
+
+
+<?php
+
+die($_SERVER['REQUEST_URI']);
+
+/**
+ * Laravel - A PHP Framework For Web Artisans
+ *
+ * @package  Laravel
+ * @author   Taylor Otwell <taylor@laravel.com>
+ */
+
+define('LARAVEL_START', microtime(true));
+
+/*
+|--------------------------------------------------------------------------
+| Register The Auto Loader
+|--------------------------		
