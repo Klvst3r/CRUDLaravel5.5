@@ -167,3 +167,85 @@ Ahora se puede probar cada ruta en el navegador y podrá ver como se devuelve el
 
 Practica:
 ======
+
+Vamos a ver como general las primeras rutas con Laravel, para ello vamos a la carpeta:
+	/routes/web.php
+
+Definimos ahi nustras primeras rutas, que incluso ya se tienen una primera ruta inicial:
+---
+	Route::get('/', function () {
+    	return view('welcome');
+	});
+---
+
+Laravel da el control total de como vamos a definir las rutas de la aplicación
+
+Definimos la ruta para el home:
+---
+	Route::get('/', function () {
+    	return 'Home';
+	});
+---
+
+En lughar de una vista retornaremos una cadena de texto, con el texto anterior convertimos esta cadena de texto en una respuesta http, la cual podremos ver en el navegador.
+
+Podemos definir tantas rutas como hagan falta, vamos a suponer que estamos trabajando en un modulo de usuarios y por lo tanto queremos tener una ruta para visualizar los datos en pantalla, asi que definimos una nueva ruta que se llamara usuarios, y como segundo argumento tenemos una funcion anonima las cual va a retornar una cadena 
+
+---
+	Route::get('/', function(){
+	    return 'Home';
+	});
+
+	Route::get('/usuarios', function(){
+	    return 'Usuarios';
+	});
+---
+En Browser:
+	/
+
+Esto retornara la cadena Usuarios, por ahora se trabajara con cadena de texto y no con vistas.
+
+La ide es concentrase en como crear rutas con Laravel, para despues tomar el tema de vistas, controladores, y mucho mas.
+
+si queremos crear una ruta para mostrar el detalle de un usuario:
+
+Declaramos la ruta Usuarios y luego detalles.
+
+Esto inidica que usuario quiero editar. Esto en proyectos de PHP se puede logar utilizando la variable global $_GET para tener el Id del usuario, 
+
+Route::get('/', function(){
+    return 'Home';
+});
+
+Route::get('/', function(){
+    return 'Usuarios';
+});
+
+Route::get('/usuariosdetalles', function(){
+    return 'Mostrando detalles del usuario: '.$_GET['id'];
+});
+
+
+Esto lo podemos lograrlo de la siguiente manera:
+---
+	Route::get('/', function(){
+	    return 'Home';
+	});
+
+	Route::get('/', function(){
+	    return 'Usuarios';
+	});
+
+	Route::get('/usuarios/detalles', function(){
+	    return 'Mostrando detalles del usuario: '.$_GET['id'];
+	});
+---
+->Browser: /usuarios/detalles?id=5
+
+Video. 3'03
+
+
+----
+https://www.crowdcast.io/e/dd4w-2022/4?utm_source=crowdcast&utm_medium=email&utm_campaign=followers
+
+https://events.atlassian.com/team22/dashboard?i=EGoL4ZVxWr84R91owiyKkZXi-dhvEB7C

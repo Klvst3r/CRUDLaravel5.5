@@ -11,6 +11,19 @@
 |
 */
 
-Route::get('/', function () {
+/*Route::get('/', function () {
     return view('welcome');
+});
+*/
+
+Route::get('/', function(){
+    return 'Home';
+});
+
+Route::get('/usuarios', function(){
+    return 'Usuarios';
+});
+
+Route::get('/usuarios/detalles', function(){
+    return 'Mostrando detalles del usuario: '.$_GET['id'];
 });
