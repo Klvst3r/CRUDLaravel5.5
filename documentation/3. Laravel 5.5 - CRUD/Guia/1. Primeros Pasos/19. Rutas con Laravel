@@ -371,3 +371,31 @@ si ahora en el navegador podremos verificar el funcioanmiento de las rutas antes
 
 Que sucede si el usuario no quiere tener un nombre clave.
 
+Podemos declarar el que parametro "nickname sea opcional de la siguiente manera:
+---
+	Route::get('/saludo/{name}/{nickname?}', function($name, $nickname = null){
+		if ($nickname){}
+   			return "Bienvenido {$name}, tu nombre clave es: {$nickname}";
+   		}else{
+   			return "Bienvenido {$name}, No hay nombre clave ";
+   		}
+	});
+---
+Con el signo de interrogacion, y en el valor de la funcion tendra un valor por defecto puede ser null.
+
+Ahora la respuesta puede tener o no nombre clave si pasamos o no un segundo parametro.
+
+
+Podemos preguntar si tenemos un nickname, o no.
+En el Bronser
+Op 1:
+	http://127.0.0.1:8000/saludo/Raul/Klvst3r
+Op 2:
+	http://127.0.0.1:8000/saludo/Raul
+
+En ambos casos funcionara ya que tenemos un punto de verificación.
+
+Ahora que estamos probando las nuevas funciones hemos estado recurriendo al navegador una y otra vez, es to puede ser un poco tedioso.
+
+Si el llenado de formularios puede ser tedioso, por ello en la siguiente seccion veremos como comenzar a utilizar El Framework de Laravel y herramientas de programacion para que realicen estas verificaciones de manera automatica por nosotros.
+

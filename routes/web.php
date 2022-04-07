@@ -38,6 +38,14 @@ Route::get('/usuarios/{id}', function($id){
    return "Mostrando detalles del usuario: {$id}";
     });   
 
-Route::get('/saludo/{name}/{nickname}', function($name, $nickname){
+/*Route::get('/saludo/{name}/{nickname}', function($name, $nickname){
     return "Bienvenido {$name}, tu nombre clave es: {$nickname}";
-});
+});*/
+
+Route::get('/saludo/{name}/{nickname?}', function($name, $nickname = null){
+        if ($nickname){
+            return "Bienvenido {$name}, tu nombre clave es: {$nickname}";
+        }else{
+            return "Bienvenido {$name}, No hay nombre clave ";
+        }
+    });
