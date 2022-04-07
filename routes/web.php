@@ -30,10 +30,14 @@ Route::get('/usuarios/detalles', function(){
 });
  */
 
-Route::get('/usuarios/{id}', function($id){
-        return "Mostrando detalles del usuario: {$id}";
-    })->where('id','[0-9]+');   
-
 Route::get('/usuarios/nuevo', function(){
-    return 'Crear unuevo usuario';
+   return 'Crear unuevo usuario';
+});
+
+Route::get('/usuarios/{id}', function($id){
+   return "Mostrando detalles del usuario: {$id}";
+    });   
+
+Route::get('/saludo/{name}/{nickname}', function($name, $nickname){
+    return "Bienvenido {$name}, tu nombre clave es: {$nickname}";
 });

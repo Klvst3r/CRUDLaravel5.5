@@ -313,4 +313,61 @@ Si conocemos sobre expresiones regulares, sabemos que tambien podremos definirla
 Metodo 2:
 si regresamos ahora a usuatrios/100 no regresa a detalles del usuario.
 
-Podemos cambiar la expresion regular 
+Podemos cambiar la expresion regular  
+---
+	Route::get('/usuarios/{id}', function($id){
+        return "Mostrando detalles del usuario: {$id}";
+    })->where('id','\w+');   
+---
+Cambiamos la expresion regular para aceptar letras y numeros y 
+en el browser:
+	http://127.0.0.1:8000/usuarios/nuevo
+
+Ahora esta aceptando caracteres que son letras o numeros.
+
+Una posible solucion es cambiar el orden de las rutas, quedando de la siguiente manera:
+---
+	Route::get('/usuarios/nuevo', function(){
+	    return 'Crear unuevo usuario';
+	});
+	Route::get('/usuarios/{id}', function($id){
+	        return "Mostrando detalles del usuario: {$id}";
+	    })->where('id','\w+');   
+---
+De esta manera cuando Laravel Busque la URL Usuarios nuevo va a coincidir con la ruta va a coincidir con la primera y la segunda va a ser ignorada.
+
+Laravel permite pasar mas de un parametro en nuestras rutas.
+Por ejemplo.
+
+---
+
+Route::get('/usuarios/nuevo', function(){
+   return 'Crear unuevo usuario';
+});
+
+Route::get('/usuarios/{id}', function($id){
+   return "Mostrando detalles del usuario: {$id}";
+    });   
+
+Route::get('/saludo/{name}/{nickname}', function($name, $nickname){
+    return "Bienvenido {$name}, tu nombre clave es: {$nickname}";
+});
+---	  	    
+
+Tendremos ahora un parametro {name} y un segundo parametro {nickname}. En la funcion anonima esta vez va a tener dos parametros, y retomaremos que recibira dos parametros 
+En el navegador
+Op1
+	http://127.0.0.1:8000/usuarios/100
+
+	Mostrando detalles de usuario: 100
+Op2
+	http://127.0.0.1:8000/usuarios/nuevo
+
+Op3:
+	http://127.0.0.1:8000/saludo/Raúl/Klvst3r	
+	Bienvenido Raul, tu nombre clave es: Klvst3r
+
+si ahora en el navegador podremos verificar el funcioanmiento de las rutas antes descritas, ahora tenemos una nueva ruta para el saludo.
+
+Que sucede si el usuario no quiere tener un nombre clave.
+
