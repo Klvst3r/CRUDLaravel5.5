@@ -24,6 +24,16 @@ Route::get('/usuarios', function(){
     return 'Usuarios';
 });
 
+/*
 Route::get('/usuarios/detalles', function(){
     return 'Mostrando detalles del usuario: '.$_GET['id'];
+});
+ */
+
+Route::get('/usuarios/{id}', function($id){
+    return "Mostrando detalles del usuario: {$id}";
+});
+
+Route::get('/usuarios/nuevo', function(){
+    return 'Crear unuevo usuario';
 });

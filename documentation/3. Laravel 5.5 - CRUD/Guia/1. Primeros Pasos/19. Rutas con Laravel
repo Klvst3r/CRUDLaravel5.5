@@ -221,10 +221,18 @@ Route::get('/', function(){
     return 'Usuarios';
 });
 
-Route::get('/usuariosdetalles', function(){
+Route::get('/usuarios/detalles', function(){
     return 'Mostrando detalles del usuario: '.$_GET['id'];
 });
 
+Si en el naveghador yo voy a la URL
+	http://127.0.0.1:8000/usuarios
+
+Devolvera la cadena de Texto usuarios
+
+Por ahora que se trabaja con cadenas de texto con vistas para poder concentrarse a las rutas con Laravel y despues de ello poder manejar vistas, controladores y algo mas.
+
+Si deseamos crear una ruta para mostrar el detalle de un usuaior.con este escenario por ajemplo tenemos la ruta usuarios ty luego detalles esta ruta no me indica que usuario quiero editar, Si recordamos cono se trabajaba anteriormente se hace usutiliando la variable global $GET, para por ejemplo obtener el id del usuario. 
 
 Esto lo podemos lograrlo de la siguiente manera:
 ---
@@ -240,12 +248,38 @@ Esto lo podemos lograrlo de la siguiente manera:
 	    return 'Mostrando detalles del usuario: '.$_GET['id'];
 	});
 ---
-->Browser: /usuarios/detalles?id=5
+Puedo tener el mismo resultado con las comillas doble, y tenemos una url mas limplia dcomo la siguiente
+Browser:
+	http://127.0.0.1:8000/usuarios/5
+	
+Con php esto es muy dificil de lograr sin embargo con Frameworks como Laravel esto es muy simple.
 
-Video. 3'03
+Simplemente de nuevo en nuestro archivo de rutas vamos a colocar un parametro dinamico dentro de nuestras rutas empleando llaves, y dentro de las llaves colocamos el nombre del parametro {id}, este parametro se recibe en la funcion anonima. La infiormación se obtendra de la siguiente manera.
 
+Para imprimir el vaor sin concatenar lo solemso hacer entre llaves, para mejorar la legibilidad de la cadena de texto.
 
 ----
-https://www.crowdcast.io/e/dd4w-2022/4?utm_source=crowdcast&utm_medium=email&utm_campaign=followers
+	Route::get('/usuarios/{id}', function($id){
+    	return "Mostrando detalles del usuario: {$id}";
+	});
+---
+En el navegador:
+	http://127.0.0.1:8000/usuarios/5
+	
+Logrando tener URL mas limpias.
 
-https://events.atlassian.com/team22/dashboard?i=EGoL4ZVxWr84R91owiyKkZXi-dhvEB7C
+Ahora que sucede si quiero definir una ruta para por ejemplo crar usuarios.Pasamos nuevamente una función nonima. No hay parametros
+
+---
+
+Route::get('/usuarios/nuevo', function(){
+	return 'Crear unuevo usuario';
+});
+---
+En el navegador:
+	http://127.0.0.1:8000/usuarios/5
+
+Me muestra la salida:
+	Mostrando detalles del usuario: nuevo
+
+Esto sucede por que Laravel compara las rutas en orden y la primera ruta que coincida es la ruta que se va a utilizar y las demas se van a ignorar, en este acaso es usuarios/nuevo	
