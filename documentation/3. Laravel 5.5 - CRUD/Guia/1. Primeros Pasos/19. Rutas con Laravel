@@ -282,4 +282,35 @@ En el navegador:
 Me muestra la salida:
 	Mostrando detalles del usuario: nuevo
 
-Esto sucede por que Laravel compara las rutas en orden y la primera ruta que coincida es la ruta que se va a utilizar y las demas se van a ignorar, en este acaso es usuarios/nuevo	
+Esto sucede por que Laravel compara las rutas en orden y la primera ruta que coincida es la ruta que se va a utilizar y las demas se van a ignorar, en este acaso es usuarios/nuevo.
+
+Entonces para poder solucionar esto existen dos formas:
+
+Metodo 1:
+---
+	Route::get('/usuarios/{id}', function($id){
+    	return "Mostrando detalles del usuario: {$id}";
+	})->where('id','[0-9]+');  	
+
+---
+Indicando a Laravel que este Id puede ser alfanumerico, lo definimos con el metodo "where" que se encadena a la inforamción de la ruta. La declaración devuelve un objeto y por lo tanto podremos llamar al metodo "where" pasando al metodo una expresión regular que coincida con dicho parametro que solo validara numeros y que podemos tener mas de un numero.
+
+Entonces
+En el navegador:
+	http://127.0.0.1:8000/usuarios/5	
+
+Pero si 
+		http://127.0.0.1:8000/usuarios/nuevo	
+
+Salida:
+	Crear unuevo usuario		
+
+Por fin nuestra ruta esta funcionando y esta funcionando por que ya no coincide con los valores numericos, por lo tanto usuario/nuevo ya coincide con la ultima funcion que definimos.
+
+Ahora
+Si conocemos sobre expresiones regulares, sabemos que tambien podremos definirla de la siguiente manera:
+
+Metodo 2:
+si regresamos ahora a usuatrios/100 no regresa a detalles del usuario.
+
+Podemos cambiar la expresion regular 
