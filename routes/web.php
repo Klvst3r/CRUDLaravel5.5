@@ -36,16 +36,19 @@ Route::get('/usuarios/nuevo', function(){
 
 Route::get('/usuarios/{id}', function($id){
    return "Mostrando detalles del usuario: {$id}";
-    });   
+    })->where('id', '[0-9]+');   
 
 /*Route::get('/saludo/{name}/{nickname}', function($name, $nickname){
     return "Bienvenido {$name}, tu nombre clave es: {$nickname}";
 });*/
 
 Route::get('/saludo/{name}/{nickname?}', function($name, $nickname = null){
+
+        $name = ucfirst($name);
+
         if ($nickname){
             return "Bienvenido {$name}, tu nombre clave es: {$nickname}";
         }else{
-            return "Bienvenido {$name}, No hay nombre clave ";
+            return "Bienvenido {$name}";
         }
     });

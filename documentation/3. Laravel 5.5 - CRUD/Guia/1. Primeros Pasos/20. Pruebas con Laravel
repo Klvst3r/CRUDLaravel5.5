@@ -290,4 +290,207 @@ Otra practica es eliminar la palabra "public", es opcional y en el caso de la pr
 
 Lo mas importante es que ayuda a probar la url "/usuarios "
 
-Vamos a generar otras pruebas para las otras rutas que escribimos en la aplicación
+Vamos a generar otras pruebas para las otras rutas que escribimos en la aplicación, para mostrar el detalle de una ruta de mostrar un uauario.
+
+Generamos una prueba para esta ruta
+
+En la clase UsersModuleTest que esta dentro de /test/Feature
+
+Podemos crear un nuevo metodo.
+
+
+Para probar el detalle de un usuarios (ej. 5).Al hacer esto esprariamos que la pagina carge correctamente luego esperaria ver mensaje que esta mostrandose en cuestion.
+---
+class UserModuleTest extends TestCase
+{
+    /** @test */
+    function test_it_loads_the_users_list_page()
+    {
+       // $this->assertTrue(true);
+         $this->get('/usuarios')
+            ->assertStatus(200)
+            ->assertSee('Usuarios');
+    }
+
+    /** @test */
+    function it_loads_the_users_details_page()
+    {
+        $this->get('/usuarios/5')
+            ->assertStatus(200)
+            ->assertSee('Mostrando detalles del usuario: 5');
+    }
+}
+---
+
+Regresando a la consola:}
+  > t
+
+Rejecutamos las pruebas y verificando que estas pruebas tambien estan cargando. Por supuesto tambien podemos hacer lo mismo para la url  de crear un nuevo usuario.
+
+ simulamos nuevamente una peticion de yipo get para verificar la url de "usuarios/nuevo"
+
+ ---
+ class UserModuleTest extends TestCase
+{
+    /** @test */
+    function test_it_loads_the_users_list_page()
+    {
+       // $this->assertTrue(true);
+         $this->get('/usuarios')
+            ->assertStatus(200)
+            ->assertSee('Usuarios');
+    }
+
+    /** @test */
+    function it_loads_the_users_details_page()
+    {
+        $this->get('/usuarios/5')
+            ->assertStatus(200)
+            ->assertSee('Mostrando detalles del usuario: 5');
+    }
+
+    function it_loads_the_new_users_page(){
+        $this->get('/usuarios/nuevo')
+            ->assertStatus(200)
+            ->assertSee('Crear nuevo usuario');
+    }
+}
+---
+Al hacer esto y reejecutar las pruebas, aunque esta todo ok, puede salir un mensaje de error que hace referencia del ,metodo de la ruta y que conetenga otro mensaje diferente.
+
+Eso sucede por que en el archivo de rutas se ha cambiado el orden, por supuesto si vamos al navegador a usuarios/nuevo, estamos viendo el mensaje que hace referencia a detalle del usuario y no a la creacion del usuario.
+
+La deferencia es que tenemos un mecanismo que comprueba esto en lugar de nosotros incluso dentro del codigo del proyecto.
+
+Cuando eso pase regresamos al archivo de rutas y acomoodamos el problam, por ejemplo cambiamos el orden de las rutas.
+
+Se ha corregido el problema.
+
+en lugar de estar cargando en el navegador una pagina tras otra que estan comprobando que estan correctas las rutas.
+
+Y miuenstras que nos tomamos un momento para crar las pruebas estamos reciniendo feedback  y esto es por la duracion de todo el proyecto.
+
+La ventaja de tener estas rpuebas automatizadas es que nos permiten hacer cambios en el proyexcto con mas confianza.
+
+Podemos regresar al editor y nuevamnete cambiar el orden de las rutas pero esta vez que esta ruta acepte enteros.
+
+--
+Route::get('/usuarios/{id}', function($id){
+   return "Mostrando detalles del usuario: {$id}";
+    }); 
+--
+
+agregamos:
+---
+Route::get('/usuarios/{id}', function($id){
+   return "Mostrando detalles del usuario: {$id}";
+    })->where('id', '[0-9]+'); 
+--    
+
+en este punto podemos regresar a la consola para reejecutar las pruebas y darnos cuenta de que las escritas estan correctas.
+
+Lo queremos decri es que si vamos al navegador estara coerrecto si ejecutamos algo como
+
+	http://127.0.0.1:8000/usuarios/5
+
+Generamos ahora una prueba de ruta para la ruta escrita anteriormente que permite darle la bienbenida a usuarios
+
+ > php artisan make:test WelcomeUsersTest
+
+En este caso en el editor abrimos para generar dos metodos
+	- Uno para darle la Bienvenida a los usuarios que tienen nickname
+	- Dar la Bienbenida a los usuarios que no tienen nickname
+
+---
+class WelcomeUsersTest extends TestCase
+{
+    /**  @return  */
+    function it_welcome_users_with_nickname()
+    {
+        
+    }
+
+    /**  @return  */
+    function it_welcome_users_without_nickname()
+    {
+        
+    }
+}
+
+---
+
+En este caso comenzamos la simulacion de la url de php '/saludo/{name}/{nickname?}'
+
+--
+class WelcomeUsersTest extends TestCase
+{
+    /**  @test  */
+    function it_welcome_users_with_nickname()
+    {
+        $this->get('/saludo/Raul/Klvst3r')
+            ->assertStatus(200)
+            ->assertSee('Bienvenido Raul, tu nombre clave es: Klvst3r');
+    }
+
+    /**  @test  */
+    function it_welcome_users_without_nickname()
+    {
+        $this->get('/saludo/Raul')
+            ->assertStatus(200)
+            ->assertSee('Bienvenido Raul, No hay nombre clave');
+    }
+}
+--
+En consola reejecutamos
+Y nos genera una advertencia:
+
+***
+$ t
+PHPUnit 6.5.14 by Sebastian Bergmann and contributors.
+
+....F.                                                              6 / 6 (100%)
+
+Time: 259 ms, Memory: 12.00MB
+
+There was 1 failure:
+
+1) Tests\Feature\WelcomeUsersTest::it_welcome_users_without_nickname
+Failed asserting that 'Bienvenido Raul, No hay nombre clave ' contains "Bienvenido Raul, no hay nombre clave".
+
+C:\AppServ\www\dev\CRUDLaravel5.5\vendor\laravel\framework\src\Illuminate\Foundation\Testing\TestResponse.php:253
+C:\AppServ\www\dev\CRUDLaravel5.5\tests\Feature\WelcomeUsersTest.php:24
+phpvfscomposer://C:\AppServ\www\dev\CRUDLaravel5.5\vendor\phpunit\phpunit\phpunit:52
+
+FAILURES!
+Tests: 6, Assertions: 10, Failures: 1.
+***
+
+Esto es debido a que el texto en la url no es el mismo que en la prueba por lo que debemos de iagualar el comentario para no tener errores.
+
+En este caso podemos ir al archivo de rutas y hacer el cambio en el mensaje de texto para que sean consicentes tanto el mensaje de rutas como la prueba de esa url.
+
+ahora cambiamos la primera letra a mayusculas y cambiamos el segundo mensaje
+
+En el archivo web.php de rutas entonces:
+---
+Route::get('/saludo/{name}/{nickname?}', function($name, $nickname = null){
+
+        $name = ucfirst($name);
+
+        if ($nickname){
+            return "Bienvenido {$name}, tu nombre clave es: {$nickname}";
+        }else{
+            return "Bienvenido {$name}";
+        }
+    });
+---
+
+Con esto las pruebas van a pasar, con lo cual reproducimos la funcionalidad que esperariamos ver en el navegador.
+
+Con esto ya probamos la funcionalidad de manera automatica de Laravel.
+
+La idea es comenzar a ver la utilidad. 
+
+El tema de pruebas unitarias  se vera mas adelante aunque es parte del procso integral de desarrollo.
+
+Pposteriormente usaremos las pruebas para agrager ejericios para comprobar que el codigo funciona, de forma correcta.
