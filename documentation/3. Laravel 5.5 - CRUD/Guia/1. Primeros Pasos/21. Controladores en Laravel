@@ -1,0 +1,68 @@
+21. Controladores en Laravel
+
+Notas:
+======
+
+Los controladores son un mecanismo que nos permite agrupar la lógica de peticiones HTTP relacionadas y de esta forma organizar mejor nuestro código. En esta quinta seccion de la presente guía de Laravel desde cero aprenderemos a hacer uso de ellos y veremos además cómo las pruebas unitarias nos permiten verificar los cambios que introducimos en nuestro código de forma fácil y rápida.
+
+
+Generar un controlador
+----------------------
+
+Generamos un nuevo controlador con el comando de Artisan make:controller pasándole el nombre que queremos darle. En el ejemplo el nombre es UserController:
+
+	> php artisan make:controller UserController
+
+Hecho esto, en el directorio app/Http/Controllers tendremos nuestro controlador UserController.
+
+Métodos en el controlador
+-------------------------
+
+Un controlador no es más que un archivo .php con una clase que extiende de la clase App\Http\Controllers\Controller:
+--
+	<?php
+	namespace App\Http\Controllers;
+	class UserController extends Controller {
+	     // ...
+	}
+--
+
+Extender de la clase Controller es opcional, sin embargo es recomendado porque se brindará varios métodos útiles que se veran más adelante.
+
+Dentro de esta clase (en nuestro caso UserController) agregamos nuestros métodos públicos (llamados acciones), que después podemos enlazar a una ruta:
+
+--
+	public function index()
+	{
+	    return 'Usuarios';
+	}
+--
+
+
+Enlazar una ruta a un controlador
+---------------------------------
+
+Para enlazar una ruta a un controlador pasamos como argumento el nombre del controlador y del método que queremos enlazar, separados por un @. En este caso queremos enlazar la ruta /usuarios al método index del controlador UserController:
+--
+	Route::get('/usuarios', 'UserController@index');
+--
+
+
+Controlador de un solo método
+-----------------------------
+
+Si quieres tener un controlador que solo tenga una acción, puedes hacerlo llamando al método __invoke, por ejemplo:
+--
+	public function __invoke($name, $nickname = null)
+	{
+	    // ...
+	}
+--
+
+En nuestra ruta ahora podemos enlazar directamente al controlador:
+--
+	Route::get('/saludo/{name}/{nickname}', 'WelcomeUserController');
+--
+
+Detectar errores en las pruebas
+--------------------------------
