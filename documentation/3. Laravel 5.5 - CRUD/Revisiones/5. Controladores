@@ -1,6 +1,12 @@
 5. Controladores
 =================
 
+Detectar errores en las pruebas
+--------------------------------
+
+Veemos una manera rápida en que pueda «revelar» errores de programación dentro de las pruebas. Más adelante puede ver la lección Manejo de excepciones en las pruebas en Laravel 5.5 para aprender más sobre el tema. Recuerda que también puedes abrir el navegador para ver los errores como expliqué en Instalación de Laravel 5.5 y el regreso del componente Whoops. La idea es que combines pruebas automatizadas y manuales para verificar el funcionamiento del código que estás desarrollando de manera oportuna.
+
+
 Material relacionado - Controladores
 ---------------------
 Más adelante puedes ver la lección: 
