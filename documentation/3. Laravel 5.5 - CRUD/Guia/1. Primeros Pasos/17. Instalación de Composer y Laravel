@@ -4,27 +4,27 @@ Se instalara el manejador de dependencias de PHP composer y con ayuda de éste s
 
 Preparación del entorno de desarrollo
 -------------------------------------
-Para desarrollar con Laravel 5.5 puedes hacerlo desde Windows, Linux o MacOs siempre que tengas un servidor web con PHP 7 o superior.
+Para desarrollar con Laravel 5.5 puede hacerlo desde Windows, Linux o MacOs siempre que tenga un servidor web con PHP 7 o superior.
 
 A esto nosotros le llamamos entorno de desarrollo y existe una gran variedad de ellos, cada uno con un nivel de complejidad distinto al otro, desde el más básico instalando manualmente Apache o Nginx, PHP, MySQL, etc., así como instalar herramientas como XAMPP, WAMP, MAMP, etc., hasta otras más complicadas como Laravel Homestead
 
 Sin embargo, recomendamos las siguientes opciones para quienes estén iniciando, por su facilidad de instalación y uso:
 
-    En Windows puedes usar: Laragon, un entorno de desarrollo para Laravel en Windows
+    En Windows puede usar: Laragon, un entorno de desarrollo para Laravel en Windows
     En Linux: Instalación de Laravel Valet en Linux
     En MacOs: Laravel Valet
 
 Por otro lado, Laravel utiliza Composer para manejar sus dependencias. ¿Qué significa esto? Pues el framework Laravel hace uso de una colección de paquetes o componentes propios y de terceros para agregarle funcionalidades a las aplicaciones. Por tanto, necesitamos un gestor de dependencias que se encargue automáticamente de crear proyectos, instalar, actualizar o eliminar componentes y a su vez las dependencias de éstos. Esta herramienta es Composer, el manejador de dependencias de PHP.
 
-Instalarlo depende del sistema operativo que uses si es MacOs o Linux puedes seguir los pasos descritos en el video: descargar el archivo composer.phar con las instrucciones del sitio oficial y luego mover dicho archivo para que esté de forma global y así usar la herramienta desde cualquier directorio, siguiendo las instrucciones oficiales de Composer.
+Instalarlo depende del sistema operativo que use, si es MacOs o Linux puede seguir los pasos descritos en el video: descargar el archivo composer.phar con las instrucciones del sitio oficial y luego mover dicho archivo para que esté de forma global y así usar la herramienta desde cualquier directorio, siguiendo las instrucciones oficiales de Composer.
 
-Para Windows puedes descargar el instalador que ofrece Composer en su sitio web que se encargará de instalarlo para que lo puedas usar en cualquier parte del sistema. Si has decidido trabajar con Laragon no necesitas realizar esta instalación, puesto que viene incluido por defecto en este entorno de desarrollo.
+Para Windows puede descargar el instalador que ofrece Composer en su sitio web que se encargará de instalarlo para que lo puedas usar en cualquier parte del sistema. Si has decidido trabajar con Laragon no necesitas realizar esta instalación, puesto que viene incluido por defecto en este entorno de desarrollo.
 
-Puedes confirmar si tienes bien instalado Composer ejecutando en la consola desde cualquier directorio: composer y en caso de estar instalado, te mostrará un listado de todos los comandos disponibles.
+Puede confirmar si tiene bien instalado Composer ejecutando en la consola desde cualquier directorio: composer y en caso de estar instalado, se mostrará un listado de todos los comandos disponibles.
 
 Para desarrollar aplicaciones de PHP con Laravel necesitamos primero instalar y configurar un conjunto de herramientas que nos facilitan el trabajo de creación de nuevas aplicaciones. Por un lado, requerimos tener un entorno de desarrollo en nuestro equipo que cumpla con los requerimientos del framework y por otro, es recomendable configurar y conocer las formas de acceder a una aplicación creada en dicho entorno. En esta primera lección te guiaremos para que se prepare el equipo y así empiezar a desarrollar con Laravel.
 
-Los la version con este proeyecto es con la version 5.5 en adelante. Lo que se debe considerar primero es la documentación de Larvel, que para esta version esta accesible desde:
+La version con este proeyecto es con la version 5.5 en adelante. Lo que se debe considerar primero es la documentación de Larvel, que para esta version esta accesible desde:
 
 	https://laravel.com/docs/5.5
 
@@ -37,7 +37,7 @@ En esta pagina podremos encontrar los requisitos del servidor que a saber son:
  - Tokenizer PHP Extension
  - XML PHP Extension
 
- Para compro la version instalada de php lo hacemos con
+ Para comprobar la version instalada de php lo hacemos con
  	> php -v 
  	PHP 7.3.10 (cli) (built: Sep 24 2019 11:59:22) ( ZTS MSVC15 (Visual C++ 2017) x64 )
 	Copyright (c) 1997-2018 The PHP Group
@@ -48,7 +48,7 @@ Laravel utiliza Composer, Composer es el manejador de dependencias para PHP, que
 
 Ahora no vamos a hacer esto por que Laravel es un Framework profesional, ya que todas las dependencias seran subsanadas mediante este manejador de dependencias.
 
-Composer no solo permitira instalar compoenentes y paquetes, sino tambien crar nuevos proyectos y realizar actualizaciones de seguridad o actualizaciones entre versiones de Laravel, todo de una forma muy sencilla.
+Composer no solo permitira instalar componentes y paquetes, sino tambien crar nuevos proyectos y realizar actualizaciones de seguridad o actualizaciones entre versiones de Laravel, todo de una forma muy sencilla.
 
 Para instalar composer desde el sitio:
 	
@@ -109,7 +109,7 @@ Veriones de Laravel 5 en Windows
 
 Con esto no nos tenemos que preocupar de saber si descargamos los componentes correctos, descomprimir y de instalar o configurar, de todo ese proceso se encarga Composer.
 
-composer se encarga de la descarga y de la configuración inicial del proyecto, con esto ya tenemos un nuevo proyecto de Laravel. Exploramos.
+Composer se encarga de la descarga y de la configuración inicial del proyecto, con esto ya tenemos un nuevo proyecto de Laravel. Exploramos.
 
 Puedo ejecutar tambien:
 	> php artisan server
@@ -184,19 +184,19 @@ Recibiremos los mensajes de la instalacion y ya estara en algunos segundo, ahora
 Con artisan levantamos el servidor
 	> php artisan serve
 
-Accesamos ala ruta y ya estoy dentro de un nuevo proyecto de laravel, todo esto es lo inicial para comenzar  aprogramar.
-
+Accesamos a la ruta y ya estoy dentro de un nuevo proyecto de laravel, todo esto es lo inicial para comenzar  aprogramar.
 
 Bien, de esta manera ya tenemos disponible el instalador de Laravel, por tanto, podemos ejecutar desde cualquier directorio:
 
-laravel new nombre-proyecto
+	laravel new nombre-proyecto
 
 y se instalará tal y como se hizo con el comando composer create-project.
-Abrir la aplicación creada
 
+Abrir la aplicación creada
+---------------------
 Para ver y navegar por la aplicación recién creada podemos ejecutar el comando:
 
-php artisan serve
+	> php artisan serve
 
 Este comando ejecuta la aplicación en un servidor de desarrollo incluido por defecto en Laravel.  Por tanto debemos hacer clic en la URL que nos muestra para explorar la aplicación en el navegador.  Para detener la ejecución presiona Ctrl + C	
 
