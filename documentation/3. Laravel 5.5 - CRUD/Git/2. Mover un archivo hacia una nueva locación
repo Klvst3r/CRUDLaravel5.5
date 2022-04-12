@@ -1,0 +1,112 @@
+2. Mover un archivo hacia una nueva locación
+===========================================
+	https://docs.github.com/es/repositories/working-with-files/managing-files/moving-a-file-to-a-new-location
+
+
+Puedes mover un archivo hacia un nuevo directorio en Github o empleando la linea de comandos.
+
+Windows
+---------
+
+Ademas de cambiar el archivo de directorio, puedes tambien actualizar tu archivo, o dar  un nuevo nombre en el mismo commit.
+
+update the contents of your file
+	https://docs.github.com/es/articles/editing-files-in-your-repository
+
+give it a new name 
+	https://docs.github.com/es/articles/renaming-a-file
+
+
+Mover un archivo en un nueva locación con Github
+
+Tips:
+
+    Si estas intentando mover un archivo en un repositorio al cual no tienes accso, necesitaras hacer un fork del proyecto para la cuanta de tu usuario y ayudarte a enviar un pull request al repositorio original despues de haber hecho tus cambios en el commit.
+
+    Pull request
+    	https://docs.github.com/es/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests
+
+    Algunos archivos, tales como imagenes, requieres moverlos desde la linea de comandos. Para mayor información, ver  "Moving a file to a new location using the command line".
+    	https://docs.github.com/es/articles/moving-a-file-to-a-new-location-using-the-command-line
+
+    Si un repositorio cuenta con alguna rama protegida, no podrás editar o cargar archivos en ésta utilizando GitHub. Para obtener más información, consulta"Acerca de las ramas protegidas".
+
+Puedes utilizar GitHub Desktop para mover tus cambios a una rama nueva y confirmarlos. Para obtener más información, consulta la sección "Confirmar y revisar cambios hechos a tu proyecto".
+
+
+1. In your repository, browse to the file you want to move.
+2. In the upper right corner of the file view, click "pen" to open the file editor. 
+
+    Edit file icon
+
+3 In the filename field, change the name of the file using these guidelines: Editing a file name
+        To move the file into a subfolder, type the name of the folder you want, followed by /. Your new folder name becomes a new item in the navigation breadcrumbs.
+        To move the file into a directory above the file's current location, place your cursor at the beginning of the filename field, then either type ../ to jump up one full directory level, or type the backspace key to edit the parent folder's name.
+
+4 En la parte inferior de la página, teclea un mensaje de confirmación corto y significativo que describa el cambio que realizaste al archivo. Puedes atribuir el cambio a mas de un autor en el mensaje del mismo. Para obtener más información, consulta "Crear una confirmación con co-autores múltiples". Mensaje de confirmación de tu cambio
+
+5 Debajo de los campos del mensaje de confirmación, decide si deseas agregar tu confirmación a la rama actual o a una rama nueva. Si tu rama actual es la rama predeterminada, debes elegir crear una nueva rama para tu confirmación y después crear una solicitud de extracción. Para obtener más información, consulta "Crear una solicitud de extracción nueva". Confirmar opciones de rama
+
+6.
+Haz clic en Proponer cambio en el archivo. Botón para proponer cambio de archivo
+
+
+Moving a file to a new location using the command line
+=====================================================
+You can use the command line to move files within a repository by removing the file from the old location and then adding it in the new location.
+
+Many files can be moved directly on GitHub, but some files, such as images, require that you move them from the command line.
+
+Este procedimiento supone que ya has:
+
+    creado un repositorio en GitHub o que tienes un repositorio existente que es propiedad de alguien más con quien desees colaborar
+    clonado el repositorio de forma local en tu computadora
+
+    On your computer, move the file to a new location within the directory that was created locally on your computer when you cloned the repository.
+    Abre la Git Bash.
+    Use git status to check the old and new file locations.
+
+    $ git status
+    > # On branch your-branch
+    > # Changes not staged for commit:
+    > #   (use "git add/rm ..." to update what will be committed)
+    > #   (use "git checkout -- ..." to discard changes in working directory)
+    > #
+    > #     deleted:    /old-folder/image.png
+    > #
+    > # Untracked files:
+    > #   (use "git add ..." to include in what will be committed)
+    > #
+    > #     /new-folder/image.png
+    > #
+    > # no changes added to commit (use "git add" and/or "git commit -a")
+
+    Prepara el archivo para confirmarlo para tu repositorio local. This will delete, or git rm, the file from the old location and add, or git add, the file to the new location.
+
+    $ git add .
+    # Adds the file to your local repository and stages it for commit.
+    # Para deshacer un archivo, usa 'git reset HEAD YOUR-FILE'.
+
+    Use git status to check the changes staged for commit.
+
+    $ git status
+    > # On branch your-branch
+    > # Changes to be committed:
+    > #   (use "git reset HEAD ..." to unstage)
+    > #
+    > #    renamed:    /old-folder/image.png -> /new-folder/image.png
+    # Displays the changes staged for commit
+
+    Confirma el archivo que has preparado en tu repositorio local.
+
+    $ git commit -m "Move file to new directory"
+    # Commits the tracked changes and prepares them to be pushed to a remote repository.
+    # Para eliminar esta confirmación y modificar el archivo, usa 'git reset --soft HEAD~1' y confirma y agrega nuevamente el archivo.
+
+    Sube los cambios en tu repositorio local a GitHub.com.
+
+    $ git push origin your-branch
+    # Pushes the changes in your local repository up to the remote repository you specified as the origin
+
+
+
