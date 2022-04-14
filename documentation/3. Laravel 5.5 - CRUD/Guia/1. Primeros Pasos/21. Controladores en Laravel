@@ -64,5 +64,19 @@ En nuestra ruta ahora podemos enlazar directamente al controlador:
 	Route::get('/saludo/{name}/{nickname}', 'WelcomeUserController');
 --
 
-Detectar errores en las pruebas
---------------------------------
+
+Practica
+=========
+
+
+
+
+
+
+Ejercicios
+========
+
+
+Mueve el código de la ruta para editar usuarios que creaste en el ejercicio de la lección pasada, a una nueva acción edit dentro de UserController. Utiliza una prueba automatizada para verificar que has hecho el cambio correctamente.
+
+Desafío adicional: divide la ruta de saludo en 2 rutas diferentes que apunten a 2 acciones diferentes, para de esta manera eliminar la necesidad de un condicional y el parámetro opcional. Utiliza la prueba automatizada para verificar que has hecho el cambio correctamente.
