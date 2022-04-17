@@ -68,6 +68,43 @@ En nuestra ruta ahora podemos enlazar directamente al controlador:
 Practica
 =========
 
+Hasta el actual punto de la presente guia se han estado escribiendo las rutas en 
+	web.php
+
+escribiendo la logica de las rutas directamente en el archivo de rutas y por logica en realidad la logica de estas rutas estan etornando una cadena de texto, exepto la ultima ruta siguiente:
+---
+Route::get('/saludo/{name}/{nickname?}', function($name, $nickname = null){
+
+        $name = ucfirst($name);
+
+        if ($nickname){
+            return "Bienvenido {$name}, tu nombre clave es: {$nickname}";
+        }else{
+            return "Bienvenido {$name}";
+        }
+    });
+ ---
+
+ Donde se tiene entonces un condicional es decir un poco mas de logica, sin embargo como puede verse en el archivo de rutas ya no se ve tan limpio y como podra uno imaginarse en un proyecto mas complejo este archivo podria llegar con este ritmo a tener cientos o hasta miles de lineas de codigo. Ademas nosotros estamos utilizndo un Framework con la idea de organizar mejor nuestro proyecto, no de escribir toda la logica en un solo archivo.
+
+ Para solucionar este probema muchos Framewroks como Laravel incluyen una capa llamada controllers con controladores, los cuales son basicamente un mecanismo con el cual vamos a poder agripar peticiones http relacionadas dentro de una clase y dividirlas en varios metodos. Para generar un nuevo controlador con Larael es muy sencillo, desde la terminal:
+ Ej.
+ 	> php artisan make:controller <controller_name>
+
+Pero antes de hacer esto vamos a jecutar las pruebas para comprobar que el proyecto que en este punto antes de comenzar a trabajr esta funcionando.
+
+Ahora si vamos a generar un nuevo controlador con el nombre UserController
+	> php artisan make:controller UserController
+
+Y regresando al editor en la ruta:
+
+	/app/Http/Controllers/
+
+Se tiene un nuevo controlador 
+	/app/Http/Controllers/UserController.php
+
+
+
 
 
 
