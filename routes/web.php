@@ -20,9 +20,7 @@ Route::get('/', function(){
     return 'Home';
 });
 
-Route::get('/usuarios', function(){
-    return 'Usuarios';
-});
+Route::get('/usuarios', 'UserController@index');
 
 /*
 Route::get('/usuarios/detalles', function(){
