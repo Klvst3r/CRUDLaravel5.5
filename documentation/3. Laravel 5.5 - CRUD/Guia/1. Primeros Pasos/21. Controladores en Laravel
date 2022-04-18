@@ -419,8 +419,35 @@ Route::get('/saludo/{name}/{nickname?}', 'WellcomeUserController@index');
 Si regresamos a la consola y ejecutamos las pruebas, estas no deberian se tener ningun error.
     > t
 
-Aca un pequeño truco, Si queremos tener un solo controlador que solamente tenga una acción, es decir solamente un metodo
+Aca un pequeño truco, Si queremos tener un solo controlador que solamente tenga una acción, es decir solamente un metodo publico que represente una acción, en este caso entones puede regresar al controlador en cuestion y cambiar el nombre del motodo a: __invoke. Quedando:
 
+---WellcomeUserController.php
+class WellcomeUserController extends Controller
+{
+    public function __invoke($name, $nickname = null)
+    {
+        $name = ucfirst($name);
+
+        if ($nickname){
+            return "Bienvenido {$name}, tu nombre clave es: {$nickname}";
+        }else{
+            return "Bienvenido {$name}";
+        }
+    }
+}
+---
+y en 
+---web.php
+
+Route::get('/saludo/{name}/{nickname?}', 'WellcomeUserController');
+---
+
+
+De esta forma, este metodo de php nos permite llamar a un objeto como si se tratase de una funcion y y ano se esta colocando el nombre de la clase mas el nombre de la acción, seprado con una arroba si no unicamente el nombre de la clase.
+
+Basicamente con esto nuestro archivo con las rutas queda muchisimo mas limpio en nuestra aplicación con ello logramos hacer lo que se denomina como "Refactorización" que es un termino que en un momento dado pueda hacer que duela la cabeza, pero basicamente significa que vamos a hacer cambios en nuestra aplicación para que el codigo quede mas limpio y mejor reestructurado, manteniendo la misma funcionalidad que se tenia antes para este proceso es vital hacer pruebas por que de esta forma se disminuye la posibilidad de que se introduzca algin bug o problema nuevo en nuestro codigo.
+
+Con esto cerramos la sección Inicial.
 
 
 Ejercicios
