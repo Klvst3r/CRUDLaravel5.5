@@ -18,6 +18,6 @@ class UserController extends Controller
 
     public function create()
     {
-          return 'Crear unuevo usuario';
+          return 'Crear un nuevo usuario';
     }
 }

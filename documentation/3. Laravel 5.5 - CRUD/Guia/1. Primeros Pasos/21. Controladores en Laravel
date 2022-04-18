@@ -341,10 +341,12 @@ No hay que preocuparse si no se entiende del todo, simplemente hay que llamar a 
 Esto es en esta prueba, con esta información va a ser mas facil localizar el error.
 
 
+Suponiendo que ya estamos listos con los cambios, entonces podemos regresar al navegador y probar entonces la url para tal fin.
 
+Browser:
+    http://localhost:8000/usuarios/nuevo
 
-
-    $this->
+Para probar las URL's manualmente.
 
 
 
