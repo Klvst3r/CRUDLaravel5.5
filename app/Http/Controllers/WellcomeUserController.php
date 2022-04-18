@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 
 class WellcomeUserController extends Controller
 {
-    public function index($name, $nickname = null)
+    public function __invoke($name, $nickname = null)
     {
         $name = ucfirst($name);
 

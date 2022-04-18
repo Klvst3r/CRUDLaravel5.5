@@ -50,4 +50,4 @@ Route::get('/usuarios/{id}', 'UserController@show')
     });
 */
 
-Route::get('/saludo/{name}/{nickname?}', 'WellcomeUserController@index');
+Route::get('/saludo/{name}/{nickname?}', 'WellcomeUserController');
