@@ -68,6 +68,235 @@ En nuestra ruta ahora podemos enlazar directamente al controlador:
 Practica
 =========
 
+Hasta el actual punto de la presente guia se han estado escribiendo las rutas en 
+	web.php
+
+escribiendo la logica de las rutas directamente en el archivo de rutas y por logica en realidad la logica de estas rutas estan etornando una cadena de texto, exepto la ultima ruta siguiente:
+---
+Route::get('/saludo/{name}/{nickname?}', function($name, $nickname = null){
+
+        $name = ucfirst($name);
+
+        if ($nickname){
+            return "Bienvenido {$name}, tu nombre clave es: {$nickname}";
+        }else{
+            return "Bienvenido {$name}";
+        }
+    });
+ ---
+
+ Donde se tiene entonces un condicional es decir un poco mas de logica, sin embargo como puede verse en el archivo de rutas ya no se ve tan limpio y como podra uno imaginarse en un proyecto mas complejo este archivo podria llegar con este ritmo a tener cientos o hasta miles de lineas de codigo. Ademas nosotros estamos utilizndo un Framework con la idea de organizar mejor nuestro proyecto, no de escribir toda la logica en un solo archivo.
+
+ Para solucionar este probema muchos Framewroks como Laravel incluyen una capa llamada controllers con controladores, los cuales son basicamente un mecanismo con el cual vamos a poder agripar peticiones http relacionadas dentro de una clase y dividirlas en varios metodos. Para generar un nuevo controlador con Larael es muy sencillo, desde la terminal:
+ Ej.
+ 	> php artisan make:controller <controller_name>
+
+Pero antes de hacer esto vamos a jecutar las pruebas para comprobar que el proyecto que en este punto antes de comenzar a trabajr esta funcionando.
+
+Ahora si vamos a generar un nuevo controlador con el nombre UserController
+	> php artisan make:controller UserController
+
+Y regresando al editor en la ruta:
+
+	/app/Http/Controllers/
+
+Se tiene un nuevo controlador 
+	/app/Http/Controllers/UserController.php
+
+
+Se puede ver que este controlador no es mas que una clase de PHP
+
+---
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+
+class UserController extends Controller
+{
+    //
+}
+
+---
+
+Es importante destacar que esta clase tiene un nombre de espacio:
+---
+	namespace App\Http\Controllers;
+---
+
+Los nombres de espacio que se veran aca en el proyeto de Laravel dentro de la carpeta App siguen la convencion o el patron PSR4 y si no se tiene mucha experiencia con esto de nombres de espacio en clases de PHP se puede adelantar que un namespace es como el apellido de una clase, asi que podemos tener dos clases con el mismo nombre, asi como dos personas pueden por ejemplo llamar Pedro, pero si cada clase tiene un nombre de espacio diferente, entonces se va a hacer como dos personas llamadas Pedro pero un apersona va a ser "Pedro Pérez" y la otra va a ser "Pedro Rodriguez". Es decir van a ser dos personas distintas. 
+
+Aca entonces cuando nosotros trabajamos con Laavel, los namespaces generalmente va a emular la estructura de directorios, si comenzamos con la primera parte del namespace:
+
+ namespace App
+
+ Qeu va a representar las clases dentro de la carpeta App y luego cada parte del nombre del namespace va a representar entonces un subdirectorio.
+
+ Y esto lo podemos ver en el archivo de configuracion composer:
+ 	/composer.json
+
+ Recuerda que nosotros utilizamos composer para instalar Laravel y tambien lo vamos a utilizar para manejar las dependencias del proyecto y autocargar las clases, podemos ver entonces ue la seccion autoload
+ ---
+    "autoload": {
+        "classmap": [
+            "database/seeds",
+            "database/factories"
+        ],
+        "psr-4": {
+            "App\\": "app/"
+        }
+    },
+---
+
+Nosotros queremos mapear todas las clases que comiencen con el nombe de espacio "App\\" a la carpeta /app.
+
+Por otro lado, en la seccion de 
+
+---
+  "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+---
+
+Autocarga para el entorno de desarrollo, nosotros queremos mapear todas las clases 
+
+que comencen con  el nombre de espacio "Tests\\" a la carpeta "tests/".
+
+Y esto lo podemos ver a si revisamos una de las pruebas que generamos por ej.
+	C:\AppServ\www\dev\CRUDLaravel5.5\tests\Feature\UserModuleTest.php
+
+Donde tenemos el namespace:
+---
+namespace Tests\Feature;
+---
+
+El nombre de espacio Test y luego el subdirectorio Feature,y es por que esta clase esta dentro del subdirectorio Features en la carpeta "Tests". De esta manera Laravel sabe como cargar las clases por nosotros que es una ventaja gigante, puesto que es mucho menos por lo que debemos preocuparnos.
+
+Luego entonces despues de de cargar este controlador:
+		/app/Http/Controllers/UserController.php
+
+Por supuesto nuestro poryecto va a segir funcionando, lo verificamos desd le consola:
+
+	> t
+Puesto que realente no hecho ningun cambio, pero entonces debemos agregar nuestro primer metodo y se llamara index:
+
+---
+class UserController extends Controller
+{
+    public function index()
+    {
+        
+    }
+}
+
+---
+
+Entonces se ve a convertir en nuestra pagina principal de nuestro modulo de usuarios y la logica va a estar encapsulada dentro de la clase "UserController" .
+
+Podemos cargar tambien el archivo de rutas de "web.php"
+	/routes/web.php
+
+Para poder ver entonces como se van a pasar a los metodos dentro de UserController.php
+
+Por ejemplo en 
+	web.php
+
+En la ruta de usuarios
+---
+Route::get('/usuarios', function(){
+    return 'Usuarios';
+});
+---
+
+Entonces vamos a pasar este texto deonde estamos retornando la palabra Usuarios al metodo index de userController.php
+
+---web.php
+---
+Route::get('/usuarios', function(){
+    
+});
+---
+---UserController.php
+class UserController extends Controller
+{
+    public function index()
+    {
+        return 'Usuarios';
+    }
+}
+
+---
+
+Y al correr la prueba va  fallar. Por que ya la pagina de listado de usuarios no va a devolver Usuarios sino que no se esta devolviendo nada. Asi como segundo paso necesitamos indicarle a Laravel que la ruta de 
+
+---web.php
+Route::get('/usuarios', function(){
+    
+});
+---
+
+Ahora apunte al controlador de index dentro de UserController, esto se hace de forma muy sencilla.
+Elminando la funcion anonima y colocando el nombre del controlador, seguido de una arroba y luego el nombre del metodo. 
+
+---web.php
+Route::get('/usuarios', 'UserController@index');
+---
+
+Con el nombre del Controlador nos referimos al nombre de la clase "UserController", haciendo esto y regresando a la consola, entonces las pruebas estaran pasando nuevamente.
+	> t
+
+Vamos a mover la siguiente ruta:
+--- web.php
+Route::get('/usuarios/{id}', function($id){
+   return "Mostrando detalles del usuario: {$id}";
+    })->where('id', '[0-9]+');   
+---
+
+Para ello se va a crear una nueva accion en:
+---userController.php
+ public function show($id)
+    {
+        
+    }
+---
+Que va a ser la accion que va a mostrar el detalle del usuario y esta accion va a aceptar o permitir un parametro, entonces se va a pasar el return al controlador.
+--web.php
+Route::get('/usuarios/{id}', function($id){
+   
+    })->where('id', '[0-9]+');   
+
+---
+---UserController.php
+ public function show($id)
+    {
+       return "Mostrando detalles del usuario: {$id}";  
+    }
+---
+--
+Se le va a pasar la logica para mostrar el detalle del usuario, aca no hay ninguna logica, pero esto se va a ver poco a poco.
+
+Ahora debemos enlazar la ruta con la acción, eliminando la funcion anonima y se va a escribir la cadena con el nombre de la clase y luego el nombre del metodo separados por una arroba.
+---web.php
+Route::get('/usuarios/{id}', 'UserController@show')->where('id', '[0-9]+'); 
+---
+
+Y la parte con la condicion con el metodo where va a quedar igual que tambien podria colocarse de la siguinte manera:
+---web.php
+Route::get('/usuarios/{id}', 'UserController@show')
+    ->where('id', '[0-9]+'); 
+---
+Quedando en un alinea aparte, solo que ahora se lee un poco mejor, puesto que ya hemos separado la logica de la acción para esta petición con la logica que necesitamos, para declarar la ruta en nuestro proyecto. Hecho esto el siguiente paso es regresar a la consola y ejecutar las pruebas y esto es importante por que se reciben generalemnte mensajes de ayuda para saber que es lo que esta sucediendo con el proyecto.
+
+    > t
+Y en este caso las pruebas estan para ayudarnos.
+
+Si en este momento el proyecto no funciona se va asaber por que no funciona en este punto por algo que se hizo hace un minuto y no algo que se modifico potencialmente hace tres dias, asi que este paso es opcional pero es muy util y muy importante.
+
+---07m10
+
 
 
 
