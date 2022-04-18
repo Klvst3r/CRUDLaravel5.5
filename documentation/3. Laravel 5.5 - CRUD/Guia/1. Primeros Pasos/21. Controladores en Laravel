@@ -349,7 +349,77 @@ Browser:
 Para probar las URL's manualmente.
 
 
+WellcomeUserController
+------------------
 
+Vamos a crear un nuevo controlador llamado "WellcomeUserController", 
+    > php artisan make:controller WellcomeUserController
+
+Creando en:
+    app\Http\Controllers\WellcomeUserController.php
+
+---WellcomeUserController.php
+class WellcomeUserController extends Controller
+{
+    public function index()
+    {
+        
+    }
+}
+---
+
+
+Se llamara simplemente index y entonces en web.php, vamos a copiar la logica de:
+
+---web.php
+Route::get('/saludo/{name}/{nickname?}', function($name, $nickname = null){
+
+    });
+---
+Pasandola a 
+---WellcomeUserController.php
+
+   class WellcomeUserController extends Controller
+{
+    public function index()
+    {
+        $name = ucfirst($name);
+
+        if ($nickname){
+            return "Bienvenido {$name}, tu nombre clave es: {$nickname}";
+        }else{
+            return "Bienvenido {$name}";
+        }
+    }
+}
+---
+
+Pero no se puede entonces olvidar pasar los parametros:
+---WelcomeUserController.php
+class WellcomeUserController extends Controller
+{
+    public function index($name, $nickname = null)
+    {
+        $name = ucfirst($name);
+
+        if ($nickname){
+            return "Bienvenido {$name}, tu nombre clave es: {$nickname}";
+        }else{
+            return "Bienvenido {$name}";
+        }
+    }
+}
+---
+
+Si a este punto realizamos la prueba esta fallara. En este caso dos purebas estan fallando, por que no hemos asociado la ruta con el nuevo controlador, entonces el WellcomeUserController con el metodo index.
+
+---web.php
+Route::get('/saludo/{name}/{nickname?}', 'WellcomeUserController@index');
+---
+Si regresamos a la consola y ejecutamos las pruebas, estas no deberian se tener ningun error.
+    > t
+
+Aca un pequeño truco, Si queremos tener un solo controlador que solamente tenga una acción, es decir solamente un metodo
 
 
 

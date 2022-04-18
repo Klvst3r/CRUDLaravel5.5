@@ -37,7 +37,8 @@ Route::get('/usuarios/{id}', 'UserController@show')
     return "Bienvenido {$name}, tu nombre clave es: {$nickname}";
 });*/
 
-Route::get('/saludo/{name}/{nickname?}', function($name, $nickname = null){
+
+/*Route::get('/saludo/{name}/{nickname?}', function($name, $nickname = null){
 
         $name = ucfirst($name);
 
@@ -47,3 +48,6 @@ Route::get('/saludo/{name}/{nickname?}', function($name, $nickname = null){
             return "Bienvenido {$name}";
         }
     });
+*/
+
+Route::get('/saludo/{name}/{nickname?}', 'WellcomeUserController@index');
