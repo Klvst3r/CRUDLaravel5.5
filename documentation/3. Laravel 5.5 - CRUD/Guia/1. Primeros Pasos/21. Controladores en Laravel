@@ -248,10 +248,54 @@ Route::get('/usuarios', 'UserController@index');
 Con el nombre del Controlador nos referimos al nombre de la clase "UserController", haciendo esto y regresando a la consola, entonces las pruebas estaran pasando nuevamente.
 	> t
 
+Vamos a mover la siguiente ruta:
+--- web.php
+Route::get('/usuarios/{id}', function($id){
+   return "Mostrando detalles del usuario: {$id}";
+    })->where('id', '[0-9]+');   
+---
 
+Para ello se va a crear una nueva accion en:
+---userController.php
+ public function show($id)
+    {
+        
+    }
+---
+Que va a ser la accion que va a mostrar el detalle del usuario y esta accion va a aceptar o permitir un parametro, entonces se va a pasar el return al controlador.
+--web.php
+Route::get('/usuarios/{id}', function($id){
+   
+    })->where('id', '[0-9]+');   
 
+---
+---UserController.php
+ public function show($id)
+    {
+       return "Mostrando detalles del usuario: {$id}";  
+    }
+---
+--
+Se le va a pasar la logica para mostrar el detalle del usuario, aca no hay ninguna logica, pero esto se va a ver poco a poco.
 
+Ahora debemos enlazar la ruta con la acción, eliminando la funcion anonima y se va a escribir la cadena con el nombre de la clase y luego el nombre del metodo separados por una arroba.
+---web.php
+Route::get('/usuarios/{id}', 'UserController@show')->where('id', '[0-9]+'); 
+---
 
+Y la parte con la condicion con el metodo where va a quedar igual que tambien podria colocarse de la siguinte manera:
+---web.php
+Route::get('/usuarios/{id}', 'UserController@show')
+    ->where('id', '[0-9]+'); 
+---
+Quedando en un alinea aparte, solo que ahora se lee un poco mejor, puesto que ya hemos separado la logica de la acción para esta petición con la logica que necesitamos, para declarar la ruta en nuestro proyecto. Hecho esto el siguiente paso es regresar a la consola y ejecutar las pruebas y esto es importante por que se reciben generalemnte mensajes de ayuda para saber que es lo que esta sucediendo con el proyecto.
+
+    > t
+Y en este caso las pruebas estan para ayudarnos.
+
+Si en este momento el proyecto no funciona se va asaber por que no funciona en este punto por algo que se hizo hace un minuto y no algo que se modifico potencialmente hace tres dias, asi que este paso es opcional pero es muy util y muy importante.
+
+---07m10
 
 
 
