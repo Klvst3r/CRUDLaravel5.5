@@ -295,8 +295,56 @@ Y en este caso las pruebas estan para ayudarnos.
 
 Si en este momento el proyecto no funciona se va asaber por que no funciona en este punto por algo que se hizo hace un minuto y no algo que se modifico potencialmente hace tres dias, asi que este paso es opcional pero es muy util y muy importante.
 
----07m10
 
+Vamos a continuar creando nuesra tercera acción que va a ser otro metodo llamado "create" y este metodo entonces se va a encargar de la acción para crear un nuevo usuaril, en este caso para mostrar el formulario para crear el nuevo usuario, que por supuesto vamos a llegar alla poco apoco.
+
+---web.php
+Route::get('/usuarios/nuevo', function(){
+ 
+});
+    
+---
+---UserController.php
+    public function create()
+    {
+          return 'Crear un nuevo usuario';
+    }
+---
+
+Enlazando la ruta con el controlador, pero esta vez al metodo create
+---web.php
+Route::get('/usuarios/nuevo', 'UserController@create');
+---
+
+Hecho esto de nuevo a realizar la prueba de verificación de funcionamiento.
+    > t
+ Una forma practica de detectar errores en las pruebas es revisar los logs de la aplicación 
+ En
+    storage\logs\laravel.log
+
+Aca vamos a tener muchisima información pero puedo limpiar los logs y luego regresar a la consola y reejecutar la prueba y entonces vamos a detectar mas facilmente el error por ejemplo que el metodo crar no existe. Tambien hay otra forma de descubrir el error dentro de la consola y es ir al metodo que esta fallando y llamar a este metodo 
+
+---    /test/Feature/UserModuleTest.php
+function it_loads_the_new_users_page(){
+
+        $this->withoutExceptionHandling();
+
+        $this->get('/usuarios/nuevo')
+            ->assertStatus(200)
+            ->assertSee('Crear nuevo usuario');
+    }
+}
+---
+
+No hay que preocuparse si no se entiende del todo, simplemente hay que llamar a este metodo y reejecutar la prueba, para detectar el error.
+
+Esto es en esta prueba, con esta información va a ser mas facil localizar el error.
+
+
+
+
+
+    $this->
 
 
 

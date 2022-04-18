@@ -28,9 +28,7 @@ Route::get('/usuarios/detalles', function(){
 });
  */
 
-Route::get('/usuarios/nuevo', function(){
-   return 'Crear unuevo usuario';
-});
+Route::get('/usuarios/nuevo', 'UserController@create');
 
 Route::get('/usuarios/{id}', 'UserController@show')
     ->where('id', '[0-9]+');   

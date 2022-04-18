@@ -15,4 +15,9 @@ class UserController extends Controller
     {
        return "Mostrando detalles del usuario: {$id}";  
     }
+
+    public function create()
+    {
+          return 'Crear unuevo usuario';
+    }
 }
