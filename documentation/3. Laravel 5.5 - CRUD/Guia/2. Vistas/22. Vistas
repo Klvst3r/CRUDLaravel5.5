@@ -13,6 +13,144 @@ Laravel también nos permite separar la lógica de presentación (es decir cómo
 Practica
 ========
 
+Porsupuesto nuestra aplicación en ves de retornar y mostrar simples cadenas de texto tipicamente va a retornar plaginas completas con HTML, y  esto con Laravel es muy sencillo, por que Laravel nos proveeo de otra capa llamada la capa de vistas, nuestras vistas tipicamente van a estar dentro del directorio "views", en el el directorio "resources" en la caprte aprincipal de nuestro proyecto y crear una vista con Laravel es muy sencillo.
+
+
+Ruta de las vistas
+--------
+	/resources/views
+
+
+
+1. Podemos hacerlo creando un nuevo archivo simplemente como:
+	<nombre_archivo.php>
+	Ej.
+		/resources/views/users.php
+
+	Y dentro vamos a poner el contenido HTML necesario
+
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Listado de Usuarios - Klvst3r</title>
+</head>
+<body>
+	<h1>Usuarios</h1>
+</body>
+</html>
+---
+
+Para llamar a esta vista es muy sencillo, en "/app/Http/controllers/":
+	UserController.php
+En vez de retornar la cadena de texto
+---UserController.php
+class UserController extends Controller
+{
+    public function index()
+    {
+        return 'Usuarios';
+    }
+...
+---
+Llamamos a la fuincion "vies", pasando como primer argumento el nombre de la vista, en este caso el nombre de la vista va a ser relativo a la carpeta vies dentro de Resources en el directorio principal
+---
+
+class UserController extends Controller
+{
+    public function index()
+    {
+        return view('users');
+    }
+...
+---
+No necesitamos colocar la extensión.
+
+Asi que solamente vamos a llamar a la función  helper "view" con una cadena con el nombre de la vista relativo a la cadena views y sin la extensión.
+
+Exho esto regresamos al Navegador,
+	http://127.0.0.1:8000/usuarios
+
+Veremos nuevamente el titulo.
+
+Como la pagina esta cargando correctamente y muestra el titulo de usuarios, quiere decir que las pruebas deberian estar pasando:
+
+		> alias t=vendor/bin/phpunit
+
+y posteriores a ello
+			> t		
+
+Y las pruebas deberian estar coprriendo sin ningun error
+
+Recordemos que nuestra prueba en:
+	C:\AppServ\www\dev\CRUDLaravel5.5\tests\Feature\UserModuleTest.php	
++++
+	class UserModuleTest extends TestCase
+	{
+	    /** @test */
+	    function test_it_loads_the_users_list_page()
+	    {
+	       // $this->assertTrue(true);
+	         $this->get('/usuarios')
+	            ->assertStatus(200)
+	            ->assertSee('Usuarios');
+	    }
++++
+
+Estamos comprobando que la pagina cargue correctamente y que podamos ver el texto "Usuarios".
+
+ahora, tipicamente en nuestros controladores vamos a querer pasar datos a nuestra vista y esto  comunmente lo vamos a obntener de la base de datos y para ello vamos a utililzar el ORM de Laravel. Aunque por ahora nos vamos a enfocar en las vistas.
+
+---UserModuleTest.php	
+
+class UserController extends Controller
+{
+    public function index()
+    {
+
+    	//$users = User::all();
+
+    	$users = [
+            'Bill',
+            'Ellie',
+            'Joel', 
+            'Tess',
+            'Tommy',
+        ];
+
+
+        return 'Usuarios';
+    }
+
+...
+---
+
+Pero en ves de comunicarme con un modelo de la Base de datos y tener que configurarl la base de datos, por ahora solo vamos a utilizar un arreglo estatico, pero que nos dara la pauta para trabajar con ello posteriormente.
+
+
+Si yo quiero mostrar estos datos, en la vista, por ejemplo en un ciclo. utilizando un foreach, utilizando la sintaxis alternativa de PHP, imprimiendo el listados de los usuarios en etiquetas list item.
+
+Todo dentro de una etiqueta de lista desordenada:
+
+--
+...
+	<body>
+		<h1>Usuarios</h1>
+
+		<ul>
+			<?php foreach ($users as $user): ?>
+				<li><?php echo $user ?></li>
+			<?php endforeach; ?>
+		</ul>
+	</body>
+...
+--
+
+Si recargamos la página en el navegador, obtendremos un error, ya que no existe la variable users
+
+-- 2M56
 
 
 Ejercicios
