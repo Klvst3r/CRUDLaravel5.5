@@ -1,0 +1,251 @@
+22. Vistas
+
+
+Notas:
+======
+En esta segunda parte de la guia aprenderemos a crear plantillas completas usando Laravel y su motor de plantillas Blade. Veremos también la diferencia entre escribir plantillas con PHP plano VS Blade, así como los temas de rendimiento y de seguridad para prevenir ataques XSS.
+
+
+Laravel también nos permite separar la lógica de presentación (es decir cómo vamos a «presentar» el contenido al usuario) de la lógica de nuestra aplicación (por ejemplo cómo vamos a obtener el contenido de la base de datos, validar datos de la petición, etc.) a través de la capa de «vistas» como veremos en la presente sección:
+
+
+
+Practica
+========
+
+
+
+Ejercicios
+==========
+
+Crear una vista
+---------------
+Las vistas generalmente se encuentran en el directorio /resources/views de la carpeta principal de nuestro proyecto. Crear una vista con Laravel es muy sencillo, simplemente necesitamos crear un archivo .php (o .blade.php como veremos a continuación) en el directorio  /views. Dentro de este archivo escribimos el HTML de la vista.
+
+
+Retornar una vista
+-----------------
+Para retornar una vista retornamos el llamado a la función helper view pasando como argumento el nombre de la vista. El nombre del archivo es relativo a la carpeta resources/views y no es necesario indicar la extensión del archivo:
+---
+	public function index()
+	{
+	    return view('users');
+	}
+--
+
+Pasar datos a la vista
+--------------
+Podemos pasar datos a la vista mediante un arreglo asociativo, donde las llaves son el nombre de las variables que queremos pasar a la vista y el valor son los datos que queremos asociar:
+---
+	$users = [
+	    'Joel',
+	    'Ellie',
+	    'Tess',
+	    //...
+	];
+	return view('users', [
+	    'users' => $users
+	]);
+---
+
+
+También podemos usar el método with encadenándolo al llamado a la función view para pasar datos a la vista en formato de array asociativo:
+---
+	return view('users')->with([
+	    'users' => $users
+	]);
+---
+
+
+Con with también podemos pasar las variables de forma individual:
+---
+	return view('users')
+	    ->with('users', $users)
+	    ->with('title', 'Listado de usuarios');
+---
+
+
+Si los datos que queremos pasar a la vista se encuentran dentro de variables locales podemos utilizar la función compact,  la cual acepta como argumentos los nombres de las variables y las convierte en un array asociativo:
+---
+	$users = [
+	    ...
+	];
+	$title = 'Listado de usuarios';
+	return view('users', compact('users', 'title'));
+---
+
+
+Escapar código HTML
+------------------
+Laravel nos ofrece un helper llamado "e" que nos permite escapar HTML que podría ser insertado por los usuarios de nuestra aplicación, de manera de prevenir posibles ataques XSS:
+---
+<li><?php echo e($user) ?></li>
+---
+
+
+
+
+
+Referencias
+===========
+
+Combinar HTML y PHP sin morir en el intento
+----------------------------------------
+
+
+combinar-html-y-php
+
+Todos amamos las sintaxis que nos provee el motor de plantillas Blade para escribir nuestras vistas, y no es el único, hay otros motores de plantillas geniales como Twig o Smarty, escritos en y para PHP.
+
+Pero imaginemos por un momento que tienes un proyecto que no está usando ningún framework: quizás te toque escribir código para WordPress como a mí, o editar algo de «legacy code» de un proyecto, e instalarle Smarty o algún otro template engine no es una opción viable.
+
+¿Qué hacer cuando debemos editar y mezclar PHP y HTML?
+
+Nos hemos acostumbrado a escuchar que usar «echo» es malo y que mezclar HTML y PHP es horrible, es verdad que no va a ser la «mejor sintaxis del mundo», pero tampoco tiene que ser tan malo, verás, cuando te encuentras con código como el siguiente:
+<div><?php if($pager->has_previous) { ?>
+        <button class="page_left" />
+    <?php } 
+    echo "<span>{$pager->current_page}</span>";
+?>
+    <?php if($pager->has_next) { ?>
+        <button class="page_right" />
+    <?php } ?>
+</div>
+
+El culpable no es PHP, sino lo que está entre el teclado y la silla, como se suele decir.
+
+Te voy a dar algunos tips que te permitirán mezclar PHP y HTML sin producir un resultado terrible:
+
+1. Utiliza la sintaxis alternativa de PHP, es decir:
+<?php if($something): ?>
+  // Prefiere esto
+<?php endif; ?>
+<?php if($something) { ?>
+ // A esto
+<?php } ?>
+
+2. Siempre utiliza la sintaxis multi línea para estructuras de control, es decir:
+<?php if($something): ?>
+  <strong>Usa esto</strong>
+<?php endif; ?>
+<?php if($something)
+    echo "<del>En vez de esto</del>" ?>
+
+3. Esto nos lleva al punto 3, el hecho de que uses etiquetas de HTML y PHP en un mismo archivo, no quiere decir que debas escribir HTML dentro de las sentencias de PHP, en otras palabras:
+<strong>Usa esto <?= $variable ?></strong>
+<?php echo "<del>Nunca esto</del>" ?>
+
+4. Y esto nos lleva al punto 4, utiliza la etiqueta corta <?= $var ?>  para imprimir (es equivalente a <?php echo $var ?> )
+
+5. Por la misma lógica del punto 3, llego a la conclusión del punto 5, no mezcles lógica de programación con lógica de vista, no tienes porqué hacerlo, incluso aunque estés trabajando en un mismo archivo, puedes colocar la lógica de la aplicación (operaciones, llamadas a la base de datos etc.) en la cabecera del archivo, y la lógica de la vista (imprimir variables, HTML) al final, por ejemplo, esto está muy mal:
+<?php $result = mysql_query("SELECT * from users"); ?>
+<h1>Usuarios</h1>
+<ul>
+<?php while ($user = mysql_fetch_obj($result)): ?>
+    <li><?php echo $user->name ?></li>
+<?php endwhile; ?>
+</ul>
+
+Mientras que lo siguiente está mejor:
+<?php
+    // Logica de mi aplicacion:
+    $result = mysql_query("SELECT * from users");
+    $users = array();
+    while ($user = mysql_fetch_obj($result)) {
+        $users[] = $user;
+    } 
+    // Logica de la vista:
+?>
+<h1>Usuarios</h1>
+<ul>
+<?php foreach ($users as $user): ?>
+    <li><?php echo $user->name ?></li>
+<?php endforeach; ?>
+</ul>
+
+    Por supuesto, a estas alturas deberías usar PDO para conectarte a la base de datos y no mysql_query, pero el ejemplo ilustra simplemente cómo puedes separar la lógica de la aplicación (base de datos, etc.) de la lógica de la vista (HTML)
+
+6. Procura abrir y cerrar las etiquetas de PHP en una misma línea, esto es, escribir una sola línea de PHP a la vez, en otras palabras:
+// Usa esto:
+<?php if ($something): ?>
+    <?= yo_prefiero_esto(); ?>
+<?php endif; ?>
+// En vez de:
+<?php if ($something):
+    echo esto_no_me_gusta();
+endif; ?>
+
+Lo primero es más fácil de modificar, a la hora de que necesites agregar HTML o líneas extras.
+
+Con todos estos tips, podemos convertir el primer ejemplo de este post de esto:
+<div><?php if($pager->has_previous) { ?>
+        <button class="page_left" />
+    <?php } 
+    echo "<span>{$pager->current_page}</span>";
+?>
+    <?php if($pager->has_next) { ?>
+        <button class="page_right" />
+    <?php } ?>
+</div>
+
+A esto:
+<div>
+<?php if($pager->has_previous): ?>
+    <button class="page_left" />
+<?php endif; ?>
+    <span>
+        <?= $pager->current_page; ?>
+    </span>
+<?php if($pager->has_next): ?>
+    <button class="page_right" />
+<?php endif; ?>
+</div>
+
+O si quieres indentar un poco más:
+<div>
+    <?php if($pager->has_previous): ?>
+        <button class="page_left" />
+    <?php endif; ?>
+    <span>
+        <?= $pager->current_page; ?>
+    </span>
+    <?php if($pager->has_next): ?>
+        <button class="page_right" />
+    <?php endif; ?>
+</div>
+
+¿Notas la diferencia?
+
+Veamos el mismo ejemplo con Blade:
+<div>
+    @if($pager->has_previous)
+        <button class="page_left" />
+    @endif
+    <span>
+        {{ $pager->current_page }}
+    </span>
+    @if($pager->has_next)
+        <button class="page_right" />
+    @endif
+</div>
+
+O con Smarty:
+<div>
+    {if $pager->has_previous}
+        <button class="page_left" />
+    {/if}
+    <span>
+        {$pager->current_page}
+    </span>
+    {if $pager->has_next}
+        <button class="page_right" />
+    {/if}
+</div>
+
+Por supuesto que las sintaxis de Blade y de Smarty son mucho más limpias y cortas que nuestro ejemplo en PHP mejorado ¡Pero ya la diferencia no es tan radical! Como ves entonces el problema no estaba con PHP o con «echo» sino entre la silla y el teclado.
+
+Conclusión
+
+1. Siempre tenemos la oportunidad de mejorar (o arruinar) nuestro código, no importa si estamos trabajando con un framework como Laravel, con PHP plano, con WordPress, con Ruby o Python, etc.
+
+2. Debemos culpar menos a las herramientas que usamos y ser más activos en buscar mejoras y soluciones en cualquier proyecto o tecnologías con las que estemos trabajando.
