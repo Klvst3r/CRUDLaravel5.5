@@ -101,6 +101,10 @@ Recordemos que nuestra prueba en:
 
 Estamos comprobando que la pagina cargue correctamente y que podamos ver el texto "Usuarios".
 
+
+Paso de valores en forma de arreglos del controlador hacia las vistas - Forma 1
+-------------------------------------------------------------------------------
+
 ahora, tipicamente en nuestros controladores vamos a querer pasar datos a nuestra vista y esto  comunmente lo vamos a obntener de la base de datos y para ello vamos a utililzar el ORM de Laravel. Aunque por ahora nos vamos a enfocar en las vistas.
 
 ---UserModuleTest.php	
@@ -348,6 +352,12 @@ A proposito nosotros podemos utulizar una sintaxis mas corta para imprimir vaira
 
 sin embargo en el siguiente capitulo se aprendera sobre Blade, el motor de plantillas de Laravel que va a simplificar aun mas, esta sintaxis y va a ser que nuestras vistas queden mucho mas limpias, pero antes de pasar a Blade se va anmostrar otras formas en que se pueden pasar datos del controlador a la vista.
 
+
+
+
+
+Paso de valores en forma de arreglos del controlador hacia las vistas - Forma 2
+------------------------------------------------------------------------------
 
 
 

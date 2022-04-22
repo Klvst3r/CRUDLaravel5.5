@@ -20,12 +20,24 @@ class UserController extends Controller
         ];
 
         //return 'Usuarios';
+        
+        //Forma 1 - Array asociativo
+        /*
         return view('users', [
             'users' => $users,
             'title' => 'Listado de usuarios'
 
 
         ]);
+        */
+       
+       //Forma 2 - Metodo with - encadenado
+       
+        return view('users')->with([
+            'users' => $users,
+            'title' => 'Listado de usuarios'
+        ]);
+       
         
     }
 
