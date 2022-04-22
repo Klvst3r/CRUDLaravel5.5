@@ -16,9 +16,12 @@ class UserController extends Controller
             'Joel', 
             'Tess',
             'Tommy',
+            '<script>alert("Clicker")</script>'
         ];
 
-        return 'Usuarios';
+        //return 'Usuarios';
+        return view('users', ['users' => $users]);
+        
     }
 
     public function show($id)
