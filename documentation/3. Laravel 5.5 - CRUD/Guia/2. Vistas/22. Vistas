@@ -272,6 +272,89 @@ http://127.0.0.1:8000/usuarios
 +++
 
  
+Como en el controlador 
+
+
+---Usercontroller.php
+...
+	 return view('users', ['users' => $users]);
+...
+
+---
+
+Se tiene un arreglo asociativo simplemente vamos a colocar otro par de valores, por ejemplo la llave title y se va a psar directamente el valor, sin utilizar una variable, para imprimir por ejemplo ell istado de usuarios.
+
+
+
+
+---Usercontroller.php
+...
+	 return view('users', [
+            'users' => $users,
+            'title' => 'Listado de usuarios'
+
+
+        ]);
+...
+
+---
+
+Si ahora nos vamos a la vista de listado de usuarios
+---users.php
+<body>
+	<h1><?php echo e($title)  ?></h1>
+
+	<ul>
+		<?php foreach ($users as $user): ?>
+			<li><?php echo e($user) ?></li>
+		<?php endforeach; ?>
+	</ul>
+</body>
+---
+
+En este caso el titulo va a ser dinamicos que provengan de la base de datos, se deberan escapar de esta forma. si hacemos esto y regresamos al navegador veremos el titulo "Listado de usuarios"
+
+Si vamos al navegador:
+	http://127.0.0.1:8000/usuarios
+
++++
+	Listado de usuarios
+	Bill
+	Ellie
+	Joel
+	Tess
+	Tommy
+	<script>alert("Clicker")</script>
++++	
+
+
+Veremos el titulo "Listado de usuarios", sin embargo la prueba va a fallar, puesto que la prueba va a estar buscando, el titulo usuarios con la U mayuscula y se esta cambiando el titulo. Asi o se puede cambiar el titulo o cambiar la prueba, en este caso se cambia la prueba.
+
+A proposito nosotros podemos utulizar una sintaxis mas corta para imprimir vairable con PHP
+
+---users.php
+...
+<body>
+	<h1><?= e($title)  ?></h1>
+
+	<ul>
+		<?php foreach ($users as $user): ?>
+			<li><?= e($user) ?></li>
+		<?php endforeach; ?>
+	</ul>
+</body>
+...	
+---
+
+sin embargo en el siguiente capitulo se aprendera sobre Blade, el motor de plantillas de Laravel que va a simplificar aun mas, esta sintaxis y va a ser que nuestras vistas queden mucho mas limpias, pero antes de pasar a Blade se va anmostrar otras formas en que se pueden pasar datos del controlador a la vista.
+
+
+
+
+
+
+
+
 
 
 Ejercicios

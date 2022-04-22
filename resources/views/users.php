@@ -6,11 +6,11 @@
 	<title>Listado de Usuarios - Klvst3r</title>
 </head>
 <body>
-	<h1>Usuarios</h1>
+	<h1><?= e($title)  ?></h1>
 
 	<ul>
 		<?php foreach ($users as $user): ?>
-			<li><?php echo e($user) ?></li>
+			<li><?= e($user) ?></li>
 		<?php endforeach; ?>
 	</ul>
 </body>

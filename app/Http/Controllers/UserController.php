@@ -20,7 +20,12 @@ class UserController extends Controller
         ];
 
         //return 'Usuarios';
-        return view('users', ['users' => $users]);
+        return view('users', [
+            'users' => $users,
+            'title' => 'Listado de usuarios'
+
+
+        ]);
         
     }
 
