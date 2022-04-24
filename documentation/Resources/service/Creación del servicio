@@ -11,7 +11,7 @@ START /B "C:\AppServ\www\dev\CRUDLaravel5.5" php artisan serve
 El archivo se guarda en la Raíz del proyecto 
 
 Descargando la Aplicación
-	Slimm Bat To Exe Converterpara ejecutarse en El sistema operativo Windows, utilizando la versión 5.5 para la presente guia.
+	Slimm Bat To Exe Converter para ejecutarse en El sistema operativo Windows, utilizando la versión 5.5 para la presente guia.
 
 
 Se genera un archivo ejecutable sin ventana, en la ruta:
