@@ -33,11 +33,18 @@ class UserController extends Controller
        
        //Forma 2 - Metodo with - encadenado
        
-        return view('users')->with([
+       /* return view('users')->with([
             'users' => $users,
             'title' => 'Listado de usuarios'
-        ]);
-       
+        ]);*/
+
+        //Encadenando las variables individualmente
+
+         return view('users')
+         ->with('users', $users) 
+         ->with('title', 'Listado de usuarios');
+            
+               
         
     }
 
