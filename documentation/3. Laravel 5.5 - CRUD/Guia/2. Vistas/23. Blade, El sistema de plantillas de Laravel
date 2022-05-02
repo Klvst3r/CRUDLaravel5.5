@@ -112,10 +112,152 @@ Utilizando el comando view:clear podemos eliminar desde la terminal la vistas en
 	> php artisan view:clear
 
 
+
+
+
+
 Practica
 ========
+
+En este seccion, vamos a tratar el tema de Blade, el sistema de Plantillas de Laravel.PHP, se creo como como un lenguaje de plantillas para generar páginas dinamicas en HTML, a medida que paso el tiempo sobnre todo a partir de la version 5, PHP se convirtio en un lenguaje robusto de programación orientado a objetos, Hoy dia e ironicamante ya no es un buen lenguaje para generar plantillas. Es decir la sintaxis no es tan agradable, y hay caracteristicas por ejemplo que deberiamos de tener en un lenguaje de plantillas omo la capacidad de escapar los datos dinamicos, de forma automatica que en PHP debemos hacerlo manualmente y por supuesto no se nos puede olvidar hacerlo. Asi que para tener esta caracteristica varios desarrolladores han creado diversos motores de plantillas para PHP, por ejemplo tenemos Smarty que ya tiene algo de timepo, si se trabaja con Symfony, actualmente trabaja con un motor de plantillas llamado Tweak. Laravel no se queda atras e incluye su propio motor de plantillas, en este caso llmado Blade y vamos a ver como se tutiliza.
+
+si por ejemplo queremos imprimir algo como la variable $users
+
+---
+<ul>
+	@foreach ($users as $user)
+	    <li>{{ $user }}</li>
+	@endforeach
+</ul>
+---
+
+Debemos utilizar dobles llaves como se muestra anteriormente, colocando entre ellas la variable que se quiere imprimir, pero tambien se pueden colocar otras expresiones de PHP como llamados a funciones, y de igual forma para imprimir el titulo
+
+
+---
+<h1>{{ $title }}</h1>
+<ul>
+	@foreach ($users as $user)
+	    <li>{{ $user }}</li>
+	@endforeach
+</ul>
+---
+
+
+
+Ciclos
+---------
+Por otro lado si queremos hacer ciclos, condicionales y otras estructuras de control entonces vamos a utilizar directivas. Ya que en lugar en ves de tener que abrir y cerrar llaves de PHP y cuidando de poner los dos puntos, etcvamos a utilizar una sintaxis mucho mas simple. Son las directivas de Blade. Las cuales van precedidas por un @, por ejemplo el nombr de una directiva. Por ejemplo:
+
+---
+<ul>
+	@foreach ($users as $user):
+	    <li>{{ $user }}</li>
+	@endforeach
+</ul>  
+---
+
+Para cerrar el condicional lo hago mediante la directiva @endforeach. SIn embargo si yo hago esto y regreso al navegador recargando la página no va a funcionar:
+	http://127.0.0.1:8000/usuarios
+
+Ya que estaremos viendo todo el codigo de forma estatica y si se ejecuta la prueba
+
+De:
+--- /resources/views/users.php
+<body>
+	<h1><?= e($title)  ?></h1>
+
+	<ul>
+		<?php foreach ($users as $user): ?>
+			<li><?= e($user) ?></li>
+		<?php endforeach; ?>
+	</ul>
+</body>
+---
+
+
+Se convierte y renombra a
+--- /resources/views/users.blade.php
+<body>
+	<h1><?= e($title)  ?></h1>
+
+	<ul>
+		@foreach ($users as $user)
+			<li>{{ $user }} </li>
+		@endforeach
+	</ul>
+</body>
+---
+
+Haciendo la pruebas en terminal
+	> t
+
+	.array:2 [
+	  "title" => "Listado de usuarios"
+	  "users" => array:6 [
+	    0 => "Bill"
+	    1 => "Ellie"
+	    2 => "Joel"
+	    3 => "Tess"
+	    4 => "Tommy"
+	    5 => "<script>alert("Clicker")</script>"
+	  ]
+	]
+
+
+O en el navegador
+----------------
+	http://127.0.0.1:8000/usuarios
+	+++
+		array:2 [▼
+		  "title" => "Listado de usuarios"
+		  "users" => array:6 [▼
+		    0 => "Bill"
+		    1 => "Ellie"
+		    2 => "Joel"
+		    3 => "Tess"
+		    4 => "Tommy"
+		    5 => "<script>alert("Clicker")</script>"
+		  ]
+		]
+
+
+Se vera nuevamente el listados de los usuarios y el codigo Js se viazualizara escapado. asiq ue no solo utilizar Blade es ´más expresivo y elegante, sino que tambien viene con este agregado de seguridad para la aplicación. ahora hay quienes dicen que no les gusta utilizar un sistema de plantillas por que el Framework tendria que interpretar todo este codigo haciendo el desarrollo mas lento. sin embargo esto no sucede con Blade, ya que Laravel va a compilar y mantener en cache nucestras vistas. Esto lo podemos hacer si revisamos el directorio:
+	
+	/storage/framework/views/<id_vista_compilada.php>
+
+
+Entonces podemos ver que nuestra plantilla ha sido compilada, a PHP plano que es mas o menos lo que teniamos antes. Y entonces la segunda vez que solicitemos esta pagina a menos que hagamos cambios en la vista, y se tomara la vista que esta en cache.
+
+A menos que se haga un cambio en la vista, 
+
+Eliminar vistas de cache
+-----------------------
+
+Se pueden eliminar las vistas almacenadas en cache desde la consola con el comando:
+	>  php artisan view:clear
+
+Pero apenas se recarge la página, enotnces nuevamente Laravel generara la Vista correspondiente.
+
+Basicamante, utilizar Blade es como utilizar PHP plano, no debemos preocuparnos por esto.Y ademas del tema del rendimciento seguridad y elegancia que nos brinda Blade, tambien, tendremos acceso a una serie de directivas y estructuras de control que no existen en PHP, por ejemplo vamos a suponer que nosotros queremos mostrar el listado de usuarios unicamante si tenemos usuarios.
+
+Para lleo nos vamos a ir al controlador del usuario
+---UserController.php
+
 
 
 
 Ejercicios
 ==========
+
+Ejercicio
+
+En UserController asigna y crea vistas para las otras acciones y practica pasando datos a la vista.
+Material relacionado
+
+
+Referencias
+==========
+
+Documentación oficial del motor de plantillas Blade (en inglés)
+	https://laravel.com/docs/5.5/blade
