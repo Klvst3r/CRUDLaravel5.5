@@ -9,12 +9,19 @@
 	<h1>{{ $title }}</h1>
 
 	<hr/>
-
-
+	
 	<ul>
-		@foreach ($users as $user)
-			<li>{{ $user }} </li>
-		@endforeach
+
+		@forelse($users as $user)
+				<li>{{ $user }} </li>
+
+		@empty
+			<p>No hay usuarios registrados</p>
+		@endforelse
+		
 	</ul>
+
+	{{ time() }}
+
 </body>
 </html>

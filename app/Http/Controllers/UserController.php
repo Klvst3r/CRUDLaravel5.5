@@ -62,7 +62,7 @@ class UserController extends Controller
         //return view('users', compact('title', 'users'));
 
         // 1. Cambbio
-        
+        /*
          $users = [
             'Bill',
             'Ellie',
@@ -75,6 +75,62 @@ class UserController extends Controller
         $title = 'Listado de usuarios';        
     
         return view('users', compact('title', 'users'));        
+        */
+              
+       //2do Cambio
+/*       if(request()->has('empty')){
+            $users = [];
+       } else {
+             $users = [
+                'Bill',
+                'Ellie',
+                'Joel', 
+                'Tess',
+                'Tommy'
+                
+            ];
+       }
+       
+        $title = 'Listado de usuarios';        
+    
+        return view('users', compact('title', 'users'));   */     
+
+        //3r Cambio
+        //Primera verificación
+      /*  $users = [
+                'Bill',
+                'Ellie',
+                'Joel', 
+                'Tess',
+                'Tommy'
+                
+            ];
+       
+       
+        $title = 'Listado de usuarios';        
+    
+        return view('users', compact('title', 'users'));        */
+
+
+        //Segunda verificación
+         if(request()->has('empty')){
+            $users = [];
+       } else {
+             $users = [
+                'Bill',
+                'Ellie',
+                'Joel', 
+                'Tess',
+                'Tommy'
+                
+            ];
+       }
+       
+        $title = 'Listado de usuarios';        
+    
+        return view('users', compact('title', 'users'));
+
+
                
         
     }

@@ -231,6 +231,9 @@ Entonces podemos ver que nuestra plantilla ha sido compilada, a PHP plano que es
 
 A menos que se haga un cambio en la vista, 
 
+
+
+
 Eliminar vistas de cache
 -----------------------
 
@@ -239,10 +242,313 @@ Se pueden eliminar las vistas almacenadas en cache desde la consola con el coman
 
 Pero apenas se recarge la página, enotnces nuevamente Laravel generara la Vista correspondiente.
 
+
+
+Quedando de la siguiente manera el primer cambio:
+
+---user.blade.php
+	<!DOCTYPE html>
+	<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Listado de Usuarios - Klvst3r</title>
+	</head>
+	<body>
+		<h1>{{ $title }}</h1>
+
+		<hr/>
+
+
+		<ul>
+			@foreach ($users as $user)
+				<li>{{ $user }} </li>
+			@endforeach
+		</ul>
+	</body>
+	</html>
+---
+Con el Controlador:
+---UserController.php
+ $users = [
+            'Bill',
+            'Ellie',
+            'Joel', 
+            'Tess',
+            'Tommy',
+            '<script>alert("Clicker")</script>'
+        ];
+
+        $title = 'Listado de usuarios';        
+    
+        return view('users', compact('title', 'users'));       
+---
+
+
 Basicamante, utilizar Blade es como utilizar PHP plano, no debemos preocuparnos por esto.Y ademas del tema del rendimciento seguridad y elegancia que nos brinda Blade, tambien, tendremos acceso a una serie de directivas y estructuras de control que no existen en PHP, por ejemplo vamos a suponer que nosotros queremos mostrar el listado de usuarios unicamante si tenemos usuarios.
 
-Para lleo nos vamos a ir al controlador del usuario
+Para lleo nos vamos a ir al controlador del usuario, mediante un pequeño truco:
+
+---/app/Http/UserController.php
+...
+	 public function index()
+	    {
+	 if(request()->has('empty')){
+	            $users = [];
+	       } else {
+	             $users = [
+	                'Bill',
+	                'Ellie',
+	                'Joel', 
+	                'Tess',
+	                'Tommy'
+	                
+	            ];
+	       }
+	       
+
+
+	        $title = 'Listado de usuarios';        
+	    
+	        return view('users', compact('title', 'users'));        
+	}
+
+	    public function show($id)
+	    {
+	       return "Mostrando detalles del usuario: {$id}";  
+	    }
+...
+
+---
+
+Se preguntra si la petición contiene el campo empty, si esta vacio entonces el listado de usuarios va a estar vacio, de lo contrario vamos a tener el mismo listado de ususrios de antes. Verificando por las pruebas que no se ha dañado nada asi como en el navegador.
+
+Entonces podemos pasar el campo empty desde la url de la siguiente manera:
+	http://127.0.0.1:8000/usuarios?empty
+
+Y en esta ocación veremos que la lista de usuarios desaparece, esto es un pequeño truco para verificar cuando hay un listado vacia o boen no existen datos. Puesto que ahora no estamos utilizando una Bd.
+
+
+En la vista:
+Si no esta vacia la lista mostramos el listado, en caso contrario, enviamos un mensaje.
+---user.blade.php
+	<body>
+		<h1>{{ $title }}</h1>
+
+		<hr/>
+
+		@if (! empty ($users))
+
+			<ul>
+				@foreach ($users as $user)
+					<li>{{ $user }} </li>
+				@endforeach
+			</ul>
+		@else
+			<p>No hay usuarios registrados</p>
+		@endif
+	</body>	
+---	
+
+Mostrando el mensaje de que no hay usuarios registrados, y en la barra de la URL podemos quitar el campo empty, y nuevamente aparece el listado de usuarios.
+
+
+Documentacion
+-------------
+
+Esto lo podemos documentar incluso, mediante pruebas automatiza<das si regresamos a la prueba.
+
+---/test/Feature/UserModuleTest.php
+...
+	 //Listado de usuarios
+	    function it_shows_the_users_list()
+	    {
+	       // $this->assertTrue(true);
+	         $this->get('/usuarios')
+	            ->assertStatus(200)
+	            ->assertSee('Listado de usuarios')
+	            ->assertSee('Joel')
+	            ->assertSee('Ellie');
+
+	    }
+
+
+	    //Mostramos un mensaje por defecto si la lista esta vacia
+	     function it_shows_a_default_message_if_the_users_list_is_empty()
+	    {
+	         $this->get('/usuarios?empty ') //Pasamos un array vacio a la vista
+	            ->assertStatus(200)
+	            ->assertSee('No hay usuarios registrados.')
+	            ->assertSee('Joel')
+	            ->assertSee('Ellie');
+
+	    }   
+
+...	
+---
+
+Y creamos una nueva prueba,   con dos metodos una para listar a los usuarios y un segundo metodo para mostrar un mensaje por default cuando el listado de usuarios esta vacio.
+
+
+Regresamos a la consola y al navegador para hacer las pruebas pertinentes
+	> t
+
+aunque la prueba pasa a la primera, podemos ser un poco sospechosos, y podemos comprobar doblemente que l aprueba esta funcionando es:
+
 ---UserController.php
+ //3r Cambio
+        //Primera verificación
+        $users = [
+                'Bill',
+                'Ellie',
+                'Joel', 
+                'Tess',
+                'Tommy'
+                
+            ];
+       
+       
+        $title = 'Listado de usuarios';        
+    
+        return view('users', compact('title', 'users'));       
+
+---
+Si del comportamiento de nuestro controlador, quitando el condicional y reejejcutamos la prueba.
+
+Blade tiene otras directivas.
+
+Por ejemplo
+De esto:
+---user.blade.php
+	@if (! empty ($users))
+
+			<ul>
+				@foreach ($users as $user)
+					<li>{{ $user }} </li>
+				@endforeach
+			</ul>
+		@else
+			<p>No hay usuarios registrados</p>
+	@endif
+---
+A esto:
+---user.blade.php
+
+	@unless(empty($users))
+
+		<ul>
+			@foreach ($users as $user)
+				<li>{{ $user }} </li>
+			@endforeach
+		</ul>
+	@else
+		<p>No hay usuarios registrados</p>
+	@endif
+---
+
+
+Por ejemplo en la vista de usuarios, podemos utilizar directamente la directiva unless que es como un condicional inverso, entonces vas a decir que a menso que la listad e usuarios, este vacia vamos a mostrar el listado de usuarios, de lo contrario voy a mostrar que no hay uisuarios registrados.
+
+
+
+Regresando a la consola y al navegador y reejecutamos la prueba, y esta pasa, significa que tenemos el milso comportamiento de antes, por supuesto tenemos tambien que regresar al navegador, y podemos ver que se tiene el mosmo resultado.
+
+
+
+Otra directiva - empty
+---------------
+
+Podemos utilizar otra directiva llamada empty, en este caso necesitamos invertir el codigo dentro del condicional, y por cierto Laravel contienen directiva para cerrar entocnes estas estructuras de control
+
+---user.blade.php
+<hr/>
+
+	@empty($users)
+		<p>No hay usuarios registrados</p>
+	@else
+		<ul>
+			@foreach ($users as $user)
+				<li>{{ $user }} </li>
+			@endforeach
+		</ul>
+	
+	@endempty
+</body>
+---
+
+Tambien se puede utilizar @endunless si se utiliza en la parte de arriba.
+
+Probando las pruebas dewsde la consullta, para verificar que las pruebas estan pasando.
+
+Podemos hecharle tambien un vistazo nuevamente a nuestra vista en cache y ver que la directiva empty no es mas que una forma rapida de escribir if ampty.
+
+De regreso a la vista user.blade.php tambien podemos utilizar la directiva, @forelse la cual va a funcionar como un foreach pero nosotros podremos pasar a una opcion por defecto que en este caso va a ser el mensaje de usuarios que no hay usuarios registrados.
+
+---user.blade.php
+	<body>
+		<h1>{{ $title }}</h1>
+
+		<hr/>
+		
+		<ul>
+
+			@forelse($users as $user)
+					<li>{{ $user }} </li>
+
+			@empty
+				<p>No hay usuarios registrados</p>
+			@endforelse
+			
+		</ul>
+
+	</body>
+	
+	
+---
+Jugando con las pruebas y en el navegador:
+	http://127.0.0.1:8000/usuarios
+		o bien
+	http://127.0.0.1:8000/usuarios?empty
+
+
+Solamente estamo comprobando, si regresamos a la consola, las pruebas deberan pasar nuevamente.
+
+Todo lo que va dentro de las llaves o los parentesis de las directivas que aceptan parantesis, es PHP valido. Podemos llamar a la funciona time y ver el resultado en la vista dentro del navegador
+
+--
+</ul>
+
+	{{ time() }}
+
+</body>
+
+-- 
+
+Incluso si llamamos a la fuincion tiem e imprimimos el resultado.
+
+Por lo tanto en el caso de Blade no debemos gastar demasiado tiempo aprendiendo sintaxis nueva, por que simplemente es una manera elegante de envolver el PHP al que uno esta acostumbrado a trabajar en las vistas.
+
+Con estos conocimientos podemos trabajar en EserController.php y podemo asignar y crear diferentes vistas para las otras acciones, debemos practicar.
+
+Si se necesita utilizar datos dinamicos, podemos hacerlo empleando la funcion request encadenando el metodo has-
+
+---Usercontroler.php
+
+ if(request()->has('empty')){
+            $users = [];
+--
+O poniendo los datos de la siguiente manera:_
+
+---UserController.php
+
+request('data');
+
+if(request()->has('empty')){
+            $users = [];
+---   
+
+
+Considerando que esto es temporal, puesto que se vera mas adelante como trabar con Basees de Datos con Laravel.
 
 
 
