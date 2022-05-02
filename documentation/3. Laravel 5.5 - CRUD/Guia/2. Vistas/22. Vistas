@@ -350,7 +350,7 @@ A proposito nosotros podemos utulizar una sintaxis mas corta para imprimir vaira
 ...	
 ---
 
-sin embargo en el siguiente capitulo se aprendera sobre Blade, el motor de plantillas de Laravel que va a simplificar aun mas, esta sintaxis y va a ser que nuestras vistas queden mucho mas limpias, pero antes de pasar a Blade se va anmostrar otras formas en que se pueden pasar datos del controlador a la vista.
+sin embargo en el siguiente capitulo se aprendera sobre Blade, el motor de plantillas de Laravel que va a simplificar aun mas, esta sintaxis y va a ser que nuestras vistas queden mucho mas limpias, pero antes de pasar a Blade se va mostrar otras formas en que se pueden pasar datos del controlador a la vista.
 
 
 
@@ -360,9 +360,85 @@ Paso de valores en forma de arreglos del controlador hacia las vistas - Forma 2
 ------------------------------------------------------------------------------
 
 
+En ves de esta vez pasar un array asociativo como segundo argumento tambien podemos pasarlo tambien con el metodo with, que podemos encadenar al metodo view de la siguiente manera.
+
+---UserController.php
+ return view('users')->with([
+            'users' => $users,
+            'title' => 'Listado de usuarios'
+        ]);
+--
+Con esto deberiamos de lograr el mismo resultado de antes, con esto tambien podemos pasar las varables a with de manera individual.
+
+Por ejemplo:
+
+---UserController.php
+   return view('users')
+         ->with('users', $users) 
+         ->with('title', 'Listado de usuarios');
+--
+
+notemos que estamos encadenando un metodo tras otro y esta es una tecnica que se utiliza bastante en Laravel, luego despues de hacer esto podemos regrear a la consola y garantizar que el proyecto aun funciona ejecutando la prueba.
+
+ 	> alias t=vendor/bin/phpunit
+ 	> t
 
 
+Paso de valores en forma de arreglos del controlador hacia las vistas - Forma 3 - Variables locales
+------------------------------------------------------------------------------
 
+Hay otras formas en que podemos pasar datos a la vista en la que yo utilizo generalmente es la del array asociativo por que parece mas sencilla, ahora, en caso de que los datos que quiera pasar a la vista esten todos en variables locales, por ejemplo la variable users que tenga otra variable $title.
+
+---userController.php
+ return view('users', [
+         'users' => $users, 
+         'title' => $title
+        ]);
+---
+
+en este caso puedo utilizar la funcion de phpcompact(), y va aceptar como argumentos los nombres de las variables y las va a convertir en un array asociativo.
+
+---UserController.php
+ $title = 'Listado de usuarios';
+
+   //var_dump(compact('title', 'users')); die();
+
+        dd(compact('title', 'users')); 
+
+        return view('users', compact('title', 'users'));
+---
+
+Puedo utulizar el helper de Laravel dd(), que es similar a ejecutar var dump y luego die. Esta es una forma sencilla y rapida de comprobar el resultado a una llamada a una funcion o los datos que tenemos en una variable.
+
+En la consola  al ejecutar la prueba
+	> t
++++	
+	.array:2 [
+  "title" => "Listado de usuarios"
+  "users" => array:6 [
+    0 => "Bill"
+    1 => "Ellie"
+    2 => "Joel"
+    3 => "Tess"
+    4 => "Tommy"
+    5 => "<script>alert("Clicker")</script>"
+  ]
+]
+
++++
+
+Y en el navegador
+	http://127.0.0.1:8000/usuarios
++++
+array:2 [▼
+  "title" => "Listado de usuarios"
+  "users" => array:6 [▶]
+]
++++	
+
+al recargar la pagina que tenemos un array asociativo, en vez de declararlo de forma manual, entonces lo hacemos utilizando compact(), y como el resultado de compact() nos devuelve un array asociativo, entoncees, podemos utilizar la sintaxis, patra pasar nuestrso datos a la vista.
+
+Asi que en la consola si reejecutamos laspruebas, las peurbas estan pasando con el resultado en la consola.
 
 
 

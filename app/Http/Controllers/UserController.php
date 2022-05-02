@@ -33,11 +33,34 @@ class UserController extends Controller
        
        //Forma 2 - Metodo with - encadenado
        
-        return view('users')->with([
+       /* return view('users')->with([
             'users' => $users,
             'title' => 'Listado de usuarios'
-        ]);
-       
+        ]);*/
+
+        //Encadenando las variables individualmente
+
+         /*return view('users')
+         ->with('users', $users) 
+         ->with('title', 'Listado de usuarios');
+            */
+    // Forma 3 - Paso de valores en variables locales
+
+         //Una segunda variable
+
+         $title = 'Listado de usuarios';
+
+       /* return view('users', [
+         'users' => $users, 
+         'title' => $title
+        ]);*/
+        
+        //var_dump(compact('title', 'users')); die();
+
+        dd(compact('title', 'users')); 
+
+        return view('users', compact('title', 'users'));
+               
         
     }
 
