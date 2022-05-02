@@ -12,10 +12,12 @@ Directiva @include
 ------------------
 
 Blade incluye una directiva llamada @include. Para usarla solamente tenemos que pasarle el nombre del archivo que queremos incluir:
-@include('header')
-    <h1>{{ $title }}</h1>
-    ...
-@include('footer')
+---	
+	@include('header')
+	    <h1>{{ $title }}</h1>
+	    ...
+	@include('footer')
+---
 
 Podemos usar múltiples directivas @include dentro de una misma plantilla de Blade.
 
@@ -25,8 +27,9 @@ Helper asset()
 --------------
 
 El helper asset nos dará la ruta absoluta al archivo indicado:
-<link href="{{ asset('css/style.css') }}" rel="stylesheet">
-
+---	
+	<link href="{{ asset('css/style.css') }}" rel="stylesheet">
+---
 Utilizando este helper podemos evitar que la ruta del archivo cambie dependiendo de la URL.
 
 
@@ -37,35 +40,52 @@ Layout principal
 En lugar de separar nuestra plantilla en diferentes archivos, podemos crear una sola plantilla que tendrá toda la estructura de nuestro diseño. Podemos llamar a esta plantilla layout.blade.php, por ejemplo, y colocar todo el código de nuestro diseño allí.
 
 Utilizando la directiva @yield dentro de esta plantilla podemos indicar secciones (pasando como argumento el nombre de la sección) y luego en plantillas individuales podemos colocar el contenido de dichas secciones:
-<main role="main" class="container">
-    @yield('content')
-</main>
+---
+	<main role="main" class="container">
+	    @yield('content')
+	</main>
+---
 
-Puedes nombrar tu layout de cualquier forma, siempre y cuando coloques la extensión .blade.php. En este ejemplo se llama layout.blade.php.
 
-Puedes agregar tantas directivas @yield como quieras a tu layout. Por ejemplo, puedes agregar una directiva yield para personalizar el título de la página:
-<title>@yield('title') - Styde.net</title>
+Puede nombrar su layout de cualquier forma, siempre y cuando coloque la extensión .blade.php. En este ejemplo se llama layout.blade.php.
 
+Puede agregar tantas directivas @yield como quiera a su layout. Por ejemplo, puede agregar una directiva yield para personalizar el título de la página:
+---
+	<title>@yield('title') - Klvst3r.io</title>
+---
 
 
 Extender de una plantilla
 -------------------------
 
 En cada una de nuestras plantillas individuales en lugar de incluir el header o footer le indicamos a Laravel que la vista debe extender de layout.blade.php. No es necesario colocar la extensión del archivo. Tampoco es necesario colocar la ruta completa, ya que Laravel por defecto buscará el archivo dentro del directorio resources/views:
-@extends('layout')
+---
+	@extends('layout')
+---
+
 
 Hecho esto, debemos definir las secciones. Para ello utilizamos la directiva @section, pasando como argumento el nombre de la sección:
-@section('title') Usuario {{ $id }} @endsection
-@section('content')
-    <!-- Contenido de la sección -->
-@endsection
+---
+	@section('title') Usuario {{ $id }} @endsection
+	@section('content')
+	    <!-- Contenido de la sección -->
+	@endsection
+---
+
+
 
 Indicamos el final o cierre de la sección con la directiva @endsection.
 
-La directiva @section define una sección de contenido, mientras que la directiva @yield es usada para mostrar el contenido de una sección específica.
+
+
+
+"La directiva @section define una sección de contenido, mientras que la directiva @yield es usada para mostrar el contenido de una sección específica."
 
 Dado que el titulo es una sola línea, podemos pasar el contenido como el segundo argumento de @section:
-@section('title', "Usuario {$id}")
+---
+	@section('title', "Usuario {$id}")
+---
+
 
 El código que se encuentra entre comillas es PHP y no Blade, por lo que en lugar de utilizar la sintaxis de dobles llaves {{ $id }} utilizaremos {$id} o simplemente $id.
 
@@ -77,7 +97,7 @@ Practica
 Ejercicio
 =========
 
-Crea un archivo menu.blade.php e incluyelo en el header del layout principal. Dentro del archivo menu, crea un menú con enlaces a las diferentes rutas de la aplicación. Asegúrate de ejecutar las pruebas para verificar que todo siga funcionando correctamente.
+Cree un archivo menu.blade.php e incluyalo en el header del layout principal. Dentro del archivo menu, cree un menú con enlaces a las diferentes rutas de la aplicación. Asegúrese de ejecutar las pruebas para verificar que todo siga funcionando correctamente.
 
 
 Documentación y ejemplos con Bootstrap
@@ -87,12 +107,14 @@ Documentación y ejemplos con Bootstrap
 Ayuda
 =====
 
-¿Qué debo usar para incluir el menu.blade.php? ¿@yield y @section? ¿Solo @section y @show? y nada de eso me daba resultado. Lo hice de diferentes formas y nada. Hasta que me puse a investigar y encontré la directiva @include dentro del layout principal. El @include en el layout principal, busca una vista dentro del directorio view, de tal forma que solo debe invocarse como @include('menu). A lo anterior le llaman "Including Sub-Views".
+¿Qué debo usar para incluir el menu.blade.php? ¿@yield y @section? ¿Solo @section y @show? y nada de eso me da resultado. 
+
+Lo podemos hacer de diferentes formas y nada. Posterior a una investigación y localizar la directiva @include dentro del layout principal. El @include en el layout principal, buscar una vista dentro del directorio view, de tal forma que solo debe invocarse como @include('menu). A lo anterior le llaman "Including Sub-Views".
 
 En mi caso hice enlaces hacia "usuarios", y hacia "usuarios/5", y aquí es importante no pasar por alto el uso de:
-{{ asset('usuarios') }}
+	{{ asset('usuarios') }}
 y
-{{ asset('usuarios/5') }}
+	{{ asset('usuarios/5') }}
 
 Para que los enlaces funcionen de manera correcta, independientemente de la profundidad de la url.
 
