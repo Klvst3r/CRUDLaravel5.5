@@ -10,14 +10,14 @@ class UserController extends Controller
     {
         //$users = User::all();
         
-        $users = [
+       /* $users = [
             'Bill',
             'Ellie',
             'Joel', 
             'Tess',
             'Tommy',
             '<script>alert("Clicker")</script>'
-        ];
+        ];*/
 
         //return 'Usuarios';
         
@@ -48,7 +48,7 @@ class UserController extends Controller
 
          //Una segunda variable
 
-         $title = 'Listado de usuarios';
+         //$title = 'Listado de usuarios';
 
        /* return view('users', [
          'users' => $users, 
@@ -57,9 +57,24 @@ class UserController extends Controller
         
         //var_dump(compact('title', 'users')); die();
 
-        dd(compact('title', 'users')); 
+       // dd(compact('title', 'users')); 
 
-        return view('users', compact('title', 'users'));
+        //return view('users', compact('title', 'users'));
+
+        // 1. Cambbio
+        
+         $users = [
+            'Bill',
+            'Ellie',
+            'Joel', 
+            'Tess',
+            'Tommy',
+            '<script>alert("Clicker")</script>'
+        ];
+
+        $title = 'Listado de usuarios';        
+    
+        return view('users', compact('title', 'users'));        
                
         
     }

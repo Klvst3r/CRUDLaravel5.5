@@ -107,6 +107,10 @@ Para ejecutar pruebas utilizaremos la consola con el comando:
 Sin embargo para ahorrar un poco de tiempo, cuanod yo ejecuto las pruebas, se ha definido previamente un alias:
 
 	> alias t=vendor/bin/phpunit
+	> t
+
+Entonces la prueba va a fallar puesto que ya no estamos imprimiendo los nombres de los usuarios en el HTML. esto sucede por que para poder utilizar el sistema de 0plantillas de Laravel nosotros debemos renombrar nustro archivo con la extensión .blade.php. De hecho si estamos utilizando
+
 
 De esta manera puedo ejecutar todas las pruebas simplemente escribiendo t y presionando enter en la terminal, incluso hay maneras en las que se pueden ejecutar las pruebas directamente desde el editor, yo l ohjago desde terminal para verlo mejor. 
 
