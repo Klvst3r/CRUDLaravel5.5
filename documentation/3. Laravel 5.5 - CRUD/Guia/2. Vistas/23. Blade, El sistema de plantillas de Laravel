@@ -119,3 +119,15 @@ Practica
 
 Ejercicios
 ==========
+
+Ejercicio
+
+En UserController asigna y crea vistas para las otras acciones y practica pasando datos a la vista.
+Material relacionado
+
+
+Referencias
+==========
+
+Documentación oficial del motor de plantillas Blade (en inglés)
+	https://laravel.com/docs/5.5/blade
