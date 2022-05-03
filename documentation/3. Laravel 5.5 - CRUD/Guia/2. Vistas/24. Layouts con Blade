@@ -115,12 +115,16 @@ Podemos incluso crear un proyectro aparte para hacer esto, puede ser separado de
 
 Vamos a llmar el ejemplo "boostrap.html". Copiamos ahora si el codigo fuente. Aunque podemos ver que este ejemplo esta haciendo referencia a los archivos de JS que tienen una hubicación relativa al ejemplo.
 
+Lo guardamos en 
+	/public/bootstrap.html
+
+
 Vamos a ver si podemos desde la pagina de bootstrap utilizar el CDN, para no necesitar copiar todos estos archivos, vamos a la parte de la documentación, donde podemos ver las etiquetas que uiliza el CDN.
 
 En la parte de la documentación:
 	https://getbootstrap.com/docs/5.1/getting-started/introduction/
 
-donde podemos ver la etiquetas que utilizan el CND, copiamos para ver el codigo CSS, y hay otro codigo CSS que lo copiaremos del propio proyecto.
+donde podemos ver la etiquetas que utilizan el CDN, copiamos para ver el codigo CSS, y hay otro codigo CSS que lo copiaremos del propio proyecto.
 ---
     <!-- Bootstrap core CSS -->
 	<link href="css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
@@ -139,6 +143,23 @@ Se hace lo mismo de referenciar los archivos CDN para la parte de JS
 
 Para poder visualizar el resultado lo hacemos desde raiz y el nombre de la pagina de ejemplo.
 	http://127.0.0.1:8000/bootstrap.html	
+
+Por algun motivo en esta versión no se utiliza jQuery, pero la funcionalidad es a traves de JS.
+
+
+Integración del diseño en el proyecto de Laravel
+-------------------------------------------------
+
+El diseño se puede considerar de dos partes, la parte del header, y luego la parte del footer, en medio esta la parte del contenido. Seleccionando la parte del header copiando en la caprte views, se crearia un archivo ej. header.blade.php.
+
+Lo mismo con el contenido, para la parte del contenido dentro de la etiqueta main y la parte del footer. La tercera parte es el cierre con el footer.
+
+Dentro de la carpeta de vista se tendras las areas
+- header.blade.php
+- content.blade.php
+- footer.blade.php
+
+
 
 
 
