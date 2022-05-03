@@ -138,7 +138,7 @@ Se hace lo mismo de referenciar los archivos CDN para la parte de JS
 
 
 Para poder visualizar el resultado lo hacemos desde raiz y el nombre de la pagina de ejemplo.
-	http://127.0.0.1:8000/boostrap.html	
+	http://127.0.0.1:8000/bootstrap.html	
 
 
 
