@@ -93,6 +93,56 @@ El código que se encuentra entre comillas es PHP y no Blade, por lo que en luga
 Practica
 ========
 
+En esta sección vamos a ver como integrar un diseño con Laravel Blade evitando la repetición de codigo en nuestras vistas. Para inregrar un diseño en nuestra aplicación necesitasmo un diseño, como no vamos a crear uno vamos a utilizar uno ya hecho desde la página de Bootstrap.
+
+	https://getbootstrap.com/
+
+Ahora, cuando se trabaje con Laravel se puede utilizar Bootstrap, Materialize, Bulma o cualquier framework de CSS que se quiera, o si se quiere a un Front-end developer en el equipo, se puede trabajar en la creación de un diseño personalizado, esto es irrelevante por que sin importar el Framework o el HTMl qu ese tenga, se puede integrar con Blade.
+
+Vamos a copiar un ejemplo de la página de Bootstrap, un ejemplo que tenga tanto header como footer; Seleccionando el tema "Sticky footer w/navbar"
+
+Desde:
+	https://getbootstrap.com/docs/5.1/examples/sticky-footer-navbar/
+
+Posteroir a ello, 
+- click derecho
+- Ver codigo fuente
+- copiar codigo fuente del ejemplo.
+
+Pero antes de intentar intregrar este ejemplo con Laravel, vamos a copiarlo simplemente dentro del directorio publico del proyecto.
+
+Podemos incluso crear un proyectro aparte para hacer esto, puede ser separado de Laravel, asi podemos dividir esta tarea en dos pasos, hacer que el ejemplo funcione y luego integrarlo con Laravel.
+
+Vamos a llmar el ejemplo "boostrap.html". Copiamos ahora si el codigo fuente. Aunque podemos ver que este ejemplo esta haciendo referencia a los archivos de JS que tienen una hubicación relativa al ejemplo.
+
+Vamos a ver si podemos desde la pagina de bootstrap utilizar el CDN, para no necesitar copiar todos estos archivos, vamos a la parte de la documentación, donde podemos ver las etiquetas que uiliza el CDN.
+
+En la parte de la documentación:
+	https://getbootstrap.com/docs/5.1/getting-started/introduction/
+
+donde podemos ver la etiquetas que utilizan el CND, copiamos para ver el codigo CSS, y hay otro codigo CSS que lo copiaremos del propio proyecto.
+---
+    <!-- Bootstrap core CSS -->
+	<link href="css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+
+	<!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous"> -->
+---
+
+
+Se hace lo mismo de referenciar los archivos CDN para la parte de JS
+---	
+	  <script src="/docs/5.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+
+    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script> -->		
+---
+
+
+Para poder visualizar el resultado lo hacemos desde raiz y el nombre de la pagina de ejemplo.
+	http://127.0.0.1:8000/boostrap.html	
+
+
+
+
 
 Ejercicio
 =========
@@ -103,6 +153,8 @@ Cree un archivo menu.blade.php e incluyalo en el header del layout principal. De
 Documentación y ejemplos con Bootstrap
 ---------------------------------------
 	https://getbootstrap.com/
+
+	
 
 Ayuda
 =====
