@@ -159,8 +159,74 @@ Dentro de la carpeta de vista se tendras las areas
 - content.blade.php
 - footer.blade.php
 
+quedaria pendinete como podemos incluir estos archivos a user.blade.php
 
+Esto es muy sencillo puesto que Laravel Blade incluye una directiva llamada @include, y como parametro tenemos que colocar el nombre del archivo que queremos incluir
+Antes:
+---user.blade.php
+	<!DOCTYPE html>
+	<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Listado de Usuarios - Klvst3r</title>
+	</head>
+	<body>
+		<h1>{{ $title }}</h1>
 
+		<hr/>
+		
+		<ul>
+
+			@forelse($users as $user)
+					<li>{{ $user }} </li>
+
+			@empty
+				<p>No hay usuarios registrados</p>
+			@endforelse
+			
+		</ul>
+
+		{{ time() }}
+
+	</body>
+	</html>
+---
+Hacia la integracion de las secciones de la vista
+---user.blade.php
+@include('header');
+	<h1>{{ $title }}</h1>
+	...
+---
+
+Relativo a la carpeta views y sin preocuparnos de escribir la extension del archivo, y entonces para el footer vamos a hacer exactamente lo mismo, quedando completo:
+---user.blade.php
+	@include('header')
+	
+	<br/>
+	<h1 class="mt-5">{{ $title }} </h1>
+	
+
+	<hr/>
+	
+	<ul>
+
+		@forelse($users as $user)
+				<li>{{ $user }} </li>
+
+		@empty
+			<p>No hay usuarios registrados</p>
+		@endforelse
+		
+	</ul>
+
+@include('footer')
+---
+
+En el navegador:
+	http://127.0.0.1:8000/usuarios
+
+Todo esto se ha hecho de una manera que se pueda reusar en diferentes páginas.
 
 
 

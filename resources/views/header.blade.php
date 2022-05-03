@@ -48,7 +48,7 @@
 
     
     <!-- Custom styles for this template -->
-    <link href="css/sticky-footer-navbar.css" rel="stylesheet">
+{{--     <link href="css/sticky-footer-navbar.css" rel="stylesheet"> --}}
   </head>
   <body class="d-flex flex-column h-100">
     
@@ -80,3 +80,8 @@
     </div>
   </nav>
 </header>
+
+<!-- Begin content area-->
+<main class="flex-shrink-0">
+  <div class="container">
+    
