@@ -481,6 +481,74 @@ De vuelta a 'users.blade.php', vamos a necesitar colocar solo el contenido de es
 Con esto si regresamos al navegador obtendremos el mismo resultado.
 	http://127.0.0.1:8000/usuarios
 
+Pero ya no tenemos todos esos divs molestos que forman parte del diseño pero no forman parte de esta seccion.
+
+Asi vamos a tener un solo lugar centralizado donde puedo entonces, cambiarlos nos referimos a layout.blade.php cambiando los espacios o el diseño o los divs si asi se necesitan. Por otro lado si necesitamos que en otra de las secciones como por ejemplo 'users.blade.php'. Queremos sobreescribir, la seccion de la barra lateral, como podremos imaginar esto podremos lograrlos 
+
+Tomamos el siguiente codigo de
+---layout.blade.php
+  @section('sidebar')
+        <h2 class="mt-5">Barra lateral</h2>}
+      @show
+---
+y lo llevamos a users.blade.php
+
+utilizando simplemente la directiva @section para declarar otra seccion dentro de users.blade.php
+
+---users.blade.php
+@extends('layout')
+	
+
+@section('content')	
+	
+	<h1 class="mt-5">{{ $title }} </h1>
+	
+			<hr/>
+		
+			<ul>
+
+				@forelse($users as $user)
+						<li>{{ $user }} </li>
+
+				@empty
+					<p>No hay usuarios registrados</p>
+				@endforelse
+		
+			</ul>
+
+@endsection
+
+@section('sidebar')
+	<h2 class="mt-5">Barra lateral personalizada</h2>
+@endsection
+---
+
+
+De vuelta a navegador
+	http://127.0.0.1:8000/usuarios
+
+Logramos sobreescribir con exito una de las secciones de nuestro layout y con esto nuestra vista queda mucho mas limpia, organizada y libre de fragmentos que formarn parte del layout y no del contenido de esta seccion, ahora de pronto nosotros no queremos reemplzar completamente el contenido de la barra lateral, si no que queremos colocar contenido encima o debajo del contenido que tenemos en el layout. Para hacer esto podemos utilizar la directiva @parent
+
+---users.blade.php
+	
+@section('sidebar')
+	@parent
+
+	<h2 class="mt-5">Barra lateral personalizada</h2>
+@endsection
+---
+
+Regresamos al navegador y podremos ver el resultado, tenemos el titulo que esta en layout.blade.php y debajo tenemos el titulo qu etenemos en users.blade.php.
+
+
+==========
+	min 15m23
+
+
+
+
+
+	
 
 
 

@@ -19,3 +19,9 @@
 			</ul>
 
 @endsection
+
+@section('sidebar')
+	@parent
+
+	<h2 class="mt-5">Barra lateral personalizada</h2>
+@endsection
