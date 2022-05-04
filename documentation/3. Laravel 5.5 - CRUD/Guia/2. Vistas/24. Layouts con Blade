@@ -360,9 +360,17 @@ Afortunadamente Laravel y Blade ofrecen un mecanismo mejor para trabajar con los
 
 En este caso vamos a copiar el codigo dentro de header
 
+---layout.blade.php
+...
+<main role="main" class="container">
 
+  @yield('content')  
+  
+</main>
+...
+---
 
-
+Vamos a utilizar la directiva @yield('content') y como argumento de la seccion en este caso de content, o contenido, de vuelta a users.blade.php, ahora en vez de incluir el footer y el header, le vamos a indicar a Laravel
 
 
 
