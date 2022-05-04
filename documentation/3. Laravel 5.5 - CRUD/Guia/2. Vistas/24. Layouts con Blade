@@ -228,8 +228,13 @@ En el navegador:
 
 Todo esto se ha hecho de una manera que se pueda reusar en diferentes páginas.
 
-Video
-	5m34
+
+
+Sin embargo esta no es la mejor manera de resolver este problema, por que por ejemplo si nosotros, queremos incluir un sidebar, es decir una barra lateral, y para ello vamos al ejemplo.
+
+ ---user.blade.php
+ 
+ ---
 
 
 Ejercicio
