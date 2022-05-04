@@ -360,11 +360,126 @@ Afortunadamente Laravel y Blade ofrecen un mecanismo mejor para trabajar con los
 
 En este caso vamos a copiar el codigo dentro de header
 
+---layout.blade.php
+...
+<main role="main" class="container">
+
+  @yield('content')  
+  
+</main>
+...
+---
+
+Vamos a utilizar la directiva @yield('content') y como argumento de la seccion en este caso de content, o contenido, de vuelta a users.blade.php, ahora en vez de incluir el footer y el header, le vamos a indicar a Laravel o blade que esta vista va a extender de layout
 
 
+@extends('layout')
+
+Y con layout nos referimos al nombre del archivo layout.blade.php solo que recordando que no vsmoa a colocar la extension ni tampoco los directorio puesto que esta ruta del  archivo va  a estar relativo a la carpeta views. Luego a continuación devemos definir las secciones. 
+
+En layout declaramos una sola llamada 'content'. Entonces debemos definir que la seccion incluida, es la seccion de contenido o content para ello vamos a utilizar la directiva @section con el nombre de la seccion
+
+---users.blade.php
+@extends('layout')
+	
+
+@section('content')	
+	<div class="row mt-3">
+		<div class="col-8">
+			<h1 class="mt-5">{{ $title }} </h1>
+	
+			<hr/>
+		
+			<ul>
+
+				@forelse($users as $user)
+						<li>{{ $user }} </li>
+
+				@empty
+					<p>No hay usuarios registrados</p>
+				@endforelse
+		
+			</ul>
+		</div>
+		<div class="col-4">
+			@include('sidebar')
+		</div>
+	</div>
+	
+
+@endsection
+---
 
 
+De esta manera indicamos que la vista 'users.blade.php' va a extender de layout pero va a definir la seccion de contenido entre las directivas
 
+@section('content') y @endsection
+
+si hacemos esto y recargamos el navegador, tenemos el mismo resultado de antes sin embargo ya no necesitamos los archivos de header y footer.
+	http://127.0.0.1:8000/usuarios
+
+Puesto que el codigo de ambos, va a estar condensado en un solo archivo, asi nos estaremos preguntando que no estamos logrando mucho por que todavia hay partes del codigo de diseño en users.blade.php dentro de la vista. Sin embargo esta tambien podemos reusarlo de forma muy sencilla.
+
+Copiamos el codigi de 'users.blade.php' en la seccion de 'content' y nos vamos a layout.blade.php, y vamos a elimiar un momento la directiva @yield('content'), pero la colocamos dentro de la columna
+
+---layout.blade.php
+<main role="main" class="container">
+
+  <div class="row mt-3">
+    <div class="col-8">
+      
+        @yield('content')  
+      
+    </div>
+    <div class="col-4">
+      @include('sidebar')
+    </div>
+  </div>
+
+
+  
+</main>
+---
+
+Por otro lado vamos a copiar el contenido dentro de 'sidebar.blade.php'. Dentro de 'layout.blade.php'
+
+<div class="col-4">
+      @section('sidebar')
+        <h2 class="mt-5">Barra lateral</h2>}
+      
+    </div>
+  </div>
+
+
+Pero como yo quiero mostrar en este caso el contenido de esta seccion, en vez de cerrar con el section, vamos a cerrar con la directiva @show 
+De vuelta a 'users.blade.php', vamos a necesitar colocar solo el contenido de esta seccion
+
+---users.blade.php
+@extends('layout')
+	
+
+@section('content')	
+	
+	<h1 class="mt-5">{{ $title }} </h1>
+	
+			<hr/>
+		
+			<ul>
+
+				@forelse($users as $user)
+						<li>{{ $user }} </li>
+
+				@empty
+					<p>No hay usuarios registrados</p>
+				@endforelse
+		
+			</ul>
+
+@endsection
+---
+
+Con esto si regresamos al navegador obtendremos el mismo resultado.
+	http://127.0.0.1:8000/usuarios
 
 
 
