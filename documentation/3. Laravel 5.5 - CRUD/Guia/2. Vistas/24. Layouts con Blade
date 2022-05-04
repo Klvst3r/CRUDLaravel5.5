@@ -275,7 +275,64 @@ Creando otro archivo blade
 ---sidebar.blade.php
 		<h2 class="mt-5">Barra lateral</h2>
 ---
-Si hacemos esto y 
+Si hacemos esto y regresamos al navegador tenemos el mismo resultado, sin embargo vamos a crear otra vista
+
+De vuelta a 
+---Usercontroller.php
+	 public function show($id)
+    {
+
+       return "Mostrando detalles del usuario: {$id}";  
+    }
+---
+Pasamos a esto
+
+---
+public function show($id)
+    {
+       return view('users-show', compact('id'));
+       
+    }
+---
+
+Se llamara la vista 'users-show', y podemos copiar la cadena de texto del ultimo return ejecutado, para mostrarlo en la vista, pero antes necesitampos pasar el id, a la vista de esta forma ya vista en la sección anterior.
+
+De vuelta a la carpeta views, vamos acrear un nuevo archivo llamado 'users-show.blade.php'. A este archivo se agregaran el header, el footer y el sidebar. Lo caul hace un poco mas dificil estar recordando todos los include para esta nueva plantilla.
+
+Tomando como base el archivo de users.blade.php, copiar el diseño y pegarlo en la vista recien creada
+
+---users-show.blade.php
+@include('header')
+	
+	
+	<div class="row mt-3">
+		<div class="col-8">
+			<h1 class="mt-5">Usuario {{ $id }} </h1>
+	
+				Mostrando detalles del usuario: {{ $id }}"
+		</div>
+		<div class="col-4">
+			@include('sidebar')
+		</div>
+	</div>
+	
+
+@include('footer')
+
+---
+Ejecutamos las pruebas en termianl asi como en el navegador:
+	http://127.0.0.1:8000/usuarios/10
+
+Esto genera un problema con el css ya que apunta a la carpeta "usuarios"	 la cual no existe, para ello lo solucionamos con el helper asset.
+
+en el header de las vistas
+
+---header.blade.php
+    <!-- Bootstrap core CSS -->
+<link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet"  crossorigin="anonymous">
+---
+
+Esto va a ser bastante util sobre todo si no estamos utilizando un virtual host en nuestro entorno de trabajo. Este helper que provee Laravel nos va a dar la ruta absoluta al archivo indicado. 
 
 
 
