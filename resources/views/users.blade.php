@@ -1,6 +1,7 @@
-@include('header')
+@extends('layout')
 	
-	
+
+@section('content')	
 	<div class="row mt-3">
 		<div class="col-8">
 			<h1 class="mt-5">{{ $title }} </h1>
@@ -24,4 +25,4 @@
 	</div>
 	
 
-@include('footer')
+@endsection

@@ -370,7 +370,53 @@ En este caso vamos a copiar el codigo dentro de header
 ...
 ---
 
-Vamos a utilizar la directiva @yield('content') y como argumento de la seccion en este caso de content, o contenido, de vuelta a users.blade.php, ahora en vez de incluir el footer y el header, le vamos a indicar a Laravel
+Vamos a utilizar la directiva @yield('content') y como argumento de la seccion en este caso de content, o contenido, de vuelta a users.blade.php, ahora en vez de incluir el footer y el header, le vamos a indicar a Laravel o blade que esta vista va a extender de layout
+
+
+@extends('layout')
+
+Y con layout nos referimos al nombre del archivo layout.blade.php solo que recordando que no vsmoa a colocar la extension ni tampoco los directorio puesto que esta ruta del  archivo va  a estar relativo a la carpeta views. Luego a continuación devemos definir las secciones. 
+
+En layout declaramos una sola llamada 'content'. Entonces debemos definir que la seccion incluida, es la seccion de contenido o content para ello vamos a utilizar la directiva @section con el nombre de la seccion
+
+---users.blade.php
+@extends('layout')
+	
+
+@section('content')	
+	<div class="row mt-3">
+		<div class="col-8">
+			<h1 class="mt-5">{{ $title }} </h1>
+	
+			<hr/>
+		
+			<ul>
+
+				@forelse($users as $user)
+						<li>{{ $user }} </li>
+
+				@empty
+					<p>No hay usuarios registrados</p>
+				@endforelse
+		
+			</ul>
+		</div>
+		<div class="col-4">
+			@include('sidebar')
+		</div>
+	</div>
+	
+
+@endsection
+---
+
+
+De esta manera indicamos que la vista 'users.blade.php' va a extender de layout pero va a definir la seccion de contenido entre las directivas
+
+@section('content') y @endsection
+
+si hacemos esto y recargamos el navegador, tenemos el mismo resultado de antes sin embargo ya no necesitamos los archivos de header y footer.
+	http://127.0.0.1:8000/usuarios
 
 
 
