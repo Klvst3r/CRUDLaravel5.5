@@ -233,8 +233,51 @@ Todo esto se ha hecho de una manera que se pueda reusar en diferentes páginas.
 Sin embargo esta no es la mejor manera de resolver este problema, por que por ejemplo si nosotros, queremos incluir un sidebar, es decir una barra lateral, y para ello vamos al ejemplo.
 
  ---user.blade.php
- 
+ @include('header')
+	
+	
+	<div class="row mt-3">
+		<div class="col-8">
+			<h1 class="mt-5">{{ $title }} </h1>
+	
+			<hr/>
+		
+			<ul>
+
+				@forelse($users as $user)
+						<li>{{ $user }} </li>
+
+				@empty
+					<p>No hay usuarios registrados</p>
+				@endforelse
+		
+			</ul>
+		</div>
+		<div class="col-4">
+
+			<h2 class="mt-5">Barra lateral</h2>
+		</div>
+	</div>
+	
+
+@include('footer')
  ---
+
+Aca se empieza a complicar con la fomra de trabajar de este diseño, puesto que vamos a incluir el header y el footer, sino que entonces aca debemos crear otro archivo, para incluir el sidebar, por que esta barra lateral puede que debemos duplicarla en otras paginas.
+
+---user.blade.php
+	<div class="col-4">
+		@include('sidebar')
+	</div>
+---
+
+Creando otro archivo blade
+---sidebar.blade.php
+		<h2 class="mt-5">Barra lateral</h2>
+---
+Si hacemos esto y 
+
+
 
 
 Ejercicio

@@ -19,8 +19,7 @@
 			</ul>
 		</div>
 		<div class="col-4">
-
-			<h2 class="mt-5">Barra lateral</h2>
+			@include('sidebar')
 		</div>
 	</div>
 	
