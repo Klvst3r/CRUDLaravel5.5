@@ -230,6 +230,10 @@ Todo esto se ha hecho de una manera que se pueda reusar en diferentes páginas.
 
 
 
+
+Duplicidad de trabajo en las vistas
+-------------------------------------
+
 Sin embargo esta no es la mejor manera de resolver este problema, por que por ejemplo si nosotros, queremos incluir un sidebar, es decir una barra lateral, y para ello vamos al ejemplo.
 
  ---user.blade.php
@@ -333,6 +337,35 @@ en el header de las vistas
 ---
 
 Esto va a ser bastante util sobre todo si no estamos utilizando un virtual host en nuestro entorno de trabajo. Este helper que provee Laravel nos va a dar la ruta absoluta al archivo indicado. 
+
+Volviendo al tema, nos podemos dar cuanta que en las vistas 'users' terminamos duplicando parte del diseño para emplearlo en 'users-show' a otra vista de forma individual, en este caso la parte que deberia cambiar, es la parte donde tenemos el titrulo, y el detalle de la seecion en ambas vistas; sin mebargo para las vistas y lograr esto debemos tambien duplicar parte de las capas, que forman parte del diseño base. Asi si mas adelante quisieramos cambiar la columna para que ocupe mas espacio 
+
+
+---users-show.blade.php
+@include('header')
+	
+	
+	<div class="row mt-3">
+		<div class="col-9">
+
+---		
+
+Si queremos hacer un cambio en el espaciado este lo hara solamente en una vista y tendremos que hacer el cambio en cada una de las vistas. Eso nos obligaria a estar cambiando vista por vista, y esto es precisamente lo que se quiere eviar.
+
+
+
+Mejorando el diseño de las vistas con Blade
+--------------------------------------------
+Afortunadamente Laravel y Blade ofrecen un mecanismo mejor para trabajar con los dieseños, en este caso en vez  de separar con varios archivos pequeños, vamos a crear un solo archivo que vamos a llmar 'layout.blade.php', aunque podemos darle el nombre que quieramos.
+
+En este caso vamos a copiar el codigo dentro de header
+
+
+
+
+
+
+
 
 
 
