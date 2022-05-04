@@ -137,7 +137,9 @@ class UserController extends Controller
 
     public function show($id)
     {
-       return "Mostrando detalles del usuario: {$id}";  
+       return view('users-show', compact('id'));
+       
+       //return "Mostrando detalles del usuario: {$id}";  
     }
 
     public function create()
