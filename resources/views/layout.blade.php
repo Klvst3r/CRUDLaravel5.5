@@ -91,7 +91,20 @@
 
 <main role="main" class="container">
 
-  @yield('content')  
+  <div class="row mt-3">
+    <div class="col-8">
+      
+        @yield('content')  
+      
+    </div>
+    <div class="col-4">
+      @section('sidebar')
+        <h2 class="mt-5">Barra lateral</h2>}
+      @show
+    </div>
+  </div>
+
+
   
 </main>
 

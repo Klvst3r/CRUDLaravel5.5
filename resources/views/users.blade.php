@@ -2,9 +2,8 @@
 	
 
 @section('content')	
-	<div class="row mt-3">
-		<div class="col-8">
-			<h1 class="mt-5">{{ $title }} </h1>
+	
+	<h1 class="mt-5">{{ $title }} </h1>
 	
 			<hr/>
 		
@@ -18,11 +17,5 @@
 				@endforelse
 		
 			</ul>
-		</div>
-		<div class="col-4">
-			@include('sidebar')
-		</div>
-	</div>
-	
 
 @endsection

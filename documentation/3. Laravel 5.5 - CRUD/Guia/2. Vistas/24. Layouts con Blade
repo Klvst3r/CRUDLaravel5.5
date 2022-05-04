@@ -418,7 +418,68 @@ De esta manera indicamos que la vista 'users.blade.php' va a extender de layout 
 si hacemos esto y recargamos el navegador, tenemos el mismo resultado de antes sin embargo ya no necesitamos los archivos de header y footer.
 	http://127.0.0.1:8000/usuarios
 
+Puesto que el codigo de ambos, va a estar condensado en un solo archivo, asi nos estaremos preguntando que no estamos logrando mucho por que todavia hay partes del codigo de diseño en users.blade.php dentro de la vista. Sin embargo esta tambien podemos reusarlo de forma muy sencilla.
 
+Copiamos el codigi de 'users.blade.php' en la seccion de 'content' y nos vamos a layout.blade.php, y vamos a elimiar un momento la directiva @yield('content'), pero la colocamos dentro de la columna
+
+---layout.blade.php
+<main role="main" class="container">
+
+  <div class="row mt-3">
+    <div class="col-8">
+      
+        @yield('content')  
+      
+    </div>
+    <div class="col-4">
+      @include('sidebar')
+    </div>
+  </div>
+
+
+  
+</main>
+---
+
+Por otro lado vamos a copiar el contenido dentro de 'sidebar.blade.php'. Dentro de 'layout.blade.php'
+
+<div class="col-4">
+      @section('sidebar')
+        <h2 class="mt-5">Barra lateral</h2>}
+      
+    </div>
+  </div>
+
+
+Pero como yo quiero mostrar en este caso el contenido de esta seccion, en vez de cerrar con el section, vamos a cerrar con la directiva @show 
+De vuelta a 'users.blade.php', vamos a necesitar colocar solo el contenido de esta seccion
+
+---users.blade.php
+@extends('layout')
+	
+
+@section('content')	
+	
+	<h1 class="mt-5">{{ $title }} </h1>
+	
+			<hr/>
+		
+			<ul>
+
+				@forelse($users as $user)
+						<li>{{ $user }} </li>
+
+				@empty
+					<p>No hay usuarios registrados</p>
+				@endforelse
+		
+			</ul>
+
+@endsection
+---
+
+Con esto si regresamos al navegador obtendremos el mismo resultado.
+	http://127.0.0.1:8000/usuarios
 
 
 
