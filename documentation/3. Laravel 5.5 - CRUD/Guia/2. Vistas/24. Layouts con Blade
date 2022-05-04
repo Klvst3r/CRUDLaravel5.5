@@ -527,7 +527,30 @@ utilizando simplemente la directiva @section para declarar otra seccion dentro d
 De vuelta a navegador
 	http://127.0.0.1:8000/usuarios
 
-Logramos sobreescribir con exito una de las secciones de nuestro layout y con esto nuestra vista queda mucho mas limpia, organizada y libre de fragmentos que formarn parte del layout y no del contenido de esta seccion, ahora de pronto nosotros no queremos reemplzar completamente el contenido de la barra lateral
+Logramos sobreescribir con exito una de las secciones de nuestro layout y con esto nuestra vista queda mucho mas limpia, organizada y libre de fragmentos que formarn parte del layout y no del contenido de esta seccion, ahora de pronto nosotros no queremos reemplzar completamente el contenido de la barra lateral, si no que queremos colocar contenido encima o debajo del contenido que tenemos en el layout. Para hacer esto podemos utilizar la directiva @parent
+
+---users.blade.php
+	
+@section('sidebar')
+	@parent
+
+	<h2 class="mt-5">Barra lateral personalizada</h2>
+@endsection
+---
+
+Regresamos al navegador y podremos ver el resultado, tenemos el titulo que esta en layout.blade.php y debajo tenemos el titulo qu etenemos en users.blade.php.
+
+
+==========
+	min 15m23
+
+
+
+
+
+	
+
+
 
 
 Ejercicio
