@@ -1,0 +1,30 @@
+E.  Cómo instalar Laravel 5 en un servidor compartido 
+
+
+
+Si estás utilizando Laravel 4, revisa este post.
+
+hosting laravel
+
+No todo el tiempo tenemos un VPS para subir nuestros proyectos. Lamentablemente, muchas veces nuestros clientes nos obligan a trabajar con un servidor compartido y para proyectos pequeños quizás esto no sea tan preocupante, a no ser por el hecho de que muchos servidores compartidos no permiten ser personalizados.
+
+Pero no te preocupes, acá te ayudaremos a solucionar los problemas comunes que ocurren al momento de querer instalar Laravel 5 en un servidor compartido:
+
+¿Qué hacer si tu carpeta pública no se llama «public» sino «public_html», «httpdocs» u otro nombre?
+
+Esto se soluciona con 3 pasos:
+
+Primero, renombra la carpeta «public» a «httpdocs», «public_html» o el nombre que necesites.
+
+Sube todo el proyecto a la carpeta root a raiz de tu hosting compartido
+
+Por último agrega el siguiente código dentro del método register de la clase AppServiceProvider ubicada en: app/Providers/AppServiceProvider
+        $this->app->bind('path.public', function() {
+            return base_path().'/public_html';
+        });
+
+Esto es todo, para comprobar que funciona puedes imprimir esto en cualquier controlador de tu proyecto:
+
+dd(public_path('something'));
+
+Debería imprimir algo como /users/shared/project_name/public_html/something
