@@ -1,4 +1,5 @@
-@include('header')
+{{-- codigo anterior con header y footer--}}
+{{-- @include('header')
 	
 	
 	<div class="row mt-3">
@@ -13,4 +14,14 @@
 	</div>
 	
 
-@include('footer')
+@include('footer') --}}
+
+
+{{-- Codigo del Layout --}}
+@extends('layout')
+
+@section('content')
+	<h1 class="mt-5">Usuario {{ $id }} </h1>
+	
+		Mostrando detalles del usuario: {{ $id }}"
+@endsection

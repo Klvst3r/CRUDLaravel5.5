@@ -538,18 +538,43 @@ Logramos sobreescribir con exito una de las secciones de nuestro layout y con es
 @endsection
 ---
 
-Regresamos al navegador y podremos ver el resultado, tenemos el titulo que esta en layout.blade.php y debajo tenemos el titulo qu etenemos en users.blade.php.
-
-
-==========
-	min 15m23
+Regresamos al navegador y podremos ver el resultado, tenemos el titulo que esta en layout.blade.php y debajo tenemos el titulo que tenemos en users.blade.php.
 
 
 
+Cambios dentro de Users-Show
+-----------------------------
 
 
+Nuevamente extendemos en 
+---users-show.blade.php
+@include('header')
+	
+	
+	<div class="row mt-3">
+		<div class="col-8">
+			<h1 class="mt-5">Usuario {{ $id }} </h1>
+	
+				Mostrando detalles del usuario: {{ $id }}"
+		</div>
+		<div class="col-4">
+			@include('sidebar')
+		</div>
+	</div>
 	
 
+@include('footer')
+
+@extends('layout')
+
+@section('content')
+	<h1 class="mt-5">Usuario {{ $id }} </h1>
+	
+		Mostrando detalles del usuario: {{ $id }}"
+@endsection
+---
+	
+en este caso nuevamente extendemos layout y luego declaramos la seccion content y finalizamos con endsection y enotnces vamos a copiar el contenido de las secciones dentro de las dirctivas section y endsection y con ersto vamos a poder lograr reemplazar el codigo anterior, vemos en la parte superior el codigo para sustituir el header y el footer incluyendo fragmentos del diseño mientras que nuestro codigo que utiliza el layout
 
 
 
