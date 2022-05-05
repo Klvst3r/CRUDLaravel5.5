@@ -1,0 +1,95 @@
+J. Cómo hacer deploy de tu proyecto Laravel a un servidor compartido con DeployBot 
+
+En muchas oportunidades nuestros clientes nos obligan a usar un servidor compartido para un proyecto en Laravel, sin embargo, la mayoría de estos servidores no ofrecen soporte a control de versiones como Git o acceso remoto vía SSH, por lo que para hacer deployment (puesta en producción) de un proyecto sólo tenemos la opción de hacerlo vía FTP. Pero esto puede resultar un dolor de cabeza, pues a medida en que avanzamos en el desarrollo cuando tenemos que actualizar los cambios en el servidor ¿Cuáles fueron los archivos que editamos y deberíamos subir? ¿Que pasa si olvidamos un archivo o sobreescribimos el que no era? 
+
+En estos casos nos podemos ayudar con una herramienta para hacer el deployment, la cual se encargará de manejar la subida del proyecto con menos complicaciones y usando la única opción que tenemos FTP.  En esta oportunidad veremos cómo poner en producción un proyecto con la herramienta DeployBot.
+
+	https://deploybot.com/
+
+DeployBot es una herramienta que nos ayuda a hacer deployment de nuestro proyecto a partir de un repositorio git en distintos tipos de servidores como SFTP, FTP, Heroku, DigitalOcean, Amazon web services, etc. 
+
+Para seguir este tutorial como requisitos iniciales debemos tener:
+
+    Nuestro proyecto en un repositorio ya sea en github, bitbucket o cualquier repositorio git.
+    Un servidor compartido que cumpla con los requerimientos mínimos para instalar Laravel.
+    	https://laravel.com/docs/5.1#installation
+
+    Las credenciales para conexión vía FTP con el servidor.
+    Además si no tenemos acceso vía SSH, significa que no podemos ejecutar en el servidor comandos como php artisan, composer install, etc. por lo que debemos preparar un respaldo de nuestra base de datos y de la carpeta vendor.
+
+Ahora, lo primero que debemos hacer es crear una cuenta en DeployBot, la cuenta gratuita nos ofrece el manejo de solo un repositorio pero es suficiente para nuestros propósitos.
+
+	deploybot01-registro-en-deploybot
+
+Al crearla nos redirigirá a una página con 3 pasos que debemos realizar: agregar el repositorio, crear un entorno y agregar un servidor.
+
+Para el primer paso  nos pide asociar nuestra cuenta con el repositorio de nuestro proyecto, en mi caso la voy a relacionar con mi cuenta de github así que le doy clic a connect new account de la opción de github, acepto la autorización de la aplicación.
+
+	deploybot02-conectar-repositorio
+
+Ahora debo escoger cuál es el repositorio de mi proyecto.  Además se tiene la opción de colocarle un nombre y asignarle un color. Al final se debe hacer clic en connect para finalizar el paso.
+
+	debloybot03-repositorio-proyecto
+
+El segundo paso es crear un entorno (create an environment), el cual representa el servidor donde DeployBot subirá vía FTP los archivos del proyecto cuando se haya hecho cambios. En este paso, se establece el nombre que identifique el entorno, que puede ser: producción, testing, etc; la forma de deployment que puede ser automática (cada vez que se hace git push al repositorio remoto se actualizará el entorno) o manual (la subida se hará desde la web de DeployBot) y la rama del repositorio que estará vinculada al entorno.
+
+	debloybot04-crear-entorno
+
+Luego de configurar cada uno de esos campos le damos clic en Save y nos redirige al tercer paso que es Agregar el servidor (Add a server). En mi caso como el servidor sólo me ofrece conexión por medio de FTP es la opción que escojo.
+
+	deploybot05-agregar-servidor-ftp
+
+Acá en General options debemos usar las credenciales para conectarnos con nuestro servidor y un punto importante es indicar donde donde queremos subir nuestro proyecto, la recomendación es que esté por encima de la carpeta public_html, por ello como mi ftp apunta a home/usuario del servidor simplemente coloco en destination path /proyecto, el cual será el directorio donde estará el proyecto de Laravel.
+
+Luego vamos a la opción upload configuration files donde crearemos el archivo .env específico para el servidor hacemos clic en la opción create new file:
+
+	deploybot06-agregar-archivo-env
+
+Al darle guardar nos enviará a una pantalla donde crearemos dos archivos adicionales para afinar la configuración del proyecto: un nuevo index.php para public que apunte realmente a la carpeta raíz del proyecto ( tal y como se describe en Cómo instalar Laravel 4 en un servidor o hosting compartido) y modificaremos el archivo AppServiceProvider como se explica en Instalar Laravel 5 en un servidor compartido.
+
+Por consiguiente, en el archivo index.php copiamos el código de dicho archivo ubicado en public pero modificando las siguientes líneas de esta manera:
+---
+require __DIR__.'/../proyecto/bootstrap/autoload.php';
+$app = require_once __DIR__.'/../proyecto/bootstrap/app.php';
+---
+
+y el archivo AppServiceProvider.php usamos el de nuestro repositorio pero agregando a la función register:
+---
+         $this->app->bind('path.public', function() {
+                    return base_path().'/../public_html';
+                });
+---
+
+y en opción de upload configuration files le indicamos donde estarán ubicado los archivos creados para que luego DeployBot los coloque en el servidor cuando haga un deployment:
+
+	deploybot07-subir-archivos-conf
+
+Al finalizar le damos a la opción connect y DeployBot intentará conectarse con las credenciales que le hemos dado y si lo logra mostrará algo así:
+
+	deploybot08-conexion-establecida
+
+le damos a la opción Save y vamos a Dashboard en el menú superior donde mostrará que tenemos un deploy por hacer:
+
+	deploybot09-deploy-cambios-git
+
+Al hacer clic en Deploy nos enviará a una página donde confirmaremos que queremos subir los cambios, allí podemos documentar un poco más que cambios se están haciendo y ver cuáles serán los archivos que subirán; después de confirmar que todo está como queremos se hace clic en Start deployment. Deploybot se conectará con nuestro servidor vía FTP y subirá los archivos por nosotros.
+
+	deploybot10-deployment
+
+Al finalizar nos mostrará el historial de los deploy realizados, con la opción de poder hacer rollback del último.
+
+	debloybot101-historial de deploy
+
+y al revisar nuestro servidor podemos ver nuestro proyecto:
+
+	deploybot11-cambios-en-servidor
+
+Ya con esto casi estamos listo, pero lamentablemente este flujo de trabajo no es perfecto pues aún nos faltan varios detalles por resolver manualmente: la carpeta vendor, la base de datos y la carpeta public. Esto debido a las limitaciones de nuestro servidor pues no tenemos la opción de ejecutar comandos tales como composer install o php artisan migrate.
+
+En la carpeta vendor se encuentran todas las dependencias de nuestro proyecto, la cual es manejada con composer y por tanto está excluida de nuestro repositorio de git, por ello, debemos subirla manualmente por cpanel u otro manejador de archivos por FTP.
+
+Para la base de datos debemos subir un respaldo creado desde nuestro entorno local, usando phpmyadmin de nuestro servidor.
+
+Como en la configuración establecimos que la carpeta public_html sería la carpeta public de nuestro proyecto (el archivoAppServiceProvider.php modificado), ahora debemos copiar todos los archivos que se encuentra en la carpeta public de nuestro proyecto a la carpeta public_html del servidor.
+
+Ya con esto tenemos nuestro proyecto funcionando en un servidor compartido.  Con la ventaja que si seguimos desarrollando usamos DeployBot para subir los cambios, sin tener que preocuparnos por usar FTP directamente, que sólo usaremos para subir de nuevo la carpeta vendor, en el caso que agreguemos nuevas dependencias por medio de composer.
