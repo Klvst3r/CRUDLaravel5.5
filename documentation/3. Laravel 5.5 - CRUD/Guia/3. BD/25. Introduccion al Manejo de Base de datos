@@ -126,7 +126,7 @@ DB_PASSWORD=desarrollo
 En DB_DATABASE colocamos el nombre de nuestra base de datos, en DB_USERNAME el usuario de la base de datos y en DB_PASSWORD la contraseña de la base de datos.
 
 Para aprender más sobre la configuración de entorno en Laravel 5.*, vamos a hacer referncia a una seccion adicional llamada:
-	Variables de entorno en Laravel
+	referencias/Variables de entorno en Laravel
 		
 
 Ejecutar las migraciones

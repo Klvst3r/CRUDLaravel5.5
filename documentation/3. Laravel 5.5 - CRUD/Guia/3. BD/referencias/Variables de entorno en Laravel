@@ -2,4 +2,89 @@ Variables de entorno en Laravel
 ================================
 
 
+Cuando trabajamos en el desarrollo de una aplicación, la mayoría de las veces, las credenciales de la base de datos en nuestro entorno local son diferentes a las credenciales de nuestro entorno de producción o pruebas. No solo eso, muchos otros datos de configuración de servicios pueden variar de entorno a entorno. Por lo que no resulta conveniente tener datos de configuración «variables» dentro de nuestro código, para solventar este problema, podemos hacer uso de las variables de entorno.
+
+Las variables de entorno son aquellas que se importan al espacio de nombres (namespace) global de PHP, desde el entorno en el que se esté ejecutando el intérprete PHP. Con ellas, podemos guardar la configuración de una aplicación que puede variar según el entorno, dándonos la ventaja de poder extraer datos o credenciales del código que no deberían estar presentes en el control de versiones.
+
+"Esto nos proporciona más flexibilidad para cambiar de entorno sin comprometer la seguridad de la aplicación, dejando las credenciales de los servicios que estamos usando en el código."
+
+A partir de Laravel 5 se integró el componente PHP dotenv para manejar las variables de entorno de una manera sencilla, sin necesidad de modificar el archivo .htaccess o los virtual host de Apache/nginx. Este paquete carga las variables de configuración o entorno desde un archivo llamado .env, el cual debe estar fuera del control de versiones, es decir, dicho archivo debe ser incluido en el .gitignore del proyecto, en caso de que estés usando git.
+
+	https://github.com/vlucas/phpdotenv
+
+Adicionalmente, se recomienda usar un archivo llamado .env.example que sí estará dentro del control de versiones, en éste se almacenarán todas las variables de entorno requeridas, definiendo con posibles valores solo aquellas que no guarden datos sensibles como contraseñas o API keys.
+
+".env.example sirve como ejemplo para mostrar cómo deber ser llenado el archivo .env"
+
+Estos archivos siguen la estructura CLAVE=VALOR, por ejemplo, para Laravel 7 el archivo .env.example predeterminado es el siguiente:
+
+APP_NAME=Laravel
+APP_ENV=local
+APP_KEY=
+APP_DEBUG=true
+APP_URL=http://localhost
+LOG_CHANNEL=stack
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=laravel
+DB_USERNAME=root
+DB_PASSWORD=
+BROADCAST_DRIVER=log
+CACHE_DRIVER=file
+QUEUE_CONNECTION=sync
+SESSION_DRIVER=file
+SESSION_LIFETIME=120
+REDIS_HOST=127.0.0.1
+REDIS_PASSWORD=null
+REDIS_PORT=6379
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.mailtrap.io
+MAIL_PORT=2525
+MAIL_USERNAME=null
+MAIL_PASSWORD=null
+MAIL_ENCRYPTION=null
+MAIL_FROM_ADDRESS=null
+MAIL_FROM_NAME="${APP_NAME}"
+AWS_ACCESS_KEY_ID=
+AWS_SECRET_ACCESS_KEY=
+AWS_DEFAULT_REGION=us-east-1
+AWS_BUCKET=
+PUSHER_APP_ID=
+PUSHER_APP_KEY=
+PUSHER_APP_SECRET=
+PUSHER_APP_CLUSTER=mt1
+MIX_PUSHER_APP_KEY="${PUSHER_APP_KEY}"
+MIX_PUSHER_APP_CLUSTER="${PUSHER_APP_CLUSTER}"
+
+Cuando se crea un nuevo proyecto en Laravel o se clona uno existente, se debe crear el archivo .env a partir del archivo .env.example, adaptándolo a nuestro entorno.
+
+"Este paso lo debemos hacer para cada entorno en el que instalemos el proyecto."
+
+Por ejemplo, para definir que el proyecto está instalado en el entorno local dejamos la clave APP_ENV con el valor local, en cambio, si es el entorno de producción colocamos production y para el entorno de pruebas ponemos testing u otro entorno que se quiera configurar. Igualmente, con las credenciales de base de datos, si estamos en el entorno local usando Homestead, XAMPP o WAMP, o LAMP  tendríamos que configurar según nuestro datos, que posiblemente sean diferentes al entorno del servidor de producción.
+
+
+¿Cómo trabaja Laravel con el archivo .env?
+--------------------------------------------
+
+Por medio del helper env() de Laravel podemos acceder a todos las variables definidas en el archivo .env en cualquier parte de nuestro código, gracias a que ellas están siendo definidas en $_ENV a través del componente PHP dotenv. Este helper acepta dos parámetros: la variable a buscar y un valor por defecto en caso que dicha variable no exista.
+
+	https://www.php.net/manual/en/reserved.variables.environment.php
+
+Por ejemplo, para configurar un driver de correos, Laravel lo hace a través del archivo config/mail.php que contiene, entre otras cosas, lo siguiente:
+---
+<?php
+'default' => env('MAIL_MAILER', 'smtp'),
+---
+
+Donde default recibirá el valor devuelto por env('MAIL_MAILER', 'smtp') que será el valor que hayamos colocado en la clave MAIL_MAILER  del archivo .env, y en caso de no tenerlo configurado, devolverá smtp.
+
+
+¿Cómo creamos una nueva variable de entorno?
+--------------------------------------------
+
+Si en algún momento configuramos un servicio y no queremos dejar expuestas sus credenciales en el repositorio, o si queremos configurar algún dato que necesitemos cambiar de un entorno a otro, podemos hacerlo de manera fácil agregando una nueva variable de entorno en el archivo .env y luego llamarla con el helper env() desde nuestros archivos de configuración.
+
+No se debe olvidar agregar las nuevas variables de entorno en el archivo .env.example
+
 
