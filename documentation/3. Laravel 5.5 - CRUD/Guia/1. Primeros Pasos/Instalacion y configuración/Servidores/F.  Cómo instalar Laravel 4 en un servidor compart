@@ -1,0 +1,130 @@
+F.  Cómo instalar Laravel 4 en un servidor compartido 
+
+Una pregunta que vemos a menudo en los foros de Laravel es como subir el proyecto terminado a un servidor compartido, cuando no contamos con acceso remoto a través de SSH.
+
+Si consultamos a los más experimentados en la comunidad de Laravel nos dirán que lo mejor es utilizar un VPS, ya que de esta forma contamos entre otras cosas con el acceso remoto vía SSH y la implementación se hace mucho más simple.
+
+Pero asumamos que tenemos que instalar Laravel en un servidor compartido que no nos da ninguna opción de configuración, aún así es mucho sencillo y hoy veremos cómo:
+
+En primer lugar debemos asegurarnos que nuestro servidor compartido cumpla con 2 requisitos mínimos:
+
+    PHP igual o superior a 5.4
+    MCrypt PHP Extension
+
+Seguidamente abrimos nuestro cliente de FTP preferido e ingresamos a nuestro hosting. Una vez que iniciemos sesión crearemos una carpeta llamada laravel a la misma altura que la carpeta pública, quedando de esta forma:
+
+    .cpanel
+    .htpasswds
+    .trash
+    …
+    laravel
+    public_html
+    …
+
+Con esta estructura de directorios nos aseguramos que los archivos de nuestro framework son inaccesibles ya que están a nivel del raíz o «root» del servidor.
+
+Una vez creada la carpeta laravel subiremos todos los archivos de nuestro proyecto menos la carpeta public.
+
+Luego de esto subiremos todos los archivos y carpetas que se encuentran en la carpeta public de nuestro proyecto a la carpeta public_html.
+
+De esta forma ya tenemos todos los archivos del proyecto en nuestro servidor compartido, ahora necesitamos configurar las rutas en 2 archivos para que el framework pueda funcionar correctamente.
+
+Abrimos primero  bootstrap/paths.php, modificamos el código para que nos quede de la siguiente forma y lo subimos nuevamente al servidor:
+<?php
+return array(
+/*
+|--------------------------------------------------------------------------
+| Application Path
+|--------------------------------------------------------------------------
+|
+| Here we just defined the path to the application directory. Most likely
+| you will never need to change this value as the default setup should
+| work perfectly fine for the vast majority of all our applications.
+|
+*/
+'app' => __DIR__.'/../../laravel/app',
+/*
+|--------------------------------------------------------------------------
+| Public Path
+|--------------------------------------------------------------------------
+|
+| The public path contains the assets for your web application, such as
+| your JavaScript and CSS files, and also contains the primary entry
+| point for web requests into these applications from the outside.
+|
+*/
+ 'public' => __DIR__.'/../../public_html',
+/*
+|--------------------------------------------------------------------------
+| Base Path
+|--------------------------------------------------------------------------
+|
+| The base path is the root of the Laravel installation. Most likely you
+| will not need to change this value. But, if for some wild reason it
+| is necessary you will do so here, just proceed with some caution.
+|
+*/
+'base' => __DIR__.'/../../laravel',
+/*
+|--------------------------------------------------------------------------
+| Storage Path
+|--------------------------------------------------------------------------
+|
+| The storage path is used by Laravel to store cached Blade views, logs
+| and other pieces of information. You may modify the path here when
+| you want to change the location of this directory for your apps.
+|
+*/
+'storage' => __DIR__.'/../../laravel/app/storage',
+);
+
+Luego abrimos public/index.php, lo modificaremos con el siguiente código:
+<?php
+/**
+* Laravel - A PHP Framework For Web Artisans
+*
+* @package  Laravel
+* @author   Taylor Otwell <taylorotwell@gmail.com>
+*/
+/*
+|--------------------------------------------------------------------------
+| Register The Auto Loader
+|--------------------------------------------------------------------------
+|
+| Composer provides a convenient, automatically generated class loader
+| for our application. We just need to utilize it! We'll require it
+| into the script here so that we do not have to worry about the
+| loading of any our classes "manually". Feels great to relax.
+|
+*/
+require __DIR__.'/../../laravel/bootstrap/autoload.php';
+/*
+|--------------------------------------------------------------------------
+| Turn On The Lights
+|--------------------------------------------------------------------------
+|
+| We need to illuminate PHP development, so let's turn on the lights.
+| This bootstraps the framework and gets it ready for use, then it
+| will load up this application so that we can run it and send
+| the responses back to the browser and delight these users.
+|
+*/
+$app = require_once __DIR__.'/../../laravel/bootstrap/start.php';
+/*
+|--------------------------------------------------------------------------
+| Run The Application
+|--------------------------------------------------------------------------
+|
+| Once we have the application, we can simply call the run method,
+| which will execute the request and send the response back to
+| the client's browser allowing them to enjoy the creative
+| and wonderful application we have whipped up for them.
+|
+*/
+$app->run();
+
+Subido nuevamente el archivo que acabamos de modificar, nuestro proyecto debería funcionar perfectamente.
+
+Conclusión
+
+Seguramente existen otras formas de ubicar las distintas carpetas del framework en el servidor pero personalmente creo que esta es una forma simple y efectiva de mantener separados los archivos de Laravel por un lado y los archivos públicos por otro.
