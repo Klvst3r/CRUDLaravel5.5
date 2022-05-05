@@ -1,0 +1,99 @@
+B. Laragon, un entorno de desarrollo para Laravel en Windows 
+
+Laragon es una suite de desarrollo para PHP que funciona sobre Windows diseñado especialmente para trabajar con Laravel. Similar a otras herramientas como Xampp o Wampp, Laragon nos permite crear un entorno de desarrollo con estas características:
+
+    Cmder (Consola para Windows)
+    Git
+    Node.js
+    npm
+    SSH
+    Putty
+    PHP 7 / 5.6
+    Extensiones de PHP
+    xDebug
+    Composer
+    Apache
+    MariaDB/MySQL
+    phpMyAdmin
+    Soporte para Laravel y Lumen
+    Gestion automatica de Virtualhosts.
+
+Laragon no es un sustituto a Homestead, puesto que esta última es una herramienta soportada oficialmente por Laravel y como tal es la opción más recomendada, sin embargo, Homestead es una máquina virtual de 64 bits que consume una cantidad considerable de recursos como espacio en disco y memoria RAM. Si tu máquina no cumple con los requisitos para utilizar Homestead (requisitos como la capacidad de virtualización a 64 bits), Laragon puede ser una buena alternativa.
+
+
+
+homestead
+---------
+Antes de instalar Laravel Homestead, independientemente de cual sea tu sistema operativo, hay ciertos puntos que debes tener en claro para evitar dificultades en el proceso, hoy te voy a mencionar algunos de ellos.
+
+
+¿Qué es Homestead?
+------------------
+
+Homestead es una maquina virtual optimizada para el desarrollo de proyectos con Laravel que incluye componentes como Composer, MySQL, Gulp, etc. Para poder usar esta VM (maquina virtual) debes contar con un software de virtualización como VirtualBox y por supuesto con Vagrant que es una herramienta que te permite crear entornos de desarrollo de forma muy fácil simulando el servidor en el cual se alojará tu web.
+
+Homestead es una VM de 64 bits
+
+¿Por qué es esto importante? Lo que permite la posibilidad de crear maquinas virtuales es la tecnología de virtualizacion VT-x
+
+    La virtualización abstrae al hardware, lo que posibilita que varias cargas de trabajo compartan un conjunto común de recursos. En un hardware virtualizado, se puede gestionar una gran variedad de cargas de trabajo sin que implique que cada una de ellas no esté aislada de la otra, migrar libremente entre infraestructuras y escalar, según sea necesario.
+
+Algunos procesadores no tienen soporte VT-x como por ejemplo los intel T4500
+
+vtx
+
+Por lo cual posiblemente tu hardware soporte virtualización de máquinas de 32 bits pero falle al tratar de usar una máquina virtual de 64 bits como es el caso de Homestead.
+
+Te recomiendo darle un vistazo a las especificaciones de tu procesador antes de continuar y gastar mucho de tu valioso tiempo tratando de hacer funcionar Homestead en tu máquina.
+Error común al iniciar Homestead
+
+Generalmente cuando tu maquina no soporta este tipo de virtualizacón es probable que veas un error en la consola al ejecutar «vagrant up» como éste:
+
+default: Warning: Connection timeout. Retrying... 
+default: Warning: Connection timeout. Retrying... 
+default: Warning: Connection timeout. Retrying...
+
+Esto ocurre debido a que en ese paso se espera que la maquina virtual haya encendido y esté corriendo, la primera tarea a realizar es la conexión ssh, en este caso como la máquina no se ha iniciado marcara este error de tiempo agotado.
+«Mi procesador soporta virtualizácion de 64 bits pero no puedo iniciar vagrant en Windows»
+
+Si usas windows debes activar esta opción desde el BIOS de tu computadora, esto varia según el fabricante, por lo cual te recomiendo visitar el sitio de soporte oficial.
+¿Qué hacer si mi procesador no soporta virtualización a 64bit?
+
+Lamentablemente no existe ninguna versión oficial de Homestead en 32 bits, por lo que te recomiendo que no pierdas tu tiempo tratando de hacerlo funcionar en tu máquina.
+
+Sin embargo, algunas personas en la comunidad han hecho algo para tratar de dar una solución (no oficial) a este problema.
+
+
+Instalación de Laragon
+----------------------
+
+
+Puedes descargar el archivo ejecutable desde la web oficial de Laragon: https://laragon.org/
+
+Una vez descargado puedes ejecutar el archivo e iniciar la instalación.
+
+Laragon posee una utilidad realmente interesante que permite crear automáticamente virtual hosts para cada proyecto, así por ejemplo en lugar de ingresar desde el navegador a un proyecto con localhost/tu-proyecto, puedes usar una url más legible como tu-proyecto.dev. Si deseas activar esta función debes indicarlo durante la instalación.
+
+Una vez finalizada la instalación puedes ejecutar Laragon.
+
+    Ejecuta este programa como administrador si seleccionaste la opción «Auto create virtual hosts» durante la instalación, de lo contrario el programa no podrá crear los virtual hosts de forma automática. Si cambias de idea sobre el manejo automático de virtual hosts puedes desactivar esta opción desde la pestaña de preferencias.
+
+Ahora puedes arrancar el servidor haciendo click sobre el botón «Start all». Para comprobar que tu servidor esta funcionando correctamente puedes ir a /localhost desde el navegador y verás la  pantalla del servidor y sus variables globales.
+	http://localhost
+
+
+Creando un proyecto de Laravel con Laragon
+
+Para crear un nuevo proyecto haces clic en Menu > Laravel > Create project > Laravel (puedes escoger la versión de Laravel o lumen que quieras instalar).
+
+A continuación Laragon abrirá una nueva consola y ejecutará automáticamente el comando para instalar Laravel con Composer.
+
+
+
+        Puedes ver el directorio del proyecto haciendo click en Menu > Root.
+        Si deseas tener más control a la hora de crear un proyecto, puedes usar la consola directamente.
+
+Cómo te mencione anteriormente, Laragon crea automáticamente el virtual host por nosotros. En mi caso he creado un proyecto llamado CRUDLaravel5.5, lo que quiere decir que Laragon ha creado la dirección «CRUDLaravel5.5.dev».
+
+En tan solo unos pocos minutos puedes instalar un completo entorno de desarrollo sobre Windows y crear tu primer proyecto de Laravel sin ningún inconveniente. Si has usado esta herramienta antes, o si te propones a hacerlo luego de leer este tutorial, déjanos tus opiniones en la sección de comentarios para saber que opinas al respecto.
+
