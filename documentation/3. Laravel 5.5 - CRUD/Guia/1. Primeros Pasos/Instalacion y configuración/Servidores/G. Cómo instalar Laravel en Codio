@@ -1,0 +1,129 @@
+G. Cómo instalar Laravel en Codio
+
+¿Qué es Codio y cuales son sus ventajas?
+
+codio-logoCodio es un IDE alojado en la nube y por lo tanto puedes acceder cuando quieras, desde donde quieras. No necesitas instalar nada, solo hay que tener un navegador web. Por ejemplo, yo uso Codio desde mi Chromebook (Chrome OS), desde mi Casa (Windows), desde mi oficina (Debian) y lo único que tengo que hacer es abrir un navegador, iniciar sesión y empezar a desarrollar.
+
+ 
+Crear un proyecto con Laravel en Codio
+
+Lo primero es crear una cuenta para usar Codio. Después de esto solo debes crear un nuevo proyecto con el boton “Create Project” en la esquina superior derecha…
+
+	https://codio.com/p/signup
+
+En este ejemplo llamaremos nuestro proyecto “Laravel” y elegimos como template “Empty project”. Luego, solo es darle click en “Create”.
+
+Cabe destacar que puedes cargar proyectos desde repositorios de Git, hasta proyectos por medio de FTP.
+
+El proyecto se crea en segundos, y verás un entorno muy parecido a cualquier IDE. Un árbol de archivos a la izquierda y un área de trabajo a la derecha (En este caso ambos vacíos por ahora). Como necesitamos configurar nuestra máquina, ya que por defecto no viene con PHP instalado, lo que haremos será abrir una consola de comandos.
+
+En el menu superior elegimos Tools > Terminal (Shift + Alt + T). Se verá mas o menos asi:
+
+*
+* Welcome to the Codio Terminal!
+* 
+* README: https://codio.com/s/docs/boxes
+*
+* Your codio Box domain: jacob-idea.codio.io[:1024-9999]
+* External ssh connection: ssh:///codio@ssh2.codio.com:2202
+*
+codio@jacob-idea:~/workscpace
+
+
+Lo interesante que tiene Codio es que nos ahorra tiempo de configuración usando un comando llamado parts. Este comando nos garantiza que lo que instalamos queda listo para usar de inmediato.
+
+	https://docs.codio.com/
+
+
+En este caso usaremos el comando para instalar php5, apache2, composer y las demás dependencias de Laravel.
+
+$ parts install php5-apache2 php5-pdo-mysql php5-zip phpmyadmin composer
+
+Por último debemos iniciar los servicios de apache2 y mysql. Para ello ejecutamos el siguiente comando:
+
+$ parts start apache2 mysql
+
+Por defecto los servicios no inician cada vez que volvemos a entrar al proyecto, pero se puede automatizar comandos haciendo un archivo llamado startup.sh y asignar los comandos en dicho archivo.
+
+Ahora sí tenemos lo necesario para instalar Laravel. Procedemos a instalarlo a través de composer con el siguiente comando:
+
+$ composer global require «laravel/installer=~1.1»
+
+
+Ahora necesitamos editar el PATH para que pueda reconocer los comandos de Laravel. Como Codio nos protege de que dañemos alguna configuracion, debemos hacerlo mediante el siguiente comando y no editando el .bashrc directamente.
+
+$ echo ‘PATH=»$HOME/.composer/vendor/bin:$PATH»‘ >> ~/.bash_profile
+
+Cerramos y abrimos la terminal de nuevo para que tome los cambios y ya podemos crear un nuevo proyecto en Laravel con un simple comando. En este caso mi proyecto se llamará “scorphpion”.
+
+$ laravel new scorphpion
+
+Para verificar que todo funciona correctamente, en la parte superior a lado derecho de la opción “Configure…”. Le daremos click en “Box URL”.
+
+
+¿Qué es Codio y cuales son sus ventajas?
+
+codio-logoCodio es un IDE alojado en la nube y por lo tanto puedes acceder cuando quieras, desde donde quieras. No necesitas instalar nada, solo hay que tener un navegador web. Por ejemplo, yo uso Codio desde mi Chromebook (Chrome OS), desde mi Casa (Windows), desde mi oficina (Debian) y lo único que tengo que hacer es abrir un navegador, iniciar sesión y empezar a desarrollar.
+
+ 
+Crear un proyecto con Laravel en Codio
+
+Lo primero es crear una cuenta para usar Codio. Después de esto solo debes crear un nuevo proyecto con el boton “Create Project” en la esquina superior derecha…
+
+Codio
+
+En este ejemplo llamaremos nuestro proyecto “Laravel” y elegimos como template “Empty project”. Luego, solo es darle click en “Create”.
+
+Cabe destacar que puedes cargar proyectos desde repositorios de Git, hasta proyectos por medio de FTP.
+
+Codio
+
+El proyecto se crea en segundos, y verás un entorno muy parecido a cualquier IDE. Un árbol de archivos a la izquierda y un área de trabajo a la derecha (En este caso ambos vacíos por ahora). Como necesitamos configurar nuestra máquina, ya que por defecto no viene con PHP instalado, lo que haremos será abrir una consola de comandos.
+
+En el menu superior elegimos Tools > Terminal (Shift + Alt + T). Se verá mas o menos asi:
+
+Codio - Terminal
+
+Lo interesante que tiene Codio es que nos ahorra tiempo de configuración usando un comando llamado parts. Este comando nos garantiza que lo que instalamos queda listo para usar de inmediato.
+
+En este caso usaremos el comando para instalar php5, apache2, composer y las demás dependencias de Laravel.
+
+$ parts install php5-apache2 php5-pdo-mysql php5-zip phpmyadmin composer
+
+Codio - Terminal
+
+Por último debemos iniciar los servicios de apache2 y mysql. Para ello ejecutamos el siguiente comando:
+
+$ parts start apache2 mysql
+
+Por defecto los servicios no inician cada vez que volvemos a entrar al proyecto, pero se puede automatizar comandos haciendo un archivo llamado startup.sh y asignar los comandos en dicho archivo.
+
+Ahora sí tenemos lo necesario para instalar Laravel. Procedemos a instalarlo a través de composer con el siguiente comando:
+
+$ composer global require «laravel/installer=~1.1»
+
+Codio - Composer
+
+Ahora necesitamos editar el PATH para que pueda reconocer los comandos de Laravel. Como Codio nos protege de que dañemos alguna configuracion, debemos hacerlo mediante el siguiente comando y no editando el .bashrc directamente.
+
+$ echo ‘PATH=»$HOME/.composer/vendor/bin:$PATH»‘ >> ~/.bash_profile
+
+Cerramos y abrimos la terminal de nuevo para que tome los cambios y ya podemos crear un nuevo proyecto en Laravel con un simple comando. En este caso mi proyecto se llamará “scorphpion”.
+
+$ laravel new scorphpion
+
+Codio - Laravel
+
+Para verificar que todo funciona correctamente, en la parte superior a lado derecho de la opción “Configure…”. Le daremos click en “Box URL”.
+
+Codio - Box URL
+
+Esto nos abrirá una pestaña con la dirección de nuestra máquina. Lo único que tenemos que hacer es agregar a esta URL /scorphpion/public y podremos ver Laravel en accion.
+
+En mi caso es: http://jacob-idea.codio.io:3000/scorphpion/public/
+
+En Codio también podemos editar la ruta de “Preview”, solo debemos darle click en “Configure…” del menú principal y Codio nos generara un archivo .codio que podremos editar a nuestro gusto.
+
+Codio - Configuración
+
+Finalmente, les recuerdo que en Codio se pueden crear proyectos ilimitados siempre y cuando sean públicos. De lo contrario la suscripción cuesta tan solo $8.00 USD mensuales, los cuales vale la pena invertir.
