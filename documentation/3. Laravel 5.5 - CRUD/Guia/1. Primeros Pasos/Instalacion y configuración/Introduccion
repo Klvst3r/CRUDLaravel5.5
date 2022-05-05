@@ -1,0 +1,24 @@
+Introduccion
+
+aunque ya tenbemos nuestro entorno de trabajo local, es importante saber que hacer para onfigurar entornos profesionales  con esta serie de tutoriales donde hablaremos no solo del uso de servidores locales como XAMPP, WAMPP, Vagrant y Laravel Homestead, sino de mantenimiento y despliegue de aplicaciones en los servidores de producción mas populares en la actualidad como Digital Ocean, Heroku  y otros mas.
+
+Separaremos las guias por Entornos.
+
+Windows
+
+    Creación de Virtual Hosts con Apache en Windows para WAMP o XAMPP 
+    Laragon, un entorno de desarrollo para Laravel en Windows 
+
+Linux
+
+    Cómo instalar LAMP en Ubuntu 14.04 LTS, paso a paso 
+    Creación de Virtual Hosts con Apache para Linux y Mac 
+
+Servidores
+
+    Cómo instalar Laravel 5 en un servidor compartido 
+    Cómo instalar Laravel 4 en un servidor compartido 
+    Cómo instalar Laravel en Codio 
+    Cómo instalar Nginx, PHP y Laravel en Digital Ocean 
+    Haz deploy de tu aplicación Laravel en Heroku 
+    Cómo hacer deploy de tu proyecto Laravel a un servidor compartido con DeployBot 

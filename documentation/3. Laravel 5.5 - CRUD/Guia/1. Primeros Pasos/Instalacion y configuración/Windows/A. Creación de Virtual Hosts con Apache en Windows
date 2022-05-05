@@ -1,0 +1,196 @@
+A. Creación de Virtual Hosts con Apache en Windows para WAMP o XAMPP 
+
+En esta guia aprenderás a crear host virtuales con la ayuda del servidor web Apache en Windows.
+
+Requisitos
+
+    Tener instalado el servidor web Apache mediante XAMPP, WAMPP o bien Appserv.
+
+WAMP XAMPP Appserv
+Definiendo
+
+Antes de empezar definamos qué es un virtual host (también llamado host virtual): consiste en poder alojar múltiples dominios en una sola máquina, ¿En dónde son utilizados? Son utilizados en ambientes de desarrollos, por lo que solo funcionan de manera local.
+
+Empecemos
+
+Paso 1: Lo primero que debemos hacer es crear el directorio donde alojaremos nuestros virtual hosts, por ejemplo en la carpeta principal crearemos un directorio llamado proyectos:
+
+C:\virtualhost 
+
+Dentro de esta carpeta es donde guardaremos nuestros proyectos. Para esta guia vamos a suponer que tenemos un nuevo proyecto en Laravel de manera que la carpeta de acceso pública a dicho proyecto esté en esta ruta: C:\virtualhost\sitiolocal\public.
+
+Puede usar cualquier directorio o crear cualquier proyecto, sólo recuerde la ruta.
+
+Paso 2: Lo siguiente que debemos  hacer es dirigirnos a C:\WINDOWS\system32\drivers\etc\ y modificar el archivo hosts, pero para modificar el archivo necesitamos permisos de administrador por lo que primero abrimos el Bloc de Notas como administrador y abrimos la siguiente dirección C:\WINDOWS\system32\drivers\etc\hosts.
+
+Nos aparecerá de esta manera el archivo:
+
+----
+
+# Copyright (c) 1993-2009 Microsoft Corp.
+#
+# This is a sample HOSTS file used by Microsoft TCP/IP for Windows.
+#
+# This file contains the mappings of IP addresses to host names. Each
+# entry should be kept on an individual line. The IP address should
+# be placed in the first column followed by the corresponding host name.
+# The IP address and the host name should be separated by at least one
+# space.
+#
+# Additionally, comments (such as these) may be inserted on individual
+# lines or following the machine name denoted by a '#' symbol.
+#
+# For example:
+#
+#      102.54.94.97     rhino.acme.com          # source server
+#       38.25.63.10     x.acme.com              # x client host
+
+# localhost name resolution is handled within DNS itself.
+#	127.0.0.1       localhost
+#	::1             localhost
+
+127.0.0.1	klvst3r.io
+
+---
+
+En este archivo agregamos nuestro host virtual, para agregarlo lo hacemos de la siguiente manera:
+
+IP               Nombre de Host
+
+Entonces nosotros agregaremos nuestros host apuntado a 127.0.0.1 que es la dirección IPv4 de la maquina local, y después el nombre de nuestro hosts. Podemos agregar los host que deseemos pero siempre apuntando a 127.0.0.1
+
+127.0.0.1        klvst3r.io
+
+Paso 3: Ahora debemos modificar el archivo de configuración de Apache, para incluir el archivo de configuración de virtual host, lo podemos abrir de igual manera con un bloc de notas.
+
+Si están en XAMPP, la ruta será la siguiente: C:\xampp\apache\conf\httpd.conf
+
+Si están en WAMP, la ruta será la siguiente: C:\wamp\bin\apache\Apache2.2.21\conf\httpd.conf
+
+Sie estas en Appserv, la ruta sera la siguiente: C:\AppServ\Apache24\conf\httpd.conf
+
+Lo siguiente es buscar las siguientes dos líneas que están resaltadas: 
+
+---
+		# Virtual hosts
+		# Include conf/extra/httpd-vhosts.conf
+---		
+
+Eliminen el # de la segunda línea.
+
+Además dentro del mismo archivo debemos asegurarnos de que el módulo Rewrite está habilitado, para ello buscamos la siguiente línea:
+
+		LoadModule rewrite_module modules/mod_rewrite.so
+
+Y nos aseguramos de que no esté comentada (el signo de numeral # sirve para comentar líneas), si no tiene el signo quiere decir que ya está habilitada.
+
+Realizado esto guardamos los cambios.
+
+Paso 4: Lo siguiente es abrir el archivo de configuración que nos provee XAMPP o WAMP, de igual manera lo podemos editar con un Bloc de Notas.
+
+Si están en XAMPP, la ruta será la siguiente: C:\xampp\apache\conf\extra\httpd-vhosts.conf
+
+Si están en WAMP, la ruta será la siguiente: C:\wamp\bin\apache\Apache2.2.21\conf\extra\httpd-vhosts.conf
+
+Sie estas en Appserv, la ruta sera la siguiente: C:\AppServ\Apache24\conf\extra\httpd-vhosts.conf
+
+El archivo lucirá de la siguiente manera:
+
+---
+#
+# Virtual Hosts
+#
+# If you want to maintain multiple domains/hostnames on your
+# machine you can setup VirtualHost containers for them. Most configurations
+# use only name-based virtual hosts so the server doesn't need to worry about
+# IP addresses. This is indicated by the asterisks in the directives below.
+#
+# Please see the documentation at 
+# <URL:http://httpd.apache.org/docs/trunk/vhosts/>
+# for further details before you try to setup virtual hosts.
+#
+# You may use the command line option '-S' to verify your virtual host
+# configuration.
+
+#
+# Use name-based virtual hosting.
+#
+
+#
+# VirtualHost example:
+# Almost any Apache directive may go into a VirtualHost container.
+# The first VirtualHost section is used for all requests that do not
+# match a ServerName or ServerAlias in any <VirtualHost> block.
+#
+
+# NOTE 
+# First Virtual Host MUST be a shallow duplicate of the main host 
+# in httpd.conf. It will become the default host. Any request coming
+# in that does not match any other VirtualHost's ServerName will be
+# served by this host.
+
+<VirtualHost _default_:80>
+DocumentRoot "${SRVROOT}/htdocs"
+#ServerName www.example.com:80
+</VirtualHost>
+
+# Add any other Virtual Hosts below
+
+#<VirtualHost *:80>
+#    ServerAdmin webmaster@dummy-host.example.com
+#    DocumentRoot "${SRVROOT}/docs/dummy-host.example.com"
+#    ServerName dummy-host.example.com
+#    ServerAlias www.dummy-host.example.com
+#    ErrorLog "logs/dummy-host.example.com-error.log"
+#    CustomLog "logs/dummy-host.example.com-access.log" common
+#</VirtualHost>
+
+#<VirtualHost *:80>
+#    ServerAdmin webmaster@dummy-host2.example.com
+#    DocumentRoot "${SRVROOT}/docs/dummy-host2.example.com"
+#    ServerName dummy-host2.example.com
+#    ErrorLog "logs/dummy-host2.example.com-error.log"
+#    CustomLog "logs/dummy-host2.example.com-access.log" common
+#</VirtualHost>
+
+---		
+
+Es en este archivo donde alojaremos cada uno de los host virtuales que creemos, lo haremos de la siguiente manera:
+
+Primero agregamos la directiva Directory, es aquí donde activaremos el uso de URL’s amigables, necesarias para el funcionamiento del framework PHP que utilicemos (ejemplo: el poderoso Laravel), lo agregamos antes de la configuración de NameVirtualHost, y es aquí donde debemos recordar el nombre que le establecimos a nuestra carpeta, además de todo usaremos la diagonal convencional y no la invertida para descripción de direcciones:
+
+Tomando en consideración y a manera de ejmplo nuestro proyecto se llamara "CRUDLaravel5.5"
+
+Abrimos el archivo
+	httpd-vhosts.conf
+
+Dentro del archivo de configuración, agregamos al final del archivo
+
+Considerando anticipadamente que nuestro proyecto se llamara: "CRUDLaravel5.5"
+---
+	<VirtualHost *:80>
+	   DocumentRoot "C:\AppServ\www\dev\CRUDLaravel5.5\public"
+	    ServerName klvst3r.io
+	    ServerAlias klvst3r.io
+	    <Directory "C:\AppServ\www\dev\CRUDLaravel5.5\public">
+	      Options Indexes FollowSymLinks MultiViews
+	      AllowOverride All
+	      Order allow, deny
+	      Allow from all
+	    </Directory>
+	</VirtualHost>
+---
+
+Lo siguiente es agregar nuestro virtual host, y lo agregamos de último a nuestro archivo.
+
+Recuerda reemplazar c:\virtualhost\sitiolocal\public con tu directorio en caso de que sea diferente.
+
+Cuando se habilita el uso de Virtual host, Apache desactiva la carpeta raíz del servidor, por lo que antes de todos los virtual hosts debemos agregar la carpeta que nos provee XAMPP, WAMP o Appserv para alojar nuestras paginas. 
+
+Nota: si te ha tocado cambiar el puerto donde escucha Apache que por defecto es 80 a otro puerto (ejemplo: 8080), en ese caso ese el número de puerto que debes de poner en el encabezado de Virtual Host ejemplo: <VirtualHost *:8080>
+
+Realizado todo esto procedemos a  guardar nuestro archivo, y ahora nos toca reiniciar Apache, y probar el acceso al host virtual en el explorador en el caso de este ejemplo la dirección sería:
+
+htttp://klvst3r.io/
+
+Si estás construyendo el sitio en Laravel y ves lo siguiente es porque has seguido los pasos de forma correcta.
