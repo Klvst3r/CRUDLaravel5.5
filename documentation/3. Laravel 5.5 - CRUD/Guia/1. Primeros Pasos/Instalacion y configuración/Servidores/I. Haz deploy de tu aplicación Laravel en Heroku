@@ -1,0 +1,179 @@
+I. Haz deploy de tu aplicación Laravel en Heroku
+
+Anteriormente cuando terminabas tu aplicación web y sentías la necesidad de mostrarla al mundo, debías contratar un servicio dedicado o por lo menos una simple VPS en el cual montar el sistema. Con los avances que tenemos actualmente han surgidos muchos servicios en la nube y con estos no hay necesidad de contar con un servidor o VPS y tampoco ser  expertos en manejo y administración de servidores.
+
+Laravel, Heroku
+
+	https://www.heroku.com/
+
+Heroku en un servicio de nube tipo PaaS (plataforma como servicio) los cuales son IDEs basados en la nube que no sólo incluyen los lenguajes de programación que ya conocemos, sino que además incluyen otras herramientas para el desarrollo. Esto significa que tienes el material necesario para llevar a cabo todas las fases de desarrollo directamente en la web, desde la construcción del sitio web hasta el despliegue total de la aplicación.
+
+En Heroku puedes implementar varias aplicaciones sin ningún costo, siempre y cuando uses su opción de pago mas simple que es un (1) Dyno. Los Dynos son contenedores virtualizados Unix, que proporcionan el entorno necesario para ejecutar una aplicación,  mientras más Dynos  tenga tu aplicación  mejor funcionará pero ya para esto si tendrás que pagar unos cuantos dólares.  La opción gratuita sirve para aplicaciones de mediana capacidad, así que no te preocupes.
+
+Bien luego de la pequeña introducción ahora si les explico como instalar Laravel sobre Heroku.
+
+
+ ¿Qué es una Plataforma como Servicio (PaaS)?
+
+ 	https://dosideas.com/noticias/actualidad/504-ique-es-una-plataforma-como-servicio-paas
+
+    Publicado: Jueves, 09 Abril 2009 10:48 
+    Escrito por Leonardo De Seta	
+
+NubeHay ya varias empresas que estás ofreciendo el concepto de Plataforma como Servicio (Platform as a Service - PaaS), pero hay muy poco acuerdo sobre qué es PaaS, y cómo se comparan las distintas ofertas de PaaS entre si. Incluso la página PaaS de la Wikipedia comienza advirtiendo que la definición está llena de palabras de moda y que faltan ejemplos concretos.
+
+Sabiendo que estamos tratando con un concepto todavía en crecimiento, en este artículo vamos a ver una breve introducción a PaaS, sus beneficios y alternativas actuales.
+Definición de PaaS
+
+Las soluciones PaaS son plataformas de software para las cuales la herramienta de desarrollo en si misma está alojada en la nube y se accede a través de un navegador web. Con PaaS, los desarroladores pueden construir aplicaciones web sin tener que instalar ninguna herramienta adicional en sus computadoras, y luego despliegan estas aplicaciones sin necesidad de tener ningún concocimiento administrativo especializado.
+
+McKinsey & Company, en su informe "La guerra de las plataformas emergentes" del 2008, definió a PaaS como "IDEs basados en la nube que no sólo incorporan a lenguajes de programación tradicionales, sino también que incluyen herramientas para el desarrollo con mashups".
+¿Por qué PaaS es diferente?
+
+La alternativa a PaaS es desarrollar aplicaciones web usando herramientas de desarrollo de escritorio, como Eclipse o Microsoft Access, y luego desplegar manualmente estas aplicaciones a un proveedor de nube, como Amazon EC2.
+
+Las plataformas PaaS también tienen diferencias funcionales respecto a las plataformas de desarrollo tradicionales. Estas diferencias incluyen:
+
+    Herramientas de desarrollo múltiples inquilinos: las herramientas de desarrollo tradicional son para un único usuario - un estudio basado en la nube debe soportar múltiples usuarios, cada uno de los cuales tiene múltiples proyectos activos.
+    Arquitectura de despliegue de múltiples inquilinos: la escalabilidad suele no ser una preocupación durante el esfuerzo inicial de desarrollo y se deja para que lo gestionen los administradores de sistemas cuando se despliega el proyecto. En PaaS, la escalabilidad de la aplicación y de sus capas de datos debe ser intrínseca a la solución (por ejemplo, el balanceo de carga y la disponibilidad tienene que ser elementos básicos de la plataforma de desarrollo).
+    Gestión integrada: las soluciones de desarrollo tradicionales no suelen preocuparse con el monitoreo del entorno de ejecución, pero en PaaS, se tiene que soportar la habilidad de monitore desde la misma plataforma de desarrollo.
+    Facturación integrada: las ofertas PaaS requieren mecanismos de facturación basados en la utilización, que son únicos para el mundo PaaS.
+
+Falso PaaS - 4 formas de determinar si realmente es PaaS
+
+Una solución PaaS tiene que, como mínimo, incluir los siguientes elementos:
+
+    Un entorno de desarrollo basado en un navegador - si tenés que instalar algo en tu computadora para desarrollar aplicaciones, entonces no es PaaS.
+    Despliegue transparente hacia el entorno de ejecución - idealmente, el desarrollador debería poder desplegar su aplicación PaaS con un solo click. Si hay que hablar con alguna persona para instalar a la aplicación, entonces no es PaaS.
+    Herramientas de monitoreo y gestión - aunque las soluciones basadas en nubes son muy convenientes en cuanto a costos, puede resultar complicado gestionarlas y escalarlas sin buenas herramientas. Si hay que construir o agregar una herramienta de monitoreo propia para poder escalar la aplicación, entonces no es PaaS.
+    Facturación basada en el uso - lo que hizo que PaaS fuera popular es que evita pagar por adelantado. Si no podés pagar con la tarjeta de crédito basándote en el uso que hacés de la plataforma, entonces no es PaaS.
+
+Beneficios de PaaS
+
+Los beneficios de PaaS están en la cada vez mayor cantidad de personas que van a poder desarrollar, mantener y desplegar aplicaciones web. Resumidamente, PaaS permite democratizar el desarrollo de aplicaciones web, de la misma forma en que Microsoft Access democratizó el desarrollo de aplicaciones cliente/servidor.
+
+En la actualidad, construir aplicaciones web requiere desarrolladores expertos con 3 habilidades especializadas:
+
+    Desarrollo del backend en el servidor (por ejemplo, Java / J2EE)
+    Desarrollo del frontend en el cliente (por ejemplo, JavaScript / Dojo)
+    Administración de sitios web
+
+PaaS ofrece el potencial para que desarrolladores generales puedan construir aplicaciones web sin tener un expertise especializado. Esto le abre la puerta a toda una geneción de desarrolladores MS Access, Lotus Notes y PowerBuilder para que pueda comenzar a construir aplicaciones web sin una curva de aprendizaje enorme.
+Recursos PaaS
+
+Hoy en día ya hay varios ofrecimientos PaaS:
+
+    AppEngine de Google, basado en Python y Django, y ahora también en Java.
+    	code.google.com/appengine/
+
+    Force.com de SalesForce, basado en la infraestructura SalesForce SaaS y en el lenguaje Apex.
+    	https://www.salesforce.com/products/platform/overview/
+
+    Bungee Connect, un entorno de desarrollo visual basado en Java.
+    	https://www.bungeeconnect.com/
+
+    LongJump, basado en Java / Eclipse.
+    	http://longjump.com/
+
+    WaveMaker, un estudio de desarrollo visual basado en Java y alojado en Amazon EC2.
+    	http://longjump.com/
+
+Referencoias:
+	https://www.keeneview.com/2009/03/what-is-platform-as-service-paas.html    	
+
+Pre-requisitos:
+
+
+    Una cuenta en Heroku (Gratis) 
+    	https://signup.heroku.com/identity
+
+    Instalar Heroku-toolbelt, disponible para Mac OS, cualquier distro de Linux y Windows.
+    	https://signup.heroku.com/identity
+
+
+Creamos un proyecto Laravel 
+
+Desde tu computador:
+$ composer create-project laravel/laravel laravelHeroku
+$ cd laravelHeroku
+
+
+Configurando Composer.lock
+
+Laravel por defecto  ignora al composer.lock, es por esto que debemos eliminar la referencia que se hace a él editando el archivo .gitignore que se encuentra en el directorio principal de nuestro proyecto (en nuestro caso laravelHeroku) y eliminando la línea que dice composer.lock.
+
+Agregamos el archivo Procfile 
+
+Heroku corre tu aplicación sobre la configuración de un archivo llamado Procfile. Por defecto apache2 apunta a la carpeta web y no a /public. Es por esto que debemos crear un archivo Procfile personalizado para que apunte a la carpeta /public. Este paso es indispensable para que la aplicación corra bien en Heroku.
+
+Crea el archivo Procfile en el directorio principal de tu proyecto (sin extensión y con la P mayúscula), y dentro de éste coloca lo siguiente.
+web: vendor/bin/heroku-php-apache2 public/
+
+ Inicializamos nuestro repositorio en Git
+
+Bien ya estamos casi terminando, lo que sigue es lo más sencillo de todo, inicializar un repositorio git nuevamente en el directorio principal del proyecto:
+
+$ git init
+$ git add .
+$ git commit -m "Commit inicial de Laravel sobre Heroku"
+
+Creando la aplicación Heroku
+
+Para esto necesitábamos instalar heroku-toolbelt. Con esto podremos manejar la aplicación en Heroku desde la consola de comandos.
+
+Ejecutamos este comando en el directorio principal del proyecto:
+
+$ heroku create
+
+    Nota: Si te dice que el comando no fue encontrado y ya instalaste heroku-toolbelt, sólo necesitas reinicar la consola.
+
+La consola te pedirá los datos de tu sesión en Heroku, será algo como esto:
+
+Enter your Heroku credentials.
+Email: [enter]
+Password (typing will be hidden): [enter]
+Creating nombre-de-la-app ... done, stack is cedar
+http://nombre-de-la-app.herokuapp.com/ | git@heroku.com:nombre-de-la-app.git
+Git remote heroku added
+
+El nombre-de-la-app es el identificador  único que Heroku le asigna a tu proyecto, en un momento te enseñaremos a cambiarlo.
+
+Hacer deploy de un proyecto Laravel en Heroku:
+
+Cuando ejecutes este comando, tu aplicación ya estará publicada en la nube de Heroku, es decir que ya podrás mostrar al mundo entero tu trabajo. ¡Esto es genial!
+$ git push heroku master
+
+Si aparece esto al final de la respuesta en la consola, es debido a que fallaste en la creación del composer.lock, vuelve a ese paso.
+
+----> PHP app detected
+
+ !     ERROR:        Your composer.json specifies dependencies, but no composer.lock
+       was found, please check it into your repository along with composer.json!
+
+
+ !     Push rejected, failed to compile PHP app
+
+Si esto no sucede ve al final de la respuesta y busca esto
+----> Launching... done, v3
+       http://nombre-de-la-app.herokuapp.com/ deployed to Heroku
+
+Allí encontraras la dirección en la que estará publicada tu aplicación en Heroku. ¡Felicidades!
+
+Cambiando en nombre-de-la-app
+
+Bien esto es el bonus, La URL asignada por Heroku seguramente no será la ideal para tu proyecto propio, así que te enseñaremos cómo cambiarla.
+
+    Inicia sesión en tu cuenta de Heroku desde su web.
+    En el Dashboard entra en tu nueva aplicación
+    Ve a la pestaña Settings
+    En el campo de texto Name coloca el nombre que quieras darle a tu aplicación y haces click en el botón Rename
+    Para que el cambio tenga efecto debes avisarle al heroku-toolbelt , entonces debes escribirle  lo siguiente en la consola, dentro de la carpeta del proyecto.
+
+$ git remote rm heroku
+$ heroku git:remote -a nuevoNombre
+
+Donde nuevoNombre, es el nuevo nombre que le diste a tu aplicación. Listo recarga y tendrás el nombre que querías.
+
+Bien eso es todo por ahora, si tienes alguna pregunta no dudes en dejar un comentario.
+
+Happy Coding!
