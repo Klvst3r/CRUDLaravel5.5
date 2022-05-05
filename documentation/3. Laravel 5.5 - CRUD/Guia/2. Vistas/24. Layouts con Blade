@@ -639,7 +639,44 @@ en nuestro caso los vamos a conservar pero los vamos a poner en un contenedor in
 
 Entonces podemos eliminar los archivos y reejcutar las pruebas.
 
-Antes de finalizar revisemos algo más, puesgto que en proyectos donde se tenga muchismimos modulos es importante colocarlos todos dentro de la carpeta views, no va a ser lo mas elegante y estamos tratando de evitar diplicidad de codigo poero tambien, de tener una mejor estructura de nuestro proyecto asi que para solucionar este peuqeño problema
+Antes de finalizar revisemos algo más, puesgto que en proyectos donde se tenga muchismimos modulos es importante colocarlos todos dentro de la carpeta views, no va a ser lo mas elegante y estamos tratando de evitar diplicidad de codigo poero tambien, de tener una mejor estructura de nuestro proyecto asi que para solucionar este peuqeño problema.
+
+Vamos a crear una nueva carpeta llamada, users dentro de views y movemos las vistas a este directorio, al hacer esto vamos a dañar el proyecto.
+
+Asi que debemos tener cuidado en las referencias de los nuevos archivos.
+
+Renombramos los archivos de la siguiente manera
+
+	users.blade.php -> index.blade.php
+	users-show-blade.php -> show.blade.php
+
+Puesto que ya va a estar dentro del directorio users.
+
+ahora nos vamos a UsersController.php
+
+y vamos a utilizar la sintaxis
+---UserController.php
+...
+ $title = 'Listado de usuarios';        
+    
+        return view('users.index', compact('title', 'users'));
+...
+
+...
+public function show($id)
+    {
+       return view('users.show', compact('id'));
+       
+    }
+---        
+
+Para indicar que esta vista va a estar dentro del subdirectorio users y dentro un archivo llamado index.blade.php.
+
+Lo mismo debajo del directorio users.show.blade.php
+
+Al hacer esto podemos regresar a las pruebas y verificar que todo este corrcto.
+
+
 
 
 Ejercicio

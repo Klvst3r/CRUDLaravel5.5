@@ -128,7 +128,7 @@ class UserController extends Controller
        
         $title = 'Listado de usuarios';        
     
-        return view('users', compact('title', 'users'));
+        return view('users.index', compact('title', 'users'));
 
 
                
@@ -137,7 +137,7 @@ class UserController extends Controller
 
     public function show($id)
     {
-       return view('users-show', compact('id'));
+       return view('users.show', compact('id'));
        
        //return "Mostrando detalles del usuario: {$id}";  
     }
