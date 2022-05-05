@@ -574,8 +574,72 @@ Nuevamente extendemos en
 @endsection
 ---
 	
-en este caso nuevamente extendemos layout y luego declaramos la seccion content y finalizamos con endsection y enotnces vamos a copiar el contenido de las secciones dentro de las dirctivas section y endsection y con ersto vamos a poder lograr reemplazar el codigo anterior, vemos en la parte superior el codigo para sustituir el header y el footer incluyendo fragmentos del diseño mientras que nuestro codigo que utiliza el layout
+en este caso nuevamente extendemos layout y luego declaramos la seccion content y finalizamos con endsection y enotnces vamos a copiar el contenido de las secciones dentro de las dirctivas section y endsection y con ersto vamos a poder lograr reemplazar el codigo anterior, vemos en la parte superior el codigo para sustituir el header y el footer incluyendo fragmentos del diseño mientras que nuestro codigo que utiliza el layout y extendiende de secciones y es limpio no inlcuye partes del diseño y es muy facil de leer y de entender y me modificar y personalizar.
 
+Al hacer esto puedo regresar al navegador y puedo ver el resultado.
+	http://127.0.0.1:8000/usuarios/10
+
+Al tener proyectos que tengan decens de urls	 se va a tener la ventaja de comprobar que al menos ninguna de ellas esta arojando un error 500 o algo similar simplemente reejecutando las pruebas 
+
+Personlizacion del titulo
+-----------------------
+
+Vamos a crear otra seecion dentro de layout.blade.php
+
+Vamos a suponer que queremos personalizar el titulo de la pagina dependiendo de la seccion donde nos encontremos.
+
+De:
+---layout.blade.php
+<title>Sticky Footer Navbar Template · Bootstrap v5.1</title>
+---
+a:
+---layout.blade.php
+<title>@yield('title') - Klvst3r.io</title>
+---
+
+De vuelta en:
+---users.blade.php
+	@extends('layout')
+
+@section('title', "Usuario {$id}")		
+
+@section('content')	
+---
+
+Podemos utilizar la directiva section para sobreescribir el titulo, y esta es otra manera de poder utilizar la directiva section, en vez de abrir y cerrar section podemos pasar todo el contenido en linea en una sola linea.
+
+Esto es util por supuesto para secciones para el titulo que no va a requerir html, en este caso lo que esto y pasando entre comillas es codigo de PHP, y no es codigo de blade, entonces seria incorrecto, puesto que lo que esta enytre comillas  
+
+---users-show.blade.php
+	@extends('layout')
+
+	@section('title', "Usuario {$id}")		
+
+	@section('content')
+---
+
+en 
+---users.blade.php
+@extends('layout')
+
+@section('title', "Usuarios")			
+
+@section('content')	
+---
+
+Recargando la pagina
+	http://127.0.0.1:8000/usuarios
+	y
+	http://127.0.0.1:8000/usuarios/10
+
+
+Hecho esto ya deberia ser seguro eliminar, los archivos footer, header y sidebar.
+
+en nuestro caso los vamos a conservar pero los vamos a poner en un contenedor interno puesto que ya no los vamos a utilizar, verificando con las pruebas unitarias.
+
+Entonces podemos eliminar los archivos y reejcutar las pruebas.
+
+Antes de finalizar revisemos algo más, puesgto que en proyectos donde se tenga muchismimos modulos es importante colocarlos todos dentro de la carpeta views, no va a ser lo mas elegante y estamos tratando de evitar diplicidad de codigo poero tambien, de tener una mejor estructura de nuestro proyecto asi que para solucionar este peuqeño problema
 
 
 Ejercicio

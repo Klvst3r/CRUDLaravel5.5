@@ -20,6 +20,8 @@
 {{-- Codigo del Layout --}}
 @extends('layout')
 
+@section('title', "Usuario {$id}")	
+
 @section('content')
 	<h1 class="mt-5">Usuario {{ $id }} </h1>
 	
