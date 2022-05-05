@@ -674,8 +674,7 @@ Para indicar que esta vista va a estar dentro del subdirectorio users y dentro u
 
 Lo mismo debajo del directorio users.show.blade.php
 
-Al hacer esto podemos regresar a las pruebas y verificar que todo este corrcto.
-
+Al hacer esto podemos regresar a las pruebas y verificar que todo este correcto.
 
 
 
@@ -683,6 +682,8 @@ Ejercicio
 =========
 
 Cree un archivo menu.blade.php e incluyalo en el header del layout principal. Dentro del archivo menu, cree un menú con enlaces a las diferentes rutas de la aplicación. Asegúrese de ejecutar las pruebas para verificar que todo siga funcionando correctamente.
+
+
 
 
 Documentación y ejemplos con Bootstrap
