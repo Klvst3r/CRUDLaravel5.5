@@ -1,0 +1,93 @@
+D. Creación de Virtual Hosts con Apache para Linux y Mac
+
+Quieres tener un hosting virtual (virtual host) pero no tienes idea de cómo hacerlo? En esta guía te lo explicamos paso a paso:
+
+Requisitos
+
+1. Tener un servidor web
+
+¿Qué es un hosting virtual (o virtual host)?
+
+Un hosting virtual consiste en utilizar tu propio servidor web para atender varios dominios locales (sólo disponibles en tu computador)
+
+Además de habilitar un dominio virtual también habilitaremos las URLs amigables (Friendly URLs) dentro del mismo archivo de configuración, ¿Qué quiere decir esto? Laravel, Symfony y los otros frameworks vigentes de PHP necesitan que habilitemos «URL amigables» para poder trabajar sin problemas. Empecemos de una vez:
+
+1. Lo primero que tenemos que hacer es dirigirnos a la carpeta /etc/apache2/sites-available/ dentro de tu computador, puedes hacerlo con el comando:
+
+cd /etc/apache2/sites-available/
+
+Dentro de esta dirección copiamos el archivo 000-default.conf y lo guardamos con el nombre de cms.local.conf, con el comando:
+
+sudo cp 000-default.conf cms.local.conf
+
+(Es importante que agregues la extensión .conf, el nombre puede ser cualquier otro pero para tener un poco más organizados nuestros archivos lo nombraremos igual al dominio que vamos a crear)
+
+Ahora tenemos que editarlo, y lo hacemos con el siguiente comando:
+
+sudo gedit cms.local.conf
+
+(Reemplaza gedit si usas otro editor de texto, como «nano», etc.)
+Y dentro de ese archivo debemos de agregar las siguientes lineas:
+
+---
+	<VirtualHost *:80>
+	   DocumentRoot "/var/www/html/CRUDLaravel5.5/cmsystem/public"
+	    ServerName klvst3r.io
+	    
+	    <Directory "/var/www/html/CRUDLaravel5.5/cmsystem/public">
+	      Options Indexes FollowSymLinks MultiViews
+	      AllowOverride All
+	      Order allow, deny
+	      Allow from all
+	    </Directory>
+
+	    ErrorLog ${APACHE_LOG_DIR}/error.log
+	    CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+	</VirtualHost>
+---
+
+Muy bien, ahora les esxplicaré algunas cosas:
+
+    ServerName: es el nombre de nuestro dominio virtual, mediante él podremos acceder al proyecto en el navegador.
+    DocumentRoot: es la ruta a la carpeta del proyecto en el servidor, en este caso, tu propio computador, como estamos usando Laravel necesitamos que ese dominio apunte a la carpeta «public» de tu proyecto.
+    <Directory>: lo que está dentro de estos bloques permite activar las URLs amigables.
+
+Una vez hecho esto, guarda todos los cambios y cierra el archivo.
+
+2. Ahora tenemos que indicarle a Apache que tenemos un nuevo documento. Lo hacemos con el siguiente comando:
+
+sudo a2ensite cms.local.conf
+
+El comando a2ensite significa a2 = apache2; en = enable; site = site. Una vez hecho esto, tenemos que dirigirnos al archivo hosts para activarlo, escribimos el siguiente comando:
+
+sudo gedit /etc/hosts
+
+Y agregamos la siguiente línea:
+
+---
+127.0.0.1	localhost
+127.0.0.1	klvst3r.io
+127.0.0.1	cms.local
+---
+
+3. Es muy importante que te asegures de tener habilitado el módulo rewrite de Apache (mod_rewrite), algunas plataformas lo instalan automáticamente por ti, pero sino lo puedes hacer con el siguiente comando:
+
+sudo a2enmod rewrite
+
+El comando a2enmod significa: a2 = apache2, en = enable, mod = module
+4. Para finalizar tenemos que reiniciar el servidor Apache. Lo hacemos con el siguiente comando:
+
+sudo service apache2 restart
+
+¡Qué fácil! ¿Cierto? Eso es todo, nuestro dominio virtual ya debe de estar funcionando. Para revisar si todo funciona correctamente, ve al navegador y escribe cms.local en la barra de direcciones:
+
+Si has llegado hasta aquí significa que hiciste los pasos correctamente. ¡Listo!
+
+Cómo eliminar un dominio virtual
+
+Ahora, imaginemos que ya no necesitamos el dominio virtual, por ejemplo porque terminamos el desarrollo del proyecto y por lo tanto ya no necesitamos tenerlo en nuestra computadora. ¿Qué podemos hacer? Es muy fácil, podemos eliminar el archivo .conf que creamos hace un momento, pero tranquilo, no lo tenemos que hacer manualmente, para eso hay un comando:
+
+sudo a2dissite cms.local.conf
+
+¿a2dissite? ¿Estas pensando lo mismo que yo? Es la misma estructura de antes: a2=apache2; dis=disable; site=site. Con eso se  deshabilitará el dominio virtual y todo volverá a la normalidad.
