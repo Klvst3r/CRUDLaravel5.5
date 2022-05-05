@@ -1,0 +1,370 @@
+H. Cómo instalar Nginx, PHP y Laravel en Digital Ocean 
+
+¿Que es Digital Ocean?
+
+Digital Ocean es un Cloud Hosting muy económico (Hay máquinas virtuales desde 5 dólares mensuales) para nuestros proyectos en producción. La interfaz es agradable y la comunidad que usa este servicio es muy grande. Tanto así, que han aportado grandes tutoriales con propósito de uso general.
+
+    Si aún no tienes cuenta en DigitalOcean, regístrate con este enlace y obten 10 dólares en crédito. 
+
+Para este tutorial necesitamos un VPS nuevo con la conexión SSH configurada, en Digital Ocean los VPS se llaman «Droplets» y se pueden configurar de forma muy rápida y fácil, acá les dejamos las instrucciones oficiales: How to create your first DigitalOcean Droplet virtual server.
+
+	https://docs.digitalocean.com/products/droplets/how-to/create/
+
+
+ How to Create a Droplet from the DigitalOcean Control Panel Validated on 22 February 2021 • Posted on 19 June 2018
+
+DigitalOcean Droplets are Linux-based virtual machines (VMs) that run on top of virtualized hardware. Each Droplet you create is a new server you can use, either standalone or as part of a larger, cloud-based infrastructure.
+
+To access the DigitalOcean Control Panel and create a Droplet, you need a DigitalOcean account. You can create one from the DigitalOcean new account registration page if you don’t already have one.
+
+After you log in to the control panel, click the green Create button in the top right to open the create menu.	
+
+In the create menu, click Droplets to open the Droplet create page. If you don’t have any Droplets, the Resources tab displays a large, blue Get Started with a Droplet button, which takes you to the same Droplet create page.
+
+The Droplet create page is where you choose your Droplet’s configuration, like its operating system, how much memory it has, and which features (like backups or monitoring) to enable. The most popular defaults are pre-selected, so you can scroll to the bottom of the page and create a Droplet immediately, or you can customize any of the options in each section.
+Choose an image
+
+In the Choose an image section, you choose the image your Droplet will be created from. Initially, you can choose from four categories of images:
+
+    Distributions are basic Unix-like images with no additional software, including Ubuntu, Fedora, Debian, CentOS, and FreeBSD.
+
+    Container distributions include RancherOS.
+
+    Marketplace images include pre-configured applications, like Docker, WordPress, or LAMP, to help simplify getting started.
+
+    Custom images are Unix-like images that you create and upload to your DigitalOcean account.
+
+Once you start using Droplets, you can make backups and take snapshots of them. You’ll see tabs for Backups and Snapshots on the Droplet creation page when you start using those features, and you can choose those images as the foundation to create new Droplets.
+
+    Snapshots are images taken on demand and are useful to manually back up or reproducibly create Droplets.
+
+    Backups are system-level backups automatically taken once a week. The last 4 weeks of backup images are retained, and you can use them as a basis to rebuild an existing Droplet.
+
+Droplet image selection
+
+Choose a plan
+
+In the Choose a plan section, you choose the amount of RAM, storage space, and CPU cores your Droplet will have.
+
+There are four types of plans:
+
+    Basic Droplets, a flexible option best for most use cases, like website hosting, staging environments and low intensity compute needs. For Basic Droplets, you can also choose Regular and Premium CPUs. Premium CPU plans come with some of our most modern Intel or AMD CPUs and NVMe SSDs.
+
+    General Purpose Performance Droplets, a robust option suitable for a wide variety of mainstream, production applications that require a higher ratio of memory to CPU.
+
+    CPU-Optimized Performance Droplets, best for CPU intensive tasks and projects that require predictable performance or rely on CPU more than RAM or I/O, like batch processing large data sets, large builds, and video encoding.
+
+    Memory-Optimized Performance Droplets, best for resource-intensive business applications, like high-performance SQL or NoSQL databases, large in-memory caches and indexes, real-time big data processing, and applications with large JVM requirements.
+
+    Storage-Optimized, best for large NoSQL databases (like MongoDB and Elasticsearch), time series databases, and other data warehouses.
+
+See How To Choose a Droplet Plan for an in-depth guide to choosing a Droplet plan.
+Note
+For Droplets with less than 3 GB of RAM, we recommend using a 32-bit operating system. Processes require more memory on 64-bit architectures, and on servers with a limited quantity of RAM, any performance benefits from a 64-bit OS are offset by having less memory available for buffers and caching.
+Add backups
+
+In the Add backups section, you can enable automatic weekly backups of the Droplet by ticking the Enable backups button. This adds 20% to the Droplet’s monthly price.
+Screenshot of the Add backups section
+
+
+If you choose not to enable backups now, you can still enable backups on existing Droplets later.
+Add block storage
+
+In the Add block storage section, you can create and attach additional DigitalOcean Block Storage volumes to your Droplet.
+Screenshot of the Add block storage section
+
+Volumes are independent resources that can be moved from one Droplet to another within the same datacenter. Attached volumes function like locally connected storage drives, meaning you can manage your storage with familiar tools and techniques.
+Choose a datacenter region
+
+In the Choose a datacenter region section, select the region where you want to create your Droplet.
+
+A good default is selected for you, but for the best performance and minimal latency, choose the datacenter nearest to you and your users. You can also make a decision based on which products and features are available in which regions.
+
+The create page greys out datacenters that are incompatible with your selected configuration and add a tooltip with an explanation. For example, if you add a block storage volume to your configuration, you won’t be able to create your Droplet in a datacenter that doesn’t support volumes.
+Screenshot of limited region selection
+
+Select additional options
+
+In the Select additional options section, you can enable several optional services that add functionality to your Droplet.
+Droplet Settings
+
+The three features available in this section are free, so enabling them does not increase the Droplet’s monthly cost:
+
+    VPC Network enables an additional networking interface that can only be accessed by other Droplets within the same datacenter. This keeps traffic between Droplets and other applicable resources from being routed outside the datacenter over the public internet.
+
+    IPv6 enables IPv6 access for your Droplet.
+
+    User data is arbitrary data that you specify which is written to the user-data field of the DigitalOcean metadata service. Droplets running distributions with cloud-init can consume and execute the data from this field, which are generally cloud-config files used for initially configuring a server on first boot.
+
+    Monitoring adds the DigitalOcean agent to collect extended metrics and create alert policies.
+
+Authentication
+
+In the Authentication section, you choose the method you want to use to log in to your Droplet. There are two options:
+
+    SSH keys, which provide more security than a password.
+
+Password, which allows you to create your own password for the new Droplet.
+Screenshot of the Authentication section of the Droplet create page
+
+If you choose to use SSH keys, you need to select at least one key to add to the Droplet. Any keys you’ve already uploaded to your DigitalOcean account are listed.
+
+Check the boxes next to the existing keys you want to add to the Droplet, or check Select all to add every key on your account. You can also click New SSH Key to upload a new key to your account from the create page.
+
+Once you create and upload an SSH key to your DigitalOcean account, it remains available for you to add to any new Droplets you provision in the future.
+Finalize and create
+
+In the Finalize and create section, you specify the quantity, name, tags, and project for the Droplet you’re creating.
+Screenshot of the Finalize and create section
+
+There are four subsections for these options:
+
+    How many Droplets?, where you choose the quantity of Droplets you’re creating with the specified configuration. Adjust the number by clicking the plus, +, or minus, -, buttons.
+
+    Choose a hostname, where you give each Droplet a name which is used in the control panel and as the server’s hostname. Default names are provided based on the options you selected, but you can modify them to suit your needs.
+    Note
+    Using an FQDN (fully qualified domain name) (e.g. droplet1.example.com) as the Droplet’s name automatically generates PTR records for your Droplet based on that name. This also applies if you rename a Droplet after creation.
+
+    Add tags, where you can add tags to organize and relate Droplets.
+
+    Select Project, where you can assign the Droplet to a project.
+
+Once you have selected your options, click Create. A progress bar displays how close your Droplet is to being ready.
+Screenshot of progress bar
+
+Once the Droplet is fully set up, the control panel displays its IP address.
+Screenshot of installed Droplet
+
+Once you see the IP address, you can log in to your Droplet.
+
+To go to a Droplet’s detail page where you can make changes, click its name or go straight to the task you want using the More menu. You can also get a quick view of the Droplet’s details by clicking the icon by the Droplet’s name.
+Screenshot of Droplet with expanded information
+
+-----------
+
+
+
+logotipo-digital-ocean
+¿Que es Digital Ocean?
+
+Digital Ocean es un Cloud Hosting muy económico (Hay máquinas virtuales desde 5 dólares mensuales) para nuestros proyectos en producción. La interfaz es agradable y la comunidad que usa este servicio es muy grande. Tanto así, que han aportado grandes tutoriales con propósito de uso general.
+
+    Si aún no tienes cuenta en DigitalOcean, regístrate con este enlace y obten 10 dólares en crédito. 
+
+Para este tutorial necesitamos un VPS nuevo con la conexión SSH configurada, en Digital Ocean los VPS se llaman «Droplets» y se pueden configurar de forma muy rápida y fácil, acá les dejamos las instrucciones oficiales: How to create your first DigitalOcean Droplet virtual server.
+
+Droplet
+
+VPS
+
+También les recomiendo usar la imagen que trae instalado Node.js, ya que instalarlo en Linux es algo tedioso y de esta manera nos ahorramos este paso si más adelante necesitamos Node.js.
+Configuración inicial de seguridad
+
+Lo primero que vamos a hacer es conectarnos a nuestro Droplet mediante SSH.
+
+Dentro del panel de Digital Ocean pueden acceder desde el menú a Droplets y allí verán la lista de sus Droplets con sus IPs correspondientes, dicha IP es la que usarán para conectarse a SSH, por ejemplo:
+
+Obtener IP del Digital Ocean Droplet
+
+De igual forma recibirán esta información junto con su contraseña root vía email.
+
+Una vez obtenida esta información abran una consola y tipeen el comando ssh y su IP, ejemplo:
+
+ssh 255.255.255.255
+
+Una vez hecho esto, como asignamos nuestra llave SSH, Digital Ocean conectará automáticamente, en caso contrario nos solicitará la clave (que fue enviada vía email).
+
+Ahora vamos a establecer un nuevo password. Por favor, creen un password fuerte que incluya caracteres especiales, para ello ejecuten el comando:
+
+$ passwd
+
+Luego agregaremos un usuario nuevo, este será el usaremos de ahora en adelante. Nos preguntará por la contraseña y otros datos. Estos datos los podemos obviar presionando ENTER cada vez que nos pregunte.
+
+$ adduser demo
+
+usuario-digital-ocean
+
+Ahora necesitamos agregar los privilegios de super usuario “sudo”. Para esto ejecutamos el siguiente comando.
+
+$ visudo
+
+Hacemos scroll hasta llegar a algo similar como esto, y agregamos el usuario que creamos.
+
+# User privilege specification
+root    ALL=(ALL:ALL) ALL
+demo ALL=(ALL:ALL) ALL
+
+Luego presionamos «Ctrl + X» para salir, «Y» para guardar los cambios, y ENTER para confirmar donde guardar el archivo.
+
+Ahora vamos a agregar un poco más de seguridad cambiando el puerto de la conexión SSH, restringiendo que el usuario root no pueda conectarse por SSH, y permitiendo que solo nuestro usuario creado pueda conectarse.
+
+$ nano /etc/ssh/sshd_config
+
+    Cambiamos el Port (Puerto) por un número entre 1025 y 65536.
+    Negamos el login del root editando PermitRootLogin.
+    Especificamos que usuarios pueden conectarse agregando al final la linea AllowUsers.
+
+Lo anterior podría quedar mas o menos asi.
+
+Port 4444
+PermitRootLogin no
+AllowUsers demo
+
+Hay que tener en cuenta que ahora en adelante solo nos podremos conectar en este caso con el usuario demo y debemos especificar que el puerto sea el 4444.
+
+Luego presionamos Ctrl + X para salir, y para guardar los cambios y ENTER para confirmar donde guardar el archivo.
+
+Ahora reiniciamos la configuración del SSH.
+
+$ service ssh restart
+
+Para este punto debemos corroborar nuestra configuración sin desconectarnos con el usuario root, de esta manera si algo salió mal podemos arreglarlo antes de no poder volver a entrar con el root. Abrimos otra consola y escribimos.
+
+$ ssh -p 4444 demo@ip_del_droplet
+
+Si nos pregunta por el password del usuario demo esto significa que todo ha funcionado con éxito.
+
+    Lectura adicional recomendada: https://www.digitalocean.com/community/tutorials/how-to-protect-ssh-with-fail2ban-on-ubuntu-12-04
+
+Instalar Laravel sobre Nginx
+
+Se que en los tutoriales de configuración local hemos visto ejemplos con Apache, pero quiero aprovechar esta oportunidad para ejecutar Laravel sobre Nginx.
+
+    Recomendado: https://anturis.com/blog/nginx-vs-apache/
+
+Primero necesitamos actualizar nuestra lista de dependencias, e instalar los componentes necesarios, para ello.
+
+$ sudo apt-get update
+$ sudo apt-get install nginx mysql-server php5-fpm php5-cli php5-mcrypt git
+
+Escribimos Y cada vez que lo pida para aceptar las instalaciones.
+
+Durante la instalación de mysql-server nos pedirá un password, el cual recomiendo que sea un password seguro.
+Comprobación inicial del Nginx
+
+Cuando finalice todo el stack de instalación entraremos al http://ip_del_droplet y comprobaremos el mensaje de bienvenida de Nginx.
+Configuración inicial de MySQL
+
+Ahora necesitamos generar la estructura básica de mysql donde guardaremos las bases de datos y su informacion, para ello.
+
+$ sudo mysql_install_db
+
+Ahora vamos a ejecutar un comando que nos ayudará a remover algunas configuraciones por defecto inseguras. Al principio nos pedirá el root password de MySQL, y luego si queremos modificar este password. Como ya tenemos el root password establecido escribiremos N, y luego solo presionaremos ENTER para remover las configuraciones inseguras.
+
+$ sudo mysql_secure_installation
+
+Configuración inicial de PHP
+
+Ahora necesitamos editar la configuración de PHP para eso.
+
+$ sudo nano /etc/php5/fpm/php.ini
+
+Allí vamos a buscar la la línea comentada que contiene.
+
+cgi.fix_pathinfo
+
+La descomentamos (Removiendo el punto y coma del principio) y ponemos su valor en 0.
+
+cgi.fix_pathinfo=0
+
+Esto le indica a PHP que no trate de ejecutar un script llamado similar si el nombre del archivo solicitado no puede ser encontrado. Esto es muy importante porque podría permitir a un atacante crear una solicitud especialmente diseñada para tratar de engañar a PHP para que ejecute código que no debería.
+
+Luego presionamos Ctrl + X para salir, Y para guardar los cambios y ENTER para confirmar donde guardar el archivo.
+
+Activamos la extensión MCrypt de la cual depende Laravel.
+
+$ sudo php5enmod mcrypt
+
+Y por ultimo reiniciamos el servicio de PHP.
+
+$ sudo service php5-fpm restart
+
+Configuración del Nginx para el uso de PHP
+
+Crearemos el directorio donde estara alojado nuestro proyecto en Laravel.
+
+$ sudo mkdir -p /var/www
+
+Ahora que tenemos el directorio creado vamos a transferir la propiedad del directorio a nuestro usuario regular para ellos usaremos la variable de entorno $USER que nos refiere al usuario actual. Esto nos permitirá crear archivos en este directorio sin permitir que nuestros visitantes puedan crear contenido.
+
+$ sudo chown -R $USER:$USER /var/www/
+
+Luego configuramos los permisos correctamente con el comando.
+
+$ sudo chmod -R 755 /var/www
+
+Finalmente creamos la carpeta donde va a estar alojado nuestro proyecto. Los permisos para esta carpeta los configuraremos más adelante.
+
+$ sudo mkdir /var/www/laravel
+
+Luego editaremos el archivo de configuración de Nginx para que pueda interpretar las páginas en PHP, y pueda leer el directorio de nuestro proyecto por defecto.
+
+$ sudo nano /etc/nginx/sites-available/default
+
+Agregamos las siguientes configuraciones a continuación:
+
+    Nota: comenta con # o elimina la configuración por defecto
+
+También debes reemplazar TU_IP_AQUI con la dirección IP del droplet, y cambiar la dirección root en caso de que sea diferente a /var/www/laravel/public (no olvides colocar la carpeta /public al final):
+
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server ipv6only=on;
+
+    root /var/www/laravel/public;
+    index index.php index.html index.htm;
+
+    server_name TU_IP_AQUI;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    error_page 404 /404.html;
+    error_page 500 502 503 504 /50x.html;
+
+    location = /50x.html {
+        root /usr/share/nginx/html;
+    }
+
+    location ~ \.php$ {
+        try_files $uri /index.php =404;
+        fastcgi_split_path_info ^(.+\.php)(/.+)$;
+        fastcgi_pass unix:/var/run/php5-fpm.sock;
+        fastcgi_index index.php;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        include fastcgi_params;
+    }
+}
+
+Y reiniciamos el Nginx para que tome los cambios.
+
+$ sudo service nginx restart
+
+Instalación de Composer y Laravel
+
+Instalamos Composer, ya que es unarequerido por Laravel.
+
+$ cd ~
+$ curl -sS https://getcomposer.org/installer | php
+
+Esto nos crea un archivo llamado compose.phar en el Home. Ahora necesitamos que este archivo se pueda ejecutar globalmente, para ello lo movemos con:
+
+$ sudo mv composer.phar /usr/local/bin/composer
+
+Ahora con Composer instalado ya podemos instalar Laravel:
+
+$ sudo composer create-project laravel/laravel /var/www/laravel
+
+Ahora agregaremos los permisos necesarios para las carpeta de nuestro proyecto.
+
+$ sudo chown -R :www-data /var/www/laravel
+$ sudo chmod -R 775 /var/www/laravel/app/storage
+
+Finalmente podemos comprobar que Laravel se ha instalado con éxito accediendo a nuestro IP del servidor.
+
+http://server_domain_or_IP
+
+Laravel 
+
+ ¡Felicitaciones! Has creado tu primer proyecto en Laravel con DigitalOcean.
