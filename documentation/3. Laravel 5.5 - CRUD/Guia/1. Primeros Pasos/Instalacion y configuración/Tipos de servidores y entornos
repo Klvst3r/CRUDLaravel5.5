@@ -1,0 +1,58 @@
+Tipos de servidores y entornos
+
+En ambientes de desarrollo profesionales, tareas como realizar cambios de código, pruebas de funcionalidad, cambios experimentales, etc. deben realizarse en entornos individuales, no puedes darte la oportunidad de que un proyecto en vivo salga de línea solo porque un pequeño cambio hizo fallar el sistema.
+
+Lo ideal es manejar un servidor diferente para cada una de las etapas del proyecto, a continuación te voy a explicar cuales son los tipos de servidores más comunes a manejar en un proyecto profesional.
+
+Servidor de desarrollo
+----------------------
+
+Bueno, no hay que ir muy lejos aquí, se trata de tu entorno de desarrollo y sobre el cual vas a trabajar la programación de cada proyecto,  este tipo de servidores deben simular las condiciones del servidor en el que va a ser puesto en marcha el proyecto en última instancia.
+
+Un perfecto ejemplo de este tipo de servidores son las máquinas virtuales de Vagrant que usamos en local para desarrollo.
+Servidores de prueba
+
+Cuando trabajamos como parte de un equipo en el que muchas personas desarrollan de forma individual tareas para el mismo proyecto, es necesario probar cada integración para verificar, por un lado que sea lo que se espera y por otro que no haya interferido con el trabajo realizado por otro integrante del equipo. Este tipo de servidores esta en linea por lo general bajo un acceso restringido visible solo por el personal de desarrollo.
+
+
+Servidores de ensayo (Staging)
+------------------------------
+
+En este servidor serán puestos en marcha todos los cambios probados previamente en el servidor de pruebas, y será de acceso público para los clientes, de esta forma cuando se solicite un cambio bien sea para probar un nuevo diseño, una nueva funcionalidad, eliminar alguna aplicación, etc. el cliente puede ver aquí los cambios y decidir si está conforme o no con el trabajo realizado antes de pasarlos al sitio en producción.
+
+
+Servidores de producción
+------------------------
+
+Es donde se va a poner en marcha el proyecto para el público en general, accesible desde la web para cualquier usuario que lo desee. En este punto todo el código ha sido probado por el personal de desarrollo, por el cliente y aceptado finalmente para ser puesto en marcha.
+
+Consideraciones
+---------------
+
+Es altamente recomendable que todos estos servidores cuenten con características similares para evitar problemas de compatibilidad al pasar el código de uno a otro.
+
+En varias ocasiones puedes encontrar que el servidor de pruebas y staging sean uno solo, no es lo ideal pero suele suceder.
+
+
+Repositorios
+------------
+
+Los repositorios son sitios remotos donde se almacena el código de nuestros proyectos que son accesibles por cualquier miembro del equipo de desarrollo y en ocasiones de forma pública. Es el repositorio central del proyecto el único lugar de donde se debería copiar o clonar el código para cualquiera de los servidores anteriormente mencionados. En los últimos años el uso de repositorios y herramientas de control de versiones ha sido parte fundamental del desarrollo de cualquier proyecto a gran o pequeña escala, GitHub y Bitbucket son los servicios más usados para esta tarea.
+
+Flujo de trabajo
+----------------
+
+El flujo del código de un proyecto inicia en el entorno de desarrollo, todos los cambios deben ir al repositorio y de allí van siendo llevados a cada uno de los servidores correspondientes a cada etapa, pasando entonces desde desarrollo a pruebas, staging y finalmente a producción.
+
+
+		(2)			(3)			(4)
+	  Pruebas	  Staging	 Producción
+----------------------------------------------
+	
+				Repositorio
+----------------------------------------------
+					(1)				
+				Desarrollo
+
+
+Espero que esto te haya dado una mejor idea de los tipos de servidores que debes utilizar en tus proyectos cuando trabajas de forma profesional.
