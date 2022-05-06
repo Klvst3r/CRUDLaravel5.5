@@ -34,19 +34,19 @@ Al crear un nuevo proyecto, Laravel incluye por defecto dos migraciones:
     2014_10_12_100000_create_password_resets_table.php
 
 Una migración no es más que una clase de PHP que extiende de la clase Migration. El nombre de la clase corresponde al nombre del archivo, en el caso de 2014_10_12_000000_create_users_table.php, encontramos, pero con formato «studly case» (la primera letra de cada palabra en mayúscula, comenzando con mayúscula) en lugar de separado por guiones:
-
+---
 class CreateUsersTable extends Migration
 {
     // ...
 }
-
+---
 
 
 Métodos de una migración
 ------------------------
 
 Dentro de la clase de la migración encontramos dos métodos, up() y down():
-
+---
 class CreateUsersTable extends Migration
 {
     public function up()
@@ -58,11 +58,12 @@ class CreateUsersTable extends Migration
         // ...
     }
 }
+---
 
 En el método up() vamos a especificar qué queremos que haga nuestra migración. Por decirlo de alguna forma, en qué manera queremos que «evolucione» nuestra base de datos cuando se ejecute dicha migración. Típicamente agregaremos tablas a la base de datos, pero también podemos agregar columnas a una tabla ya existente, o incluso podemos generar una migración para eliminar una tabla o columna que ya no necesitemos.
 
 Para crear una tabla llamamos al método create del Facade Schema, pasando como primer argumento el nombre de la tabla que queremos crear (en este caso users) y como segundo argumento una función anónima que recibe como argumento un objeto de la clase Blueprint. Con los métodos que nos provee este objeto diseñaremos la estructura de la tabla:
-
+---
 public function up()
 {
     Schema::create('users', function (Blueprint $table) {
@@ -74,16 +75,18 @@ public function up()
         $table->timestamps();
     });
 }
+---
 
 Es una buena practica que el nombre del archivo de la migración coincida con lo que estamos haciendo dentro de la clase.
 
 El método down() nos permite revertir o «devolver» la operación realizada en el método up(). En el caso de CreateUsersTable, down() nos permitirá eliminar la tabla users (utlizando el método dropIfExists del Facade Schema):
 
-
+---
 public function down()
 {
     Schema::dropIfExists('users');
 }
+---
 
 
 Constructor de Esquemas (Schema Builder)
@@ -116,12 +119,14 @@ Configurar la base de datos
 ----------------------------
 
 La configuración de la base de datos la hacemos en el archivo .env que está dentro del directorio principal de nuestro proyecto:
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=homestead
-DB_USERNAME=dev
-DB_PASSWORD=desarrollo
+---
+    DB_CONNECTION=mysql
+    DB_HOST=127.0.0.1
+    DB_PORT=3306
+    DB_DATABASE=homestead
+    DB_USERNAME=dev
+    DB_PASSWORD=desarrollo
+---
 
 En DB_DATABASE colocamos el nombre de nuestra base de datos, en DB_USERNAME el usuario de la base de datos y en DB_PASSWORD la contraseña de la base de datos.
 
@@ -130,18 +135,191 @@ Para aprender más sobre la configuración de entorno en Laravel 5.*, vamos a ha
 		
 
 Ejecutar las migraciones
+------------------------
 
 Con el comando de Artisan migrate podemos ejecutar todas las migraciones:
-php artisan migrate
+    > php artisan migrate
 
 Al hacer esto Laravel automáticamente creará nuestras tablas en la base de datos. Al ejecutar nuestras migraciones por primera vez, Laravel creará una tabla llamada migrations donde va a guardar la información de las migraciones que han sido ejecutadas.
+
 Facades
+--------
 
-En la lección mencioné que Schema y Route son Facades. En Laravel los Facades son una manera de acceder a las clases internas del framework con una interfaz estática y fácil de usar. Pero esto no quiere decir que Laravel esté conformado sólo de clases estáticas, al contrario, Laravel utiliza muy buenas practicas de la programación orientada a objetos como la inyección de dependencias, mientras que además incluye Facades y funciones helpers para que sea sencillo interactuar con las clases del framework.
+En la lección se menciono que Schema y Route son Facades. En Laravel los Facades son una manera de acceder a las clases internas del framework con una interfaz estática y fácil de usar. Pero esto no quiere decir que Laravel esté conformado sólo de clases estáticas, al contrario, Laravel utiliza muy buenas practicas de la programación orientada a objetos como la inyección de dependencias, mientras que además incluye Facades y funciones helpers para que sea sencillo interactuar con las clases del framework.
 
-Puedes aprender más en la lección Qué son los facades y cómo implementarlos en tu proyecto.
+
+Qué son los facades y cómo implementarlos en su proyecto.
+---------------------------------------------------------
+
+El uso de métodos estáticos es muy sencillo puesto que nos permite invocar a un método en cualquier lugar de nuestro sistema, sin tener que preocuparnos por inyectar dependencias y ni siquiera por crear una nueva instancia de una clase. Pero esta facilidad de uso viene con un costo: terminamos con un sistema menos flexible y más acoplado. Aquí es donde entra el concepto de facades en PHP, ideado por Taylor Otwell para Laravel 4, las cuáles son el punto intermedio entre una buena arquitectura y una interfaz fácil de usar.
+
+
+Facades vs helpers vs inyección de dependencias y helper de caché en Laravel 5.3
+--------------------------------------------------------------------------------
+Laravel nos ofrece varias alternativas para trabajar con las clases que se encuentran en el contenedor de inyección de dependencias de la aplicación. Esto a través de la inyección de dependencias, usando Facades o por medio de helpers. En esta lección haremos un repaso del uso de cada una de estas opciones y conoceremos sus diferencias. Además conoceremos cómo usar el nuevo helper de cache.
+
+
+Un helper es una función de ayuda que realiza un procedimiento específico y puede usarse en cualquier parte de la aplicación.
+
+Como ejemplo podemos usar un helper para llamar una vista desde un controlador por medio del helper view():
+---
+public function index()
+{
+     return view('home');
+}
+--
+
+Puede revisar los helpers disponibles en Laravel y cómo funcionan en:
+
+    Documentación oficial
+        https://laravel.com/docs/5.3/helpers
+
+    src/Illuminate/Support/helpers.php
+        https://github.com/laravel/framework/blob/5.3/src/Illuminate/Support/helpers.php
+
+    src/Illuminate/Foundation/helpers.php
+        https://github.com/laravel/framework/blob/5.3/src/Illuminate/Foundation/helpers.php
+
+    
+    Manejo de arreglos con helpers en Laravel
+
+Un facade, en cambio, es una interfaz estática que provee acceso a un objeto de una clase que se encuentra disponible en el contenedor de inyección de dependencias de la aplicación.
+
+Si se trabaja con Facades en una clase que tiene un namespace o nombre de espacios se debe importar la clase del Facade o usar una barra invertida \ para que la aplicación busque la clase en el namespace global. En el archivo config/app.php se encuentran los alias de clases de los Facades usados por la aplicación.
+
+Como ejemplo para hacer el mismo llamado de la vista a través de un controlador pero usando el Facade View:
+--
+public function index()
+{
+     return \View::make('home');
+}
+---
+
+En caso que quiera estudiar a profundidad los Facade de Laravel consulta la documentación oficial. 
+
+    https://laravel.com/docs/5.3/facades
+
+La inyección de dependencias por otro lado, es un patrón de diseño orientado a objeto que nos permite escribir código desacoplado y por tanto reusable.
+
+Como ejemplo pero ahora usando inyección de dependencias:
+---
+//no olvides importar la clase al controlador
+//use Illuminate\View\Factory;
+public function index(Factory $view)
+{
+    return $view->make('home');
+}
+---
+
+
+En Laravel 5.2 y versiones anteriores la manera de trabajar con Cache era a través de Facade o la inyección de dependencias pero ahora en Laravel 5.3 tenemos disponible el helper cache por lo cual puedes en vez de hacer:
+---
+\Cache::put('message','Esto es un mensaje', 5);
+\Cache::get('message');
+---
+
+puedes usar el helper para crear:
+---
+cache()->put('message', 'Esto es un mensaje', 5);
+cache(['message' => 'Esto es un mensaje'], 5);
+---
+
+y para obtener el valor:
+---
+cache('message');
+cache()->get('message');
+---
+
+Cómo crear Helpers personalizados en Laravel
+--------------------------------------------
+
+De manera general un helper es una función de ayuda que realiza una tarea o procedimiento específico y que su uso puede repetirse una y otra vez a lo largo de nuestro proyecto. Esto permite que evitemos seguir escribiendo tal procedimiento en muchos lugares, por ejemplo, puede ser alguna función común que utilicemos en la mayoría de los controladores o vistas. Para este propósito se pueden crear helpers que ayuden a simplificar nuestro código.
+
+Laravel nos ofrece algunos helpers que son de gran utilidad en nuestras nuestras aplicaciones. Estos se encuentran definidos en varios archivos del código fuente del framework:
+
+    vendor/laravel/framework/src/Illuminate/Support/helpers.php
+    vendor/laravel/framework/src/Illuminate/Foundation/helpers.php
+    vendor/laravel/framework/src/Illuminate/Support/Str.php
+    vendor/laravel/framework/src/Illuminate/Support/Arr.php
+
+Los helpers de Laravel están clasificados en varias categorías:
+
+    Los que nos permiten interactuar con arrays: Arr::add para agregar un nuevo par clave/valor, head() y last() para saber el primer elemento y último elemento, entre otros.
+    Los relacionados con las rutas o paths: app_path(), storage_path(), public_path(), entre otros que nos devuelven la ruta absoluta de los directorios app/, storage/ y public/ respectivamente.
+    Los helpers para manipular strings:  Str::limit para limitar el número de caracteres de un string, trans() que permite traducir un texto, Str::slug para generar un URL amigable, entre otros.
+    Los helpers para trabajar URL como: asset(), url(), route(), entre otros.
+    Y los de uso diverso como son: dd(), csrf_token(), auth(), collect(), env(), back(), with(), entre otros.
+
+Para conocer cada uno de ellos y saber cómo funcionan puedes consultar la documentación oficial.
+    https://laravel.com/docs/6.x/helpers
+
+
+
+Pero ¿Qué sucede cuando necesitamos una función que no está definida en Laravel por defecto? en ese caso, podemos crear nuestros propios helpers, no sólo para tener funciones reusables en el proyecto sino también para extender alguna funcionalidad del framework o adaptar algún procedimiento al modelo de negocio, y hacer que Composer realice la autocarga por nosotros.
+
+
+Creación de una función helper en Laravel
+-----------------------------------------
+
+Crea un archivo llamado helpers.php en el directorio app/ (puedes ubicar el archivo en cualquier otro lugar si lo deseas) el cual contendrá para este ejemplo:
+---
+<?php
+if (! function_exists('current_user')) {
+    function current_user()
+    {
+        return auth()->user();
+    }
+}
+---
+
+Modifica tu archivo composer.json para agregar la carga del archivo con la clave files dentro de la sección autoload de la siguiente manera:
+---
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/"
+        },
+        "classmap": [
+            "database/seeds",
+            "database/factories"
+        ],
+        "files": [
+            "app/helpers.php"
+        ]
+    },
+---
+Por último, ejecuta en la consola:
+
+    > composer dump-autoload
+
+Para usar la función tan sólo debe escribirla en algún controlador o vista donde quieras obtener el usuario conectado, por ejemplo, en una vista podemos usar lo siguiente para obtener el nombre del usuario conectado:
+---
+{{ current_user()->name }}
+--
+Así ahora puede escribir tantas funciones como quiera en el archivo helpers.php y usarlas en cualquier parte de la aplicación.
+
+
+Practica
+=========
+
+
+
+
+
+
+
+
+
+
+
+
 
 En la próxima lección aprenderemos a crear nuestras propias migraciones y a configurar la base de datos.
-Ejercicio
 
-Crea una base de datos y configura el archivo .env para que puedas ejecutar las migraciones con el comando php artisan migrate. Una vez que lo logres verifica que las tablas se hayan creado con éxito utilizando cualquier administrador de bases de datos.
+
+Ejercicio
+=========
+Crea una base de datos y configura el archivo .env para que puedas ejecutar las migraciones con el comando 
+
+    > php artisan migrate
+
+Una vez que lo logre verifica que las tablas se hayan creado con éxito utilizando cualquier administrador de bases de datos.
