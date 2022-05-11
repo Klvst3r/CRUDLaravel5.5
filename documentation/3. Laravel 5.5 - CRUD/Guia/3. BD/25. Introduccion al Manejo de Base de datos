@@ -298,9 +298,45 @@ Para usar la función tan sólo debe escribirla en algún controlador o vista do
 Así ahora puede escribir tantas funciones como quiera en el archivo helpers.php y usarlas en cualquier parte de la aplicación.
 
 
+En la próxima lección aprenderemos a crear nuestras propias migraciones y a configurar la base de datos.
+
+
 Practica
 =========
 
+En esta tercer parte de la guia daremos una intrrodución al manejo de base de datos con Laravel, y vamos a comenzar con el tema de las migraciones. Las migraciones son un mecanismo que nos provee el Framework con el cual vamos a tener un especie de control de versiones con los cambios en la estructura de la base de datos a lo largo del desarrollo del proyecto. Con las migraciones ademas podemos diseñar dicha estructura usando PHP y POO de una forma muy sencilla y desligada del motor de base de datos que nuestro proyecto vaya a utilizar; por ejemplo nosotros podemos diseñar el esquema de nuesra Bd y luego ejecutar un comando y dicho comando entonces va a crear las tablas para el motor que hayamos configurado, ya sea  MySQL, PostgreSQL, etc, siempre que dicho motor sea soportado por Laravel.
+
+Asi que las migraciones son agnosticas del motor de la BD que el proyecto vaya a utilizar.
+
+Con el ejemplo, actrualmente nuestro poroyecto triene dos migraciones:
+
+2014_10_12_000000_create_users_table.php
+2014_10_12_100000_create_password_resets_table.php
+
+Estas migraciones fueron incluidas cuando se instalo el proyecto, quiere decir que uno no las ha creado manualmente si no que ya estaban aqui.
+
+Vamos a ver como crear migraciones de forma manual.
+
+Podemos ver que cada migración es un archivo, y cada archivo tiene al principio del nombre tiene una marca de tiempo o timestamp con la fecha y la hora en la que fueron creada esta migración, seguido del nombre de la migración en este caso create_users_table o Crear tabla de usuarios. 
+
+Se puede ver que cada parte del nombre esta separada por unserscore o guin bajo. y si abrimos el archivo veremos que el contenido del archivo no es mas que una simple case de PHP que tiene varias partes.
+
+Aca al inicio del archivo podemos ver como se estan importando varias clases del Framework Laravel, por cierto todas las clases de Laravel tienen este nombre de espacio 
+
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
+
+Esto es indicativo que esta clase forma parte del Framework Laravel y luego tenemos la declaracion de la clase.
+
+y se puede ver que el nombre corresponde al nombre del archivo pero en este caso esta en formato donde cada nombre de cada palabra es una mayuscula en lugar de estar separado por  guines bajos.
+
+Luego esta clase extiende de la clase Migration, que nuevamente es una clase de Laravel y en esta clase vamos a ver la declaración de dos metodos.
+
+El metodo Up y el Metodo Down.
+
+
+2.40
 
 
 
@@ -310,10 +346,6 @@ Practica
 
 
 
-
-
-
-En la próxima lección aprenderemos a crear nuestras propias migraciones y a configurar la base de datos.
 
 
 Ejercicio
