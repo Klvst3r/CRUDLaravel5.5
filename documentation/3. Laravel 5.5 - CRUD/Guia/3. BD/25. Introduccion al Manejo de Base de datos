@@ -335,13 +335,79 @@ Luego esta clase extiende de la clase Migration, que nuevamente es una clase de 
 
 El metodo Up y el Metodo Down.
 
+Dentro del directorio databases/migrations/
 
-2.40
+---_create_users_table.php
+class CreateUsersTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('users', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name');
+            $table->string('email')->unique();
+            $table->string('password');
+            $table->rememberToken();
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('users');
+    }
+}
+---
 
 
+En el metodo Up es en donde nosotros vamos a especificar lo que queremos que haga esta migración por ejemplo, la migración que tiene el nombre create_users_table, en este caso deberia crear la tabla de usuarios. Y para ello vamos a utilizar el phasa Schema, y vamos a llamar al metodo create y este metodo como primer argumento va a recibir el nombre de la tabla que se quiere crear, pero podria ponerse cualquier otro nombre.
+
+Algo importante a tomar en cuneta es que el nombre de la migración coincida ocn lo que esta haciendo dentro de la clase, como segundo argumento vamos a pasar una funcion anonima, y esta funcion va a recibir un argumento que va a pasar Laravel automaticamnete y este argumento va a ser un objeto de la clase 'Blueprint'. Dentro de Schema Database, por supuesto dentro de Illuminate. Y es con este objeto con el cual finalmente nosotros vamos a diseñar nuestra tabla de usuarios. Aca vamos a tener una serie de metodos que nos van a permitir crear las columnas de nuestra tabla.
+
+El metodo increments en este caso, que recibe como argumento id va a a entonces a crear una columna llama id de tipo autoincremento, en este caso va a ser una columna de entero sin signo, pero tambien va a ser autoincrement.
+
+Por otro lado tenemos entonces el metodo String y pasamos nuevamente el nombre de lo que hace nuestra columna en este caso la columna se llama name y con este metodo va a ser de tipo varchar.
+
+Para el email nuevamente vamos a utilizar String pero en este caso estamos encadenando otro metodo -> unique();
+
+Con este metodo se va a crear otra columna de tipo varchar pero esta columna va  a ser unica, es decir no podra haber dos usuarios con el mismo email en la Bd.
+
+Para la contraseña se va a utilizar otra columna de tipo varchar.
+
+En seguida se tiene un metodo llamado 'rememberToken'. Este metodo no va a representar como tal un tipo de columna de la Bd, sino que Laravel incluye algunos metodos helpers que nos van a permitir generar columnas comunes en nuestra aplicación. Por ejemplo, como los usuariuos van a  tener autenticación, asi Laravel va a utilizar esta columna como una manera de almacenar un token que va a permitir recordar a los usuarios en visitas subsiguientes, a la pagina o a la aplicación, aunque no es necesario entender esto aun.
+
+Vamos a enfocarnos en que con esta clase vamos a poder diseñar nuestras tabvlas en la Base de datos.
+
+Por otro lado tenemos otro metodo llamado 'timestamps' o marcas de tiempo el cual es un metodo helper conveniente con el cual se vana declarar dos columnas. Primero la columna 'created_at'
+
+            $table->timestamps();
 
 
+Definido en:
+---Blueprint.php
+...
+public function timestamps($precision=0){
+    $this->timestamp('created_at',$precisión)->nullable();
 
+    $this->timestamp('updated_at',$precisión)->nullable();    
+}
+...
+---
+
+
+Luego la columna updated_at actualizado el, y esta columna puede tener un valor null por lo tanto aca se esta encadenando el metodo nullable. En este momento estamos dentro de una clase del Framewrok que se utilizar el editor para poder navegar por la clase del metodo de una forma muy simple.
+
+06.09
 
 
 
