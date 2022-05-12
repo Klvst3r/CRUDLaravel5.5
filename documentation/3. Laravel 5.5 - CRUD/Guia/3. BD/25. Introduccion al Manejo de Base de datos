@@ -407,7 +407,341 @@ public function timestamps($precision=0){
 
 Luego la columna updated_at actualizado el, y esta columna puede tener un valor null por lo tanto aca se esta encadenando el metodo nullable. En este momento estamos dentro de una clase del Framewrok que se utilizar el editor para poder navegar por la clase del metodo de una forma muy simple.
 
-06.09
+Dentro de la Clase de BluePrint.php se ha definido una funcion que es la que utilizamos llamada desde su declaración
+
+Asi cuando se llama al metodo timestamps, en este caso es como si se estuviese llamando manualmente a los dos metodos mensionados anteriormente, para crear dos columnas en la Bd.
+
+Notemos que en la funcion up()
+
+---...create_users_table.php
+ public function up()
+    {
+        Schema::create('users', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name');
+            $table->string('email')->unique();
+            $table->string('password');
+            $table->rememberToken();
+            $table->timestamps();
+        });
+    }
+---
+Laravel permite evitar repetición de codigo, asi cuando invocamos a la linea: 
+    $table->timestamps();
+
+Estaremos invocando a los metodos:
+
+---Blueprint.php
+...
+public function timestamps($precision=0){
+    $this->timestamp('created_at',$precisión)->nullable();
+
+    $this->timestamp('updated_at',$precisión)->nullable();    
+}
+...
+---
+
+Para la creación de las dos columnas 'created_at' y 'updated_at'. Haciendo dos lineas de codigo en una sola, anteriormente tambien se hablo de phases: cuando se mendiono Schema::create()
+
+en este caso con el helper el el formato es similar si vamos a las rutas con y Laravel evita la repetición de codigo.
+
+
+---web.php
+<?php
+
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider within a group which
+| contains the "web" middleware group. Now create something great!
+|
+*/
+
+/*Route::get('/', function () {
+    return view('welcome');
+});
+*/
+
+Route::get('/', function(){
+    return 'Home';
+});
+
+Route::get('/usuarios', 'UserController@index');
+
+
+Route::get('/usuarios/nuevo', 'UserController@create');
+
+Route::get('/usuarios/{id}', 'UserController@show')
+    ->where('id', '[0-9]+');   
+
+Route::get('/saludo/{name}/{nickname?}', 'WellcomeUserController');
+
+---
+
+
+El formato es similar, si nos vamos a las rutas en web.php. el formato es similar que se utiliza para declarar nuestras rutas, y esta es la manera por la cual podemos llama a los metodos estaticos, es decir:
+    Route::get
+
+En PHP con programación orientada a objetos, sin embargo Laravel utiliza un mecanismo mas complejo, este se revisara mas adelante.
+
+Lo importante de momento es acostumbrarnos a esta sintaxis:
+
+    Schema::create()
+
+Con la cual vamos a poder diseñar la estructuera de nuestra BD, y el metodo down(), nos permitira revertir en el metodo up() que se esta creando la tabla users, y en el metodo down lo que se quiere hacer es lo contrario que es eliminar.
+
+Parza ello Laravel va a a utilizar el metodo dropIfExists()
+
+---...create_users_table.php
+
+public function down()
+    {
+        Schema::dropIfExists('users');
+    }    
+---
+
+Esto va a eliminar la tabla en caso de que exista.
+
+Poniento todo lo anterior en accion, para ellos en consola
+    > php artisan migrate
+
+Este es el comando que va a ejecutar entonces todas las migraciones una por una, en este caso presionamos enter y vemos que la salida es:
+
++++
+   
+    $ php artisan migrate
+
+    In Connection.php line 664:
+
+      SQLSTATE[HY000] [2054] The server requested authentication method unknown to the client (SQL: select * from information_schema.tables where table_schema =
+      homestead and table_name = migrations)
+
+
+    In Connector.php line 67:
+
+      SQLSTATE[HY000] [2054] The server requested authentication method unknown to the client
+
+
+    In Connector.php line 67:
+
+      PDO::__construct(): The server requested authentication method unknown to the client [sha256_password]
+
++++
+
+Recibimos error, si vemos el error se ha denegado el acceso o el metodo de atutenticación es desconocido. Por lo tanto no tenemos acceso a la Base de datos, pero si recordamos en ningun momento hemos configurado o creado una Base de datos, asi que vamos a crear uno.
+
+Utilizando MySQL con el usuario de desarollo vamos a configurar.
+
+VAmos a poner nuestro ejemplo con las siguientes credenciales:
+
+User: root
+Password: desarrollo
+Name_BD: CRUDLaravel5_5
+
+
+nos conectamos via consola
+ > $ mysql -u root -p
+Enter password: **********
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 43
+Server version: 8.0.17 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2019, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql>
+
+
+Vamos acrear una Base de datos:
+
+Ejecutamos la creación de la base de datos:
+
+> mysql> CREATE DATABASE crudlaravel5_5;
+    Query OK, 1 row affected (0.03 sec)
+
+Con esto vamos a crear una Bd utilizando MySQL, aunque podemos hacerlo de otra forma, por ejemplo, en Mac hay una aplicación llamada "Sequel Pro".
+
+Podemos utilizar tambien "phpmyadmin" para administrar la Bd.
+
+Salimos de la consola.
+
+Nuevamente ejecutamos comando:
+    > php artisan migrate
+
+
+En este caso tenemos el mismo error, esto sucede por que aunque ya tenemos la Base de datos creada, no se ha configurado, en el proyeto, por ello vamos al archivo-
+
+'.env', que es el archivo de entorno y cambiar la configuracion de la BD, en este caso podemos opbservar que tenemos ciertos datos, vamos a registrar la información pertinenete segun nuestro proyecto en puerta.
+
+
+---.env
+...
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=crudlaravel5_5
+DB_USERNAME=root
+DB_PASSWORD=desarrollo
+...
+---
+
+
+si no tuvieramos contraseña quedaria este ultimo dato como sigue:
+
+---
+DB_PASSWORD=
+---
+
+Por cierto es en este archivo de entorno donde nosotros vamos a configurar la aplicación  para el entorno dado, Por ejemplo
+
+    APP_URL=http://localhost:8000/
+
+Ya que tenemos un servicio creado localmente y fue configurado con esa url para esta aplicación.
+
+si hubiesemos configurado nuestro Host virtual, pudiese apuntar a 
+
+    APP_URL=http://klvst3r.io
+
+
+Asi como podemos ver tenemos nuestra pagina de inicio    
+
+
+ahora vamos a colocar el nombre del proyecto
+    APP_NAME=CURDLaravel5.5
+
+Por ejemplo.
+
+si regresamos a la consola y rejecutamos el comando de migraciones.      
+
+    > $ php artisan migrate
+Migration table created successfully.
+Migrating: 2014_10_12_000000_create_users_table
+Migrated:  2014_10_12_000000_create_users_table
+Migrating: 2014_10_12_100000_create_password_resets_table
+Migrated:  2014_10_12_100000_create_password_resets_table
+
+
+Ahora el mensaje es satisfactorio y confirmación de que se creo la tabla de migraciones correctamente, y que se han ejecutado los siguientes archivos dentro de las migraciones.
+
+
+- 2014_10_12_000000_create_users_table
+- 2014_10_12_100000_create_password_resets_table
+
+con el primer archivo se crea la primera tabla de usuarios, y con el segundo archivo se va a crear la tabla para la recuperación de contraseñas. mediante la tabla: create_password-reset_table.
+
+No revisamos esta migración, pero esta tabla tiene 3 columnas la columna email, token y luego otra columna para indicar, cuando se creo este registro. 
+
+Quedando
+
+---...create_password_resets_table.php
+
+<?php
+
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
+
+class CreatePasswordResetsTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('password_resets', function (Blueprint $table) {
+            $table->string('email')->index();
+            $table->string('token');
+            $table->timestamp('created_at')->nullable();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('password_resets');
+    }
+}
+
+---
+
+Tenemos el mismo patron. el nombre del archivo que es 'create_password_resets_table'. En este caso vamos a indicar que vamos a crear la tabla, para recuperación de contraseña, y en el metodo Up(), tenmemso el codigo para crear la tabla, y el metodo down() para eliminar dicha tabla.
+
+si regresamos al navegador y mediante phpmyadmin podemos observar que tebnemos tres tablas.
+
+
+- migrations
+- password_resets
+- users
+
+Aunque podriamos haber esperado solo tener dos tablas, pero Laravel crea otra tabla extra llama 'migrations', donde va a guardar la información de las migraciones que han sido ejecutadas. Por ejemplo en este caso se han ejecutado la migración para ejecutar la tabla 'usuarios' y se ha utilizado la migracion para crear la tabla 'password_resets' para el mecanismo de recuperación de contraseñas.
+
+Y asi las migraciones fueron ejecutadas de una sola vez.
+
+si nos vamos a la estructura de la Bd vamos a ver por ejemplo la tabla de usuarios, todo esta vacia. tenemos entonces: la estructura:
+
+ > mysql> use crudlaravel5_5;
+    Database changed
+
+
+ > mysql> desc migrations;
++-----------+------------------+------+-----+---------+----------------+
+| Field     | Type             | Null | Key | Default | Extra          |
++-----------+------------------+------+-----+---------+----------------+
+| id        | int(10) unsigned | NO   | PRI | NULL    | auto_increment |
+| migration | varchar(255)     | NO   |     | NULL    |                |
+| batch     | int(11)          | NO   |     | NULL    |                |
++-----------+------------------+------+-----+---------+----------------+
+3 rows in set (0.01 sec)
+
+
+> mysql> desc password_resets;
++------------+--------------+------+-----+---------+-------+
+| Field      | Type         | Null | Key | Default | Extra |
++------------+--------------+------+-----+---------+-------+
+| email      | varchar(255) | NO   | MUL | NULL    |       |
+| token      | varchar(255) | NO   |     | NULL    |       |
+| created_at | timestamp    | YES  |     | NULL    |       |
++------------+--------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+
+
+> mysql> desc users;
++----------------+------------------+------+-----+---------+----------------+
+| Field          | Type             | Null | Key | Default | Extra          |
++----------------+------------------+------+-----+---------+----------------+
+| id             | int(10) unsigned | NO   | PRI | NULL    | auto_increment |
+| name           | varchar(255)     | NO   |     | NULL    |                |
+| email          | varchar(255)     | NO   | UNI | NULL    |                |
+| password       | varchar(255)     | NO   |     | NULL    |                |
+| remember_token | varchar(100)     | YES  |     | NULL    |                |
+| created_at     | timestamp        | YES  |     | NULL    |                |
+| updated_at     | timestamp        | YES  |     | NULL    |                |
++----------------+------------------+------+-----+---------+----------------+
+7 rows in set (0.00 sec)
+
+
+Empezamos con users:
+
+Esto lo maneja Laravel automaticamsnte.
+
+Esta es la introducción al tema de Manejo de migraciones con Laravel.
+
+
 
 
 
