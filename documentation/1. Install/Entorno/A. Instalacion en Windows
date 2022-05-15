@@ -1,0 +1,49 @@
+A. Instalacion en Windows
+
+Para poder desarrollar con Laravel tenemos varios entornos de instalación para diversos sistemas operativos, empezaremos con el Sisntema Windows.
+
+Se puede por ejemplo utilizar XAMP, LAMP, Instalar PHP junto con Composer y otras formas de desarrollo con otras herramientas.
+
+ Si esta desarrollando con Windows puede utilizar la siguienteconfiguración:
+
+ Instalación de Laragon
+ ---------------------
+
+ Podremos descargarlo desde la página oficial:
+ 	https://laragon.org
+
+ Laragon es un entorno de desarrollo orientado prinicipalmente a PHP, esta herramienta contiene todos los paquetes que se necesitan y poder de desarrollar aplicaciones con PHP, Laravel, Synphony, Wordpress, entre otros.
+
+ Dentro de las caracteristicas de esta herramienta, es que básicamente todos los paquetes que son necesarios para el desarrollo con Laravel, otra de las cosas es que permite trabajar con URL amigables.
+
+ Por ejemplo podemos generar un proyecto con Laravel y acceder a traves de una url amogable tal como
+ 	http://app.test
+
+ Utilizar localhost en el puerto 8000, esta es una opcion viable si se esta desarroolando bajo el sistema operativo Windows, sin empbargo se puede trabajar de forma tradicional o utilizando alguna herramienta o bien php con composer.
+
+ Aunque la forma mas facil es utilizar Laragon, entonces vamos al apartado de descargas con la opcion de Apache, Nginx, MySQL, PHP, Redis, Node.js
+ 	https://laragon.org/download/
+
+ Edición:
+ 	Laragon Full
+
+ Una vez descargado procedemos a ejecutar el instalador, 
+ - eligiendo el idioma, 
+- La ruta donde se desea instalar
+
+En este caso predeterminado se va a elegir activando solo la opcion de enmedio.
+
+Instalar
+
+Una vez completada la instalación podremos iniciar y elegit el paratado de ejecutar Laragon.
+
+Al hacer esto se abre la interfaz de esta herramienta, donde basicamente, tenemos cierta configuración para iniciar todos los servicios, para ver servicios.
+
+Esos servicios son Apache, PHP, Mysql, NodeJs.
+
+Igualmente podemos ejecutar un entorno grafico, para nuestra Bd utilizando una herramienta llamada Geni, podemos ver el apartado donde podemos cargar nuestros proyectos en este caso en la carpeta C:\Laragon\www
+
+De igual forma se tiene una consola integrada por ejemplo al darle click, ejecuta una terminal parecida al CMD donde podremos ejecutar comandos.
+
+Entonces ya tenemos instalado Laragon podremos pasar al siguiente forma de instalación para un proyecto con Laravel.
+
