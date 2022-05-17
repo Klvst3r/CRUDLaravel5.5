@@ -1,0 +1,34 @@
+L. Instalación en Linux - Entorno Virtual
+
+Tomando en consideración que para un proceso de instalación en Linux, bajo un entorno de trabajo virtual, debemos instalar un par de comandos. Para ello utilizaremos la terminal del sistema operativo en cuestión. 
+
+tomando en consideración que nuestro entorno del Sistema operativo Virtual es Ubuntu 
+
+1. Agregamos el repositorio relacionado con PHP.
+	sudo add-apt-repository ppa:ondrej/php
+
+2. Realizamos la actualización.
+	sudo apt update	
+
+3. Una vez ya realizado este proceso procedemos a instalar PHP en s versión 7.4
+	sudo apt-get install php7.4	
+
+4. Una vez terminado este proceso verificamos la version
+
+	php -v
+
+5. Procedemos a instalar un par de paquetes, que necesitaremos ya que Laravel los requietre 
+	sudo apt-get install php-pear php7.4-curl php7.4-dev php7.4-gd php7-4-mbstring php7.4-zip
+
+6. Una vez concluido la instalacion de los paquetes, procedemos a instalar composer. A traves de composer vamos a poder instalar las dependencias asi como el mismo Laravel
+	sudo apt-get install composer
+
+	Esto es debido a que estamos en un entorno de desarrollo, ya que si estamos en producción el proceso cambia un poco.
+
+7. 	Finalmente, instalamos el paquete siguiente
+	composer global requiere laravel/installer
+
+	Esto lo hacemos a trvez de composer. Generamos los poryectos de Laravel.	
+
+
+2"15
