@@ -28,7 +28,50 @@ tomando en consideración que nuestro entorno del Sistema operativo Virtual es U
 7. 	Finalmente, instalamos el paquete siguiente
 	composer global requiere laravel/installer
 
-	Esto lo hacemos a trvez de composer. Generamos los poryectos de Laravel.	
+	Esto lo hacemos a trvez de composer. Generamos los proyectos de Laravel.	
+	La ruta de instalación puede ser parecida a la siguiente
+		/home/<usuario>/.config/composer
+
+8. Ejecutar el comando Laravel
+	laravel			 
+
+	Este proceso puede dar como salida que el comando no se encuentra para poder ser ejecutado desde la ruta.
 
 
-2"15
+	Procedemos a situarnos en:
+		/home/<usuario>/.config/composer
+
+	 Dentro de esta ruta ingresamos a la carpeta vendor 
+		/home/<usuario>/.config/composer/vendor
+
+	nos situamos dentro de la carpeta bin y dentro localizaremos a un archivl llado laravel
+		/home/<usuario>/.config/composer/vendor/bin/laravel
+	
+	Este es el binario con el que estaremos generando nuestros poryectos 
+
+9. copiamos la direccion o ruta localizada.
+
+	Utilizando el siguiente comando copiamos la ruta completa
+		> pwd
+		/home/<usuario>/.config/composer/vendor/bin/
+		CTRL+C
+
+10. Ejecutando un editor de texto editamos el archivo Bash
+		> nano ~/.bashrc 		
+
+11.	Al final del archivo y procedemos a hacer un export de la variable PATH con el siguiente valor:
+		export 	PATH="/home/<usuario>/.config/composer/vendor/bin/"
+
+	Esto hara que se concatene el archivo a la ruta del binario. Guardamos y ejecutamos el bashrc
+		> source ~/.bashrc
+
+12. Intentamos nuevamente la ejecución de Laravel desde la ruta donde nos encontremos.
+		> laravel
+
+	Ahora ya estara reconociendo el binario.
+
+Tenemos todo listo para trabajar con Laravel en un entorno Linux.	
+	>	
+
+
+
