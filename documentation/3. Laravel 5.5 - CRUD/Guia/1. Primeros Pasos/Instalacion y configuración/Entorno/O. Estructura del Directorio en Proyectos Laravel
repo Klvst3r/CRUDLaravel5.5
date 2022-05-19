@@ -1,0 +1,142 @@
+O. Estructura del Directorio en Proyectos Laravel
+
+Para poder entender como es la estructura de todo proyecto con el Framework Laravel, es necesario entender como es la estructura de carpetas.
+
+La estructura es la siguientes:
+
+blog
+|-/app
+|-/bootstrap
+|-/config
+|-/database
+|-/public
+|-/resources
+|-/routes
+|-/storage
+|-/tests
+|-/vendor
+|-.editorconfig
+|-.env
+|-.env.example
+|-.gitattributes
+|-.gitignore
+|-.stylecl.yml
+|- artisan
+|- composer.json
+|- composer.lock
+|- package.json
+|- package-lock.json
+|- phpunit.xml
+|- README.md
+|- server.php
+|- webpack.mix.js
+
+Los multiples archivos y carpeta que contienen el core de nuestyro proyecto
+
+/app Nos enotntramos con
+|-/console
+|-/Exceptions
+|-/Http
+|-/Providers
+|-Users.php # Representa a un modelo en Laravel
+
+El archivo "Users.php" cuando generemos a un modelo se generaran dentro de la carpeta /app 
+
+Dentro de lacarpeta
+blog
+|-/app
+	|-/Console
+		|-Kernel.php #Sirve para definir tareas que se ejecutaran periodicamente
+
+Dentro de la Carpeta Exceptions
+
+blog
+|-/app
+	|-/Exceptions
+			|-Handler # Rara vez se tocara el codigo, a menos que estemos desarrollando una API
+
+
+La carpeta "Http"			
+blog
+|-/app
+	|-/Http
+		|-/Controllers
+		|-/Middleware
+		|- Kernel.php
+		
+
+en esta carpeta se definiran tanto controladores como middlewares, reglas de validación entre otros. 		
+
+Dentro de la carpeta Providers
+blog
+|-/app
+	|-/Providers
+		|- AppServiceProvider.php
+		|- AuthServiceProvider.php
+		|- BroadcastServiceProvider.php
+		|- EventserviceProvider.php
+		|- RouteServiceProvider.php
+
+el conjunto de archivos mostrados son cargados al inicio de cada peticion.
+
+
+En el segundo nivel en la carpeta rara vez utilizaremos alguna modificación.
+
+blog
+|-/app
+	|-/bootstrap
+
+Dentro de la carptea de configuración, definiremos archivos de configuración para ciertos aspectos de nuestro poryecto
+blog
+|-/app
+	|-/config
+		|- app.php
+		|- auth.php
+		|- broadcasting.php
+		|- cache.php
+		|- cors.php
+		|- database.php
+		|- filesystem.-php
+		|- hashing.php
+		|- logging.php
+		|- mail.php
+		|- queue.php
+		|- services.php
+		|- session.php
+		|- view.php
+
+Podemos configurar las sesiones.
+
+dentro de cada archivo se resume a 
+<?php
+
+use Illuminate\Support\str;
+return [ 
+	..config
+]			
+
+Que corresponde a un arreglo con la configuración.
+
+Por ejemplo
+app.php
+	Contienen la configuración global para nuestra aplicaci´pn, por ejemplo el nombre de nuestra aplicacion. el timezone, si estamamos en modo debug, la url, entroe otros aspectos 
+
+En resumen en esta carpeta definiremos la configración de nuestra aplicación.
+
+Si revisamos dentro de este directorio el archivo
+database.php
+
+<?php
+
+use Illuminate\Support\str;
+resturn [
+
+	'default' => env('DB_CONNECTION', 'mysql'), Tendemos la configuracion con la BD
+	...
+]
+
+
+Dentro de la Carpeta database con esntonramos con:
+blog
+|-/database
+
