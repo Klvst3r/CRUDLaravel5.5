@@ -139,4 +139,95 @@ resturn [
 Dentro de la Carpeta database con esntonramos con:
 blog
 |-/database
+	|-/factories
+	|-/migrations
+	|-/seeds
+	|-/.gitignore
 
+La carpeta mas importante es la de migrations, dentro de la cual definiremos archivos que almacenaran a nuestras migraciones.	
+
+Dentro de:
+blog
+|-/database
+	|-/factories
+
+Contiene clases de PHP que permitira generar contenido aleatorio que nos llega a serviro cuando estamos en desarollo.
+
+en la carpeta 
+
+blog
+|-/database
+	|-/seeds
+
+Básicamente es una clase que permite ejecutar a los facctories.
+
+--------
+La carpeta Public
+
+blog
+|-/ public
+
+Es el punto inicial de entrada de toda peticioni, esta carpeta contiene el archivo index.php y es encargada de redirigir a nuestros controladores y basicamente es el punto de entrada inicial para cada aplicación Laravel.
+
+-----
+La carpeta /Resources
+
+blog
+|-/ resources
+
+Aca nos enttramos con cuestiones mas orientadas al frontend, ya que se ubucan.
+blog
+|-/ resources
+		|-/ js
+			|- app.js
+			|- bootstrap.js
+		|-/lang
+		|-/sass
+		|-/views
+
+Archivos Js aca se definien cuestiones de integracion de Vue.js o React aqui iria la configuración, 
+
+Tambien esta la carpeta "lang" que define las etiquetas 
+Validation, continene un arreglo con los mensajes de error.
+
+Ayuda si la carpeta es multiiidioma.
+
+Aca se define el idioma.
+
+Dentro de 
+/Config/app.php
+
+Si tuvieramos una palicación multiidioma, se cambiaria el apartado hacia 
+	'locale' => 'en'
+
+Con las siglas del idioma. 
+
+Dentro de /sass/app.scss
+	En este archivo se agregan las variables y cuestiones de4 CSS o Bootstrap, con algun framework CSS
+
+/resources/
+	|-views
+Se resumen basimanete a un archivo html, 
+
+Es en esta carpeta donde tendremos las cosas que el proyecto utilice, 
+
+----
+La carpeta importante es la carpeta
+blog
+|-/routes
+
+Aca basicamente definiremos todas las rutas del proyecto.
+
+blog
+|-/ routyes
+	|-api.php
+	|-channels.php
+	|- console.php
+	|-web.php
+
+De estos 4 archivos en web.php, se definen las rutas para nuestra aplicación y cuestinoes sobre linea de ocmandos.
+el archivo
+chanel.php # definiremos reglas de validaciones cuando se este trabajando con aoplicaciones realtime 
+
+	5-36
+	
