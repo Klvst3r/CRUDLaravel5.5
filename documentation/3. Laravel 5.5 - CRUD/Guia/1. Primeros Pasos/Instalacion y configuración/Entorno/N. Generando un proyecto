@@ -1,0 +1,57 @@
+N. Generando un proyecto
+
+Una vez configurado nuestro entorno, comenzaremos con la generación de nuestra aplicación.
+
+Para usuarios Linux
+------------------
+	nos siotuamos dentro de la carpeta public
+	> cd /home/<usuario>/code/blog/public
+
+	Eliminamos a la carpeta blog
+	> cd  /home/<usuario>/code
+	> rm -r blog
+
+Procedemos a generar a nuestro promer proyecto, aplica para usuarios de windows y Linux que esten utilizando Homestead	
+
+ehjecuyamos al binario, dentro de la carpeta code
+	> cd  /home/<usuario>/code
+	> laravel new blog
+
+Ejecutamos y esperamos, 
+	Vamos a nuestro navegador y n la url:
+		http://homestead.test
+
+El resulatado se vera en pant alla.
+
+si se ha instalado PHP y Laravel directamente en el sistema operativo.
+
+Se debera situar sobre la pcarpeta a trabajar y ejecutar el comando 
+	> php artisan serve
+
+Esto ejecutara la aplicacion en el puerto 8000
+
+Por lo que en el navegador hacermos
+	http://localhost:8000
+
+
+
+
+
+
+Para Usuarios de Windows
+----------------------
+
+Si estamos utilizando la heramienta Laragon lo unico a realizar es un avez inicializado los servicios sobre el panel de Laragon
+
+- click Derecho en el apartado \quick app->Seleccionar a la aplicacion laravel
+
+- Se abre ventana de dialogo "You must [Start all] first" (OK )
+- Se recomenda poner un nombre descriptiuvo para la aplicación. 
+- Se genera automaticamente un dominio que consta de el nombre del proyecto ej "blog.test"
+
+
+Para el caso de Windows podemos ir al navegador a ir al nombre del proyecto
+Ej.
+	http://homestead.test
+
+Ya con las salida en el navegador tenemos todo listo y configurado para comenzar a desarrollar nuestra aplicación.
