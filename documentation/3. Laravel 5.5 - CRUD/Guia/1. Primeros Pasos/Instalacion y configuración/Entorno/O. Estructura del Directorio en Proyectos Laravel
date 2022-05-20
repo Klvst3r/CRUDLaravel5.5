@@ -225,9 +225,71 @@ blog
 	|- console.php
 	|-web.php
 
-De estos 4 archivos en web.php, se definen las rutas para nuestra aplicación y cuestinoes sobre linea de ocmandos.
-el archivo
-chanel.php # definiremos reglas de validaciones cuando se este trabajando con aoplicaciones realtime 
+De estos 4 archivos en 
+web.php, se definen las rutas para nuestra aplicación y cuestinoes sobre linea de ocmandos.
+chanel.php # definiremos reglas de validaciones cuando se este trabajando con aplicaciones realtime.
+api.php # Permite establecer rutas para cuendo se este trabajando o creando uns API
 
-	5-36
+-----
+La carpeta Storage
+blog
+  |-/ storage
+  		|-/ app
+  		|-/ framework
+  		|-/ logs
+
+La cual basicamente es una carpeta que almacena ciertas configuraciones generales del Framework, por eejemplo sesiones, logs vistas compiladas, entre otros.
+
+----
+Dentro de la carpeta Tests
+blog
+  |-/  Tests
+  		 |-/ Feature
+  		 |-/ Unit
+  		 		|- CreatesApplication.php
+  		 		|- TestCase.php
+  		 
+
+Se define todo lo relacionado con los test, basicamente viene incluido con el Framework Unit, la configuración ya esta realizada.
+El archivo phpunit.xml, continene toda la configuración necesaria.
+
+--------
+
+blog
+  |-/ vendor
+
+Vendor es la carpeta que automaticamente se genera al instalar Laravel y contine los pquetes utilizados a tyraves de composer.
+
+-----
+
+Asi tambien existen diferentes acciones y diferentes archivos.
+
+blog
+|-/...
+|-.editorconfig
+|-.env
+|-.env.example
+|-.gitattributes
+|-.gitignore
+|-.stylecl.yml
+|- artisan
+|- composer.json
+|- composer.lock
+|- package.json
+|- package-lock.json
+|- phpunit.xml
+|- README.md
+|- server.php
+|- webpack.mix.js
+
+.env 			# Se definen todas las variables de entorno, cuestiones de Bd, cache, sesiones, configuraciones redis.
+.env.example	# Es una replica del archivo anterior no continene credenciales, ya que no se sube al repositorio
+.gitignore 		# Estan definidos los archivos que no se suben al repositorio de control de versiones.
+artisan			# a traves de este archivo, tiene las utilidades para ejecutar en consola de Laravel.
+composer.json 	# Mantiene un track de todas las dependencias que tenemos instaladas en nuestro poryecto
+package.json 	# Depenendias para JS
+
+Una vez resumidas de manera general la estructura del Framework de Laravel,  comentinuamos con la Guia General del Framework Laravel.
+
+	
 	
