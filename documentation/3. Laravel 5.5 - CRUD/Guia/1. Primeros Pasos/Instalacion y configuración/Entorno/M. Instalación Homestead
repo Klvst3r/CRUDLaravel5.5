@@ -1,0 +1,228 @@
+M. Instalación Homestead
+
+Revisado los proceso de instalación para entornos windows y Linux, veremos el proceso con la Herramienta Oficial.
+
+La cual es llamada Laravel homestead, que es basicamente el entorno oficial para poder ejecutar aplicaciones PHP y aplicaciones Laravel, para poder utilizar esta herramienta debemos contar con dos requisitos.
+- Debemos tener instalado en nuestro sistema operativo a Vagrant, para poder manipular a una maquina virtual.
+
+	Si necesitamos referencia debemos incluir una introducción a Vagrant, con los conceptos mas relevantes de la herramienta.
+- si se va a a utilizar Vagrant tenemos que tener instalado algun proveedor de maquina virtual. Por ejemplo virtualBox, Hypervisor  
+
+	Para el caso concreto se recomienda utilizar virtualbox
+
+Una vez instalado Virtualbox y Vagrant, comenzaremos con el proceso de configuración.
+
+Podemos seguir los pasos de la documentación que estan en
+	https://laravel.com/docs/7.x/homestead
+
+		Instalation & Setup
+
+1. Una vez ya instalado estos dos requisitos, ejecutamos la siguiente linea con nuestra terminal
+	> vagrant box add laravel/homestead
+
+Podemos proceder con la console para windows de Powershell como administrador, ejecutando el siguiente comando.
+	> vagrant box add laravel/homestead
+
+Seguimos con el siguiente paso
+
+2. Hacemos un clone de la siguiente linea de ocmando
+	git clone https://github.com/laravel/homestead.git ~/Homestead
+
+	Lo comanamos en la ruta mediante una carpeta llamada /homestead
+
+3. En otro caso diferente podremos descargar directamente el contenido del repositorio en un archivo .zip
+	https://github.com/laravel/homestead
+
+4. Procedemos a descomprimirlo, 
+
+5. Accedemos y renombramos a la carpeta como "Homestead"
+
+6. Cortamos esta carpeta y nos dirigimos  a equipo, 
+	c:\Ususarios\<usuario>\
+
+7,. Pegamos la carpeta, dentro de la ubicación anterior.
+
+8. Una vez finalizado este proceso, nos situamos dentro
+	cd C:\users\<usuario>\.Homestead\
+
+9. Si nos encontramos en un entrono Windows, lo que haremos es dirigirnos al apartado vistas y activamos las opciones de:
+	- Mostrar
+		- Extensiones de nombre de archivo
+		- Elementos ocultos
+
+10. Una vez seleccionada las dos casilla generamos una nueva carpeta 
+		.ssh
+11. Nos situamos dentro de la mismo 	
+		cd C:\users\<usuario>\.ssh
+
+	el contenido puede ser el siguiente:
+		config
+		id_rsa
+		id_rsa.pub
+		known_hosts
+
+12. Generamos un nuevo archivo	a traves de un coduemnto de texto
+		id_rsa.pub
+
+13. Una vez con el archivo generado, procedemos a abrir la carpeta Homestead
+
+14 ejecutamos el siguiente archivo
+	Dentro de:
+		C:\Usuarios\<usuario>\Homestead
+
+15. Existe un archivo llamada
+	init.bat
+	init.sh
+
+16. si nos encontramos dentro de MAC o Linux dentro de la tarminal. Podemos ejecutar 
+	> C:\Users\<usuario>\Homestead\ code .
+	ejecutamos:
+		bash init.sh
+	Si somos usuarios de Windows vamos a proceder a ejecutar 
+		init.bat
+
+	Esto copiara al archivo   
+		C:\Usuarios\<usuario>\Homestead
+			Homestead.yaml.example
+
+	Hacia el archivo
+		C:\Usuarios\<usuario>\Homestead.yaml
+
+	Se genera el archivo un nuevo archivo, dentro de la ruta especificada.
+
+17. Editamos el archivo
+		Homestead.yaml
+
+	Un poco de la configuracion
+
+	---------------------
+
+	---
+	ip: "192.168.1.10"	#Referencia de configuracion de nuestro proveedor de maquina viertual
+	memory: 2048
+	cpus: 2
+	provider: virtualbox # configurando a Virtualbox, a un maquina virtual con las caracteristica descritas.
+
+
+
+	authorize: ~/.ssh/id_rsa.pub
+	keys:				# Claves de autorización y llave
+		~/.ssh/id_rsa
+	
+					# Este es el aparado más importante, con las directivas, carpetas, y base de datos
+	folders:		# Indicamos aqui a Vagrant que quieremos compartir una carpeta de sistema local de archivos, hacia la ruta de la maquina virtual, debido a que vamos a estar 						#	compartiendo entre el sistema local de widnows y la maquina virtual y viceversa.
+		maps: ~/code
+		to: /home/vagrant/code
+	sites:			# Permite configurar a todas las aplicaciones que se esten desarrollando
+		map: homestead.test 	#Apartado principal
+		to: /home/vagrant/code/public  #Hacia una ruta, estara redirigiendo a nuestra aplicación que alamacenanda dentro de public. Podemos agregar un directorio mayor para poder 		
+					# definir multiples aplicaciones en la maquina viertrual , ya que se hace referencia a la misma ruta y directamente a la caprtea public, lo que se recomienda es 
+					# cambiar un nombre, por ejemplo
+						/home/vagrant/code/blog/public
+
+					# Esto hara referencia a nuestra aplicación, asi que dentro de windows en la caprtea "code" sera generada una carpeta llamada "blog" y otra llamada "store". Con esto
+					# Estariamos definiendo a multiples carpetas que representan a un proyecto, con esto aseguramso que vamos a poder desarrollar multiples aplicaciones utilizando el 
+					# mismo entorno
+					# si quisieras definir otra aplicación, lo unico que se tendria que hacer es copiar: 
+		map: store.test 	#Definiendo el dominio
+		to: /home/vagrant/code/store/public
+					# El apartado de la BD, se definen las bases de datos dependiendo, de nuestros poryectos. si se tuvieran tres poryectos, podremos definir a una base dede datos para cada proyecto
+	databases:
+		homestead
+		store		#Por cada proyecto se puede definir una base de datos, y se genera automaticamente la bd por nosotros.
+		blog
+	features:
+		mariadb: false
+		ohmyzsh: false
+		webdrivers: false
+
+18. Dentro de windows en la Carpeta del usuario:
+	C:\Usuarios\<usuario>\
+
+	Una nueva carpeta llamada code
+	C:\Usuarios\<usuario>\code
+
+	Esta carpeta sera compartida a nuestra maquina virtual dentro de esta ruta.
+	Ya teniendo visualizada y resumida la configuración inicial, procedemos  a generar nuestra maquina virtual.
+
+	Para ello.
+
+19. Dentro de la carpeta Homestead
+		C:\Usuarios\<usuario>\Homestead
+	Vamos a ejecutar el comando en la terminal
+		
+		C:\Usuarios\<usuario>\Homestead> vagrant up
+	
+	Una vez terminado el proceso, ejecutamos el siguiente comando para verificar que todo este funcioanndo correctamente
+		
+		C:\Usuarios\<usuario>\Homestead> vagrant status
+
+	ahor dentro de la misma carpeta ejecutamos
+		C:\Usuarios\<usuario>\Homestead> vagrant ssh
+
+	Ahora ya podemos ejecutar desde cualquier ruta,
+		Ej.
+			> ls
+			> cd code
+			> ls
+	Vamos a entcontrar las carpetas 
+		/code
+		/store
+
+	Ingresamos a una carpeta ej
+		> cd blog
+		> mkdir public
+
+	Nos situacmos entre public y generamos un nuevo archivo llamado index.php
+
+20. Editamos ester archivo
+		> nano index.php
+
+	Generamos una estructura básica:
+		<?php
+			echo phpinfo();
+
+	Salimos y guardamos. Los cambios se veran reflejados en windows
+		C:\Usuarios\<usuario>\code\blog\public\index.php
+
+21. Como ultimo paso sera la configuración de nuestro dominio virtual.
+
+22. Modificamos al archivo de hosts tanto del usuario como del administrador
+	Con un editor como administrador
+
+	Para usuarios de Mac o Linuxvamos a modificar el archivo host que se encuentra en:
+		/etc/hosts
+
+	Para windows abrilmos el archivo
+		C:\windows\sistem32\drivers\etc\hosts
+
+23. Procedemos a definir la siguiente estructura
+	La ip de nuestro arcchivo .yaml	y el dominio local con la termianción en su extención .test
+	ej
+		172.28.53.143	homestead.test
+
+	Una vez como ultimo paso.
+
+24. Copiamos el dominio y nos situaremos dentro  del navegador:
+	De: http://github.com/laravel/homestead
+	A:	http://homestead.test
+
+	Veremos la salida con todas las variables del sistema.
+
+	Esta salida es la que retorna la funcion
+		phpinfo();
+
+	Definida dentro de nuestro index.php
+
+	Si modificamos por un 
+	<?php
+	echo "hola";
+
+	Los cambios se reflejaran automaticamente
+
+Ahora ya tenemos todo listo en el entorno para poder desarrollar aplicaciones y proyectos con Laravel.
+
+ 
+
+
+

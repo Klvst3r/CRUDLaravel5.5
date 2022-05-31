@@ -1,0 +1,77 @@
+L. Instalación en Linux - Entorno Virtual
+
+Tomando en consideración que para un proceso de instalación en Linux, bajo un entorno de trabajo virtual, debemos instalar un par de comandos. Para ello utilizaremos la terminal del sistema operativo en cuestión. 
+
+tomando en consideración que nuestro entorno del Sistema operativo Virtual es Ubuntu 
+
+1. Agregamos el repositorio relacionado con PHP.
+	sudo add-apt-repository ppa:ondrej/php
+
+2. Realizamos la actualización.
+	sudo apt update	
+
+3. Una vez ya realizado este proceso procedemos a instalar PHP en s versión 7.4
+	sudo apt-get install php7.4	
+
+4. Una vez terminado este proceso verificamos la version
+
+	php -v
+
+5. Procedemos a instalar un par de paquetes, que necesitaremos ya que Laravel los requietre 
+	sudo apt-get install php-pear php7.4-curl php7.4-dev php7.4-gd php7-4-mbstring php7.4-zip
+
+6. Una vez concluido la instalacion de los paquetes, procedemos a instalar composer. A traves de composer vamos a poder instalar las dependencias asi como el mismo Laravel
+	sudo apt-get install composer
+
+	Esto es debido a que estamos en un entorno de desarrollo, ya que si estamos en producción el proceso cambia un poco.
+
+7. 	Finalmente, instalamos el paquete siguiente
+	composer global requiere laravel/installer
+
+	Esto lo hacemos a trvez de composer. Generamos los proyectos de Laravel.	
+	La ruta de instalación puede ser parecida a la siguiente
+		/home/<usuario>/.config/composer
+
+8. Ejecutar el comando Laravel
+	laravel			 
+
+	Este proceso puede dar como salida que el comando no se encuentra para poder ser ejecutado desde la ruta.
+
+
+	Procedemos a situarnos en:
+		/home/<usuario>/.config/composer
+
+	 Dentro de esta ruta ingresamos a la carpeta vendor 
+		/home/<usuario>/.config/composer/vendor
+
+	nos situamos dentro de la carpeta bin y dentro localizaremos a un archivl llado laravel
+		/home/<usuario>/.config/composer/vendor/bin/laravel
+	
+	Este es el binario con el que estaremos generando nuestros poryectos 
+
+9. copiamos la direccion o ruta localizada.
+
+	Utilizando el siguiente comando copiamos la ruta completa
+		> pwd
+		/home/<usuario>/.config/composer/vendor/bin/
+		CTRL+C
+
+10. Ejecutando un editor de texto editamos el archivo Bash
+		> nano ~/.bashrc 		
+
+11.	Al final del archivo y procedemos a hacer un export de la variable PATH con el siguiente valor:
+		export 	PATH="/home/<usuario>/.config/composer/vendor/bin/"
+
+	Esto hara que se concatene el archivo a la ruta del binario. Guardamos y ejecutamos el bashrc
+		> source ~/.bashrc
+
+12. Intentamos nuevamente la ejecución de Laravel desde la ruta donde nos encontremos.
+		> laravel
+
+	Ahora ya estara reconociendo el binario.
+
+Tenemos todo listo para trabajar con Laravel en un entorno Linux.	
+	>	
+
+
+

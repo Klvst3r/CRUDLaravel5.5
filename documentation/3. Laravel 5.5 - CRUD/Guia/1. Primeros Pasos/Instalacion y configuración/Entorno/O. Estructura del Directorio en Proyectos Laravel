@@ -1,0 +1,295 @@
+O. Estructura del Directorio en Proyectos Laravel
+
+Para poder entender como es la estructura de todo proyecto con el Framework Laravel, es necesario entender como es la estructura de carpetas.
+
+La estructura es la siguientes:
+
+blog
+|-/app
+|-/bootstrap
+|-/config
+|-/database
+|-/public
+|-/resources
+|-/routes
+|-/storage
+|-/tests
+|-/vendor
+|-.editorconfig
+|-.env
+|-.env.example
+|-.gitattributes
+|-.gitignore
+|-.stylecl.yml
+|- artisan
+|- composer.json
+|- composer.lock
+|- package.json
+|- package-lock.json
+|- phpunit.xml
+|- README.md
+|- server.php
+|- webpack.mix.js
+
+Los multiples archivos y carpeta que contienen el core de nuestyro proyecto
+
+/app Nos enotntramos con
+|-/console
+|-/Exceptions
+|-/Http
+|-/Providers
+|-Users.php # Representa a un modelo en Laravel
+
+El archivo "Users.php" cuando generemos a un modelo se generaran dentro de la carpeta /app 
+
+Dentro de lacarpeta
+blog
+|-/app
+	|-/Console
+		|-Kernel.php #Sirve para definir tareas que se ejecutaran periodicamente
+
+Dentro de la Carpeta Exceptions
+
+blog
+|-/app
+	|-/Exceptions
+			|-Handler # Rara vez se tocara el codigo, a menos que estemos desarrollando una API
+
+
+La carpeta "Http"			
+blog
+|-/app
+	|-/Http
+		|-/Controllers
+		|-/Middleware
+		|- Kernel.php
+		
+
+en esta carpeta se definiran tanto controladores como middlewares, reglas de validación entre otros. 		
+
+Dentro de la carpeta Providers
+blog
+|-/app
+	|-/Providers
+		|- AppServiceProvider.php
+		|- AuthServiceProvider.php
+		|- BroadcastServiceProvider.php
+		|- EventserviceProvider.php
+		|- RouteServiceProvider.php
+
+el conjunto de archivos mostrados son cargados al inicio de cada peticion.
+
+
+En el segundo nivel en la carpeta rara vez utilizaremos alguna modificación.
+
+blog
+|-/app
+	|-/bootstrap
+
+Dentro de la carptea de configuración, definiremos archivos de configuración para ciertos aspectos de nuestro poryecto
+blog
+|-/app
+	|-/config
+		|- app.php
+		|- auth.php
+		|- broadcasting.php
+		|- cache.php
+		|- cors.php
+		|- database.php
+		|- filesystem.-php
+		|- hashing.php
+		|- logging.php
+		|- mail.php
+		|- queue.php
+		|- services.php
+		|- session.php
+		|- view.php
+
+Podemos configurar las sesiones.
+
+dentro de cada archivo se resume a 
+<?php
+
+use Illuminate\Support\str;
+return [ 
+	..config
+]			
+
+Que corresponde a un arreglo con la configuración.
+
+Por ejemplo
+app.php
+	Contienen la configuración global para nuestra aplicaci´pn, por ejemplo el nombre de nuestra aplicacion. el timezone, si estamamos en modo debug, la url, entroe otros aspectos 
+
+En resumen en esta carpeta definiremos la configración de nuestra aplicación.
+
+Si revisamos dentro de este directorio el archivo
+database.php
+
+<?php
+
+use Illuminate\Support\str;
+resturn [
+
+	'default' => env('DB_CONNECTION', 'mysql'), Tendemos la configuracion con la BD
+	...
+]
+
+
+Dentro de la Carpeta database con esntonramos con:
+blog
+|-/database
+	|-/factories
+	|-/migrations
+	|-/seeds
+	|-/.gitignore
+
+La carpeta mas importante es la de migrations, dentro de la cual definiremos archivos que almacenaran a nuestras migraciones.	
+
+Dentro de:
+blog
+|-/database
+	|-/factories
+
+Contiene clases de PHP que permitira generar contenido aleatorio que nos llega a serviro cuando estamos en desarollo.
+
+en la carpeta 
+
+blog
+|-/database
+	|-/seeds
+
+Básicamente es una clase que permite ejecutar a los facctories.
+
+--------
+La carpeta Public
+
+blog
+|-/ public
+
+Es el punto inicial de entrada de toda peticioni, esta carpeta contiene el archivo index.php y es encargada de redirigir a nuestros controladores y basicamente es el punto de entrada inicial para cada aplicación Laravel.
+
+-----
+La carpeta /Resources
+
+blog
+|-/ resources
+
+Aca nos enttramos con cuestiones mas orientadas al frontend, ya que se ubucan.
+blog
+|-/ resources
+		|-/ js
+			|- app.js
+			|- bootstrap.js
+		|-/lang
+		|-/sass
+		|-/views
+
+Archivos Js aca se definien cuestiones de integracion de Vue.js o React aqui iria la configuración, 
+
+Tambien esta la carpeta "lang" que define las etiquetas 
+Validation, continene un arreglo con los mensajes de error.
+
+Ayuda si la carpeta es multiiidioma.
+
+Aca se define el idioma.
+
+Dentro de 
+/Config/app.php
+
+Si tuvieramos una palicación multiidioma, se cambiaria el apartado hacia 
+	'locale' => 'en'
+
+Con las siglas del idioma. 
+
+Dentro de /sass/app.scss
+	En este archivo se agregan las variables y cuestiones de4 CSS o Bootstrap, con algun framework CSS
+
+/resources/
+	|-views
+Se resumen basimanete a un archivo html, 
+
+Es en esta carpeta donde tendremos las cosas que el proyecto utilice, 
+
+----
+La carpeta importante es la carpeta
+blog
+|-/routes
+
+Aca basicamente definiremos todas las rutas del proyecto.
+
+blog
+|-/ routyes
+	|-api.php
+	|-channels.php
+	|- console.php
+	|-web.php
+
+De estos 4 archivos en 
+web.php, se definen las rutas para nuestra aplicación y cuestinoes sobre linea de ocmandos.
+chanel.php # definiremos reglas de validaciones cuando se este trabajando con aplicaciones realtime.
+api.php # Permite establecer rutas para cuendo se este trabajando o creando uns API
+
+-----
+La carpeta Storage
+blog
+  |-/ storage
+  		|-/ app
+  		|-/ framework
+  		|-/ logs
+
+La cual basicamente es una carpeta que almacena ciertas configuraciones generales del Framework, por eejemplo sesiones, logs vistas compiladas, entre otros.
+
+----
+Dentro de la carpeta Tests
+blog
+  |-/  Tests
+  		 |-/ Feature
+  		 |-/ Unit
+  		 		|- CreatesApplication.php
+  		 		|- TestCase.php
+  		 
+
+Se define todo lo relacionado con los test, basicamente viene incluido con el Framework Unit, la configuración ya esta realizada.
+El archivo phpunit.xml, continene toda la configuración necesaria.
+
+--------
+
+blog
+  |-/ vendor
+
+Vendor es la carpeta que automaticamente se genera al instalar Laravel y contine los pquetes utilizados a tyraves de composer.
+
+-----
+
+Asi tambien existen diferentes acciones y diferentes archivos.
+
+blog
+|-/...
+|-.editorconfig
+|-.env
+|-.env.example
+|-.gitattributes
+|-.gitignore
+|-.stylecl.yml
+|- artisan
+|- composer.json
+|- composer.lock
+|- package.json
+|- package-lock.json
+|- phpunit.xml
+|- README.md
+|- server.php
+|- webpack.mix.js
+
+.env 			# Se definen todas las variables de entorno, cuestiones de Bd, cache, sesiones, configuraciones redis.
+.env.example	# Es una replica del archivo anterior no continene credenciales, ya que no se sube al repositorio
+.gitignore 		# Estan definidos los archivos que no se suben al repositorio de control de versiones.
+artisan			# a traves de este archivo, tiene las utilidades para ejecutar en consola de Laravel.
+composer.json 	# Mantiene un track de todas las dependencias que tenemos instaladas en nuestro poryecto
+package.json 	# Depenendias para JS
+
+Una vez resumidas de manera general la estructura del Framework de Laravel,  comentinuamos con la Guia General del Framework Laravel.
+
+	
+	
