@@ -208,7 +208,29 @@ Teniendo ya los metodos completados, regresamos a la consola y ejecutamos:
 
 En este caso se va a ejecutar una sola migración la cual es la unica migración que no habia sido ejecutada.
 
-    
+$ php artisan migrate
+Migrating: 2022_06_01_172104_add_profession_to_users
+Migrated:  2022_06_01_172104_add_profession_to_users
+
+
+Es decir que ahora no necesitamos eliminar y recrear la tabla usuarios para agregar esta columna y podemos ver el resultado en el navegador.
+
+Ahora tenemos la columna "profession", sin embargo se agrego justo al final de la tabla y no queremos esto. Lo que se pretendia es que estuviera despues de la columna "password". Podemos solucioonar este problema si regresamos al editor y en la migración encadenamos el metodo after() en la linea donde definimos la columan "profession" y ahi indicamos que queremos agregar despues del campo password
+
+---add_profesion_to_users.php
+...
+     public function up()
+    {
+       Schema::table('users', function (Blueprint $table)){
+        $table->string('profession', 50)->nulltable()->after('password');
+       }
+    }
+...
+---
+
+
+
+
 
 
 
