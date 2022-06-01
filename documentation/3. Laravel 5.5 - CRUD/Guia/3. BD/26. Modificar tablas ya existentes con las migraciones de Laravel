@@ -148,11 +148,67 @@ Notemos como el nombre de esta migración es descriptiva para lo que vamos a hac
 
 De regreso al editor entonces vamos a modificar el nuevo archivo que ha sido generado, podemos notar que tiene el nombre de la migración que colocamos en la consola.
 
+----add_profession_to_users
+...
+
+class AddProfessionToUsers extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        //
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        //
+    }
+---
 
 
+Tiene una marca de tiempo con la fecha y hora actual. 
 
+Se tienen los metodos up() y down(), y en este caso debemos completar el codigo, para ello vamos a utilizar el phasa Schema pero en este caso vamos a utilizar el metodo table() y no el metodo create(). Popr que nosotros no queremos crear una tabla simplemente queremos modificarla, y la tabla que queremos modificar es la tabla de usuarios y aca como segundo argumento vamos a tener una funcion anonima la cual va a recibir un objeto de la class Blueprint, en este caso es dentro de esta funcion anonima que nosotros vamos a alterar o modificarnuestra tabla y lo que se quiere es agregar una columna de tipo cadena de texto que se va a llamar "profession" con un maximo de 50 caracteres y puede ser null. Podemos ver al principio del archivo que este archivo generado contiene las sentencias use que importan las clases que estamos utilizando.
 
+---add_profesion_to_users.php
+...
+     public function up()
+    {
+       Schema::table('users', function (Blueprint $table)){
+        $table->string('profession', 50)->nulltable();
+       }
+    }
+...
+---
 
+Por otro lado se tiene que completar el metodo down() para especificar la situacion inversa si en el metodo up() vamos a gregar una columna a la tabla de usuarios, en el metodo down() vamos a eliminarla. Esto se va a losgrar con el metodo dropColumn()
+
+---add_profession_to_users.php
+    public function down()
+    {
+        Schema::table('users', function (Blueprint $table)){
+            $table->dropColumn('profession');
+        }
+    }
+---
+
+Estamos pasando el nombre de la tabla que se quiere eliminar.
+
+Teniendo ya los metodos completados, regresamos a la consola y ejecutamos:
+    > php artisan migrate
+
+En este caso se va a ejecutar una sola migración la cual es la unica migración que no habia sido ejecutada.
+
+    
 
 
 
