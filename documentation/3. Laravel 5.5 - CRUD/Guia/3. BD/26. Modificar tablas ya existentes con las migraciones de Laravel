@@ -134,6 +134,19 @@ Vamos a eliminar el campo "profesion" y luego de regeso a la consola  ejecutamos
 
     > php artisan migrate:refresh
 
+Veolveremos a la estructura inicial de la tabla sin datos.
+
+
+Ya no vamos a ver la columna "profesion" asi que ahora queremos agregar estra misma columna utilizando una nueva migración y para ello de regreso a la consola, vamos a ejecutar el comando:
+    > php artisan make:migration
+
+Con este comando como su nombre lo indica vamos a generar una nueva migración, y debo darle un nombre, en este caso quiero agregar la columna "profesion" a la tabla users 
+
+    > php artisan make:migration add_profession_to_users
+
+Notemos como el nombre de esta migración es descriptiva para lo que vamos a hacer 
+
+De regreso al editor entonces vamos a modificar el nuevo archivo que ha sido generado, podemos notar que tiene el nombre de la migración que colocamos en la consola.
 
 
 
