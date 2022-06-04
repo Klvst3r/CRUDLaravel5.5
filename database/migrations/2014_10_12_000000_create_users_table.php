@@ -17,6 +17,7 @@ class CreateUsersTable extends Migration
             $table->increments('id'); //Integer unsigned - Autoincrement
             $table->string('name'); //varchar
             $table->string('email')->unique(); //varchar - Unique
+            $table->string('profesion', 50)->nullable(); // columna con 100 car y puede ser o no opcional de acuerdo a lo resgistrado.Es opcional que pueda o no tener profesion
             $table->string('password'); 
             $table->rememberToken();
             $table->timestamps();

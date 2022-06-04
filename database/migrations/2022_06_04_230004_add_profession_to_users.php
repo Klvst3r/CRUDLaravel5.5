@@ -14,7 +14,11 @@ class AddProfessionToUsers extends Migration
     public function up()
     {
        Schema::table('users', function (Blueprint $table){
+<<<<<<< HEAD:database/migrations/2022_06_01_172104_add_profession_to_users.php
         $table->string('profession', 50)->nullable()->after('password');
+=======
+         $table->string('profession', 50)->nulltable()->after('password');
+>>>>>>> main:database/migrations/2022_06_04_230004_add_profession_to_users.php
        });
     }
 
