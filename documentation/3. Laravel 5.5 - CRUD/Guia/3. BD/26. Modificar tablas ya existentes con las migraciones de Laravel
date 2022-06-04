@@ -208,6 +208,7 @@ Teniendo ya los metodos completados, regresamos a la consola y ejecutamos:
 
 En este caso se va a ejecutar una sola migración la cual es la unica migración que no habia sido ejecutada.
 
+<<<<<<< HEAD
     
 
 
@@ -219,6 +220,58 @@ En este caso se va a ejecutar una sola migración la cual es la unica migración
 
 
 
+=======
+$ php artisan migrate
+Migrating: 2022_06_01_172104_add_profession_to_users
+Migrated:  2022_06_01_172104_add_profession_to_users
+
+
+Es decir que ahora no necesitamos eliminar y recrear la tabla usuarios para agregar esta columna y podemos ver el resultado en el navegador.
+
+Ahora tenemos la columna "profession", sin embargo se agrego justo al final de la tabla y no queremos esto. Lo que se pretendia es que estuviera despues de la columna "password". Podemos solucioonar este problema si regresamos al editor y en la migración encadenamos el metodo after() en la linea donde definimos la columan "profession" y ahi indicamos que queremos agregar despues del campo password
+
+---add_profesion_to_users.php
+...
+     public function up()
+    {
+       Schema::table('users', function (Blueprint $table)){
+        $table->string('profession', 50)->nulltable()->after('password');
+       }
+    }
+...
+---
+
+si regresamos a la consola estaremos en el mismo dilema de antes, si ejecutamos 
+    > php artisan migrate 
+
+No va a pasar nada. Pero si hacemos ahora el  comando
+    > php artisan migrate:refresh
+
+Se van a eliminar todas las tablas y con ello todos los datos. afortunadamente Laravel nos tiene una solución con el comando llamada "roolback"    
+    > php artisan migrate:rollback
+
+Si ahora inspeccionamos en la base de datos el contenido de la tabla "migrations" podemos ver que Laravel ha ejecutado estas muigraciones en lotes, en el primer lote, ejecutamos la migración para crear la tabla de usuarios y la tabla de passwods_resets, en el segundo lote ejecutamos la migración para agregar la columna profession a la tabla de usuarios y eso esta definido en lotes diferentes por que fuimos ejecutando estas migraciones poco a poco, primero ejecutamos dos migraciones, luego ejectamos una tercera migración y la ejecutamos por lo tanto  Laravel la registro en lotes o grupos diferentes. 
+
+
++----+------------------------------------------------+-------+
+| id | migration                                      | batch |
++----+------------------------------------------------+-------+
+| 11 | 2022_06_01_172104_add_profession_to_users      |     2 |
+| 10 | 2014_10_12_100000_create_password_resets_table |     1 |
+|  9 | 2014_10_12_000000_create_users_table           |     1 |
++----+------------------------------------------------+-------+
+
+
+Ahora si ejecutamos el comando rollback
+    > php artisan migrate:rollback
+
+Laravel va a regresar el ultimo lote de miigraciones que fueron ejecutadas.    
+
+En este caso el lote dos donde se agrego la columna profesion a la tabla de usuarios en este caso se esta ejecutando el metodo down() donde nosotos entonces eliminamos la columna profesion, por lo que ahora si revisamos la estruictura de la tabla usuarios ya no tenemos la columna "profesion" y si revisamos el contenido de nuestra tabla "migrations" podemos ver que ya no tenemos el lote 2. Lo que se pretende establecer es que podemos regresar a la consola y reejcutar el comando 
+    > php artisan migrate
+
+De esta manera logramos cambiar el orden de la columna profession en la tabla usuarios sin tener que destruir dicha tabla. Es decir sin que laravel eliminase la tabal de usuarios y la crease nuevamente. en este punto restara respaldar los datos y volver a incorporarlos de acuerdo a lo ya resgistrado en las tablas correspondientes.
+>>>>>>> chapter3
 
 
 
@@ -317,5 +370,9 @@ Comando rollback
 
 Utilizando el camando de Artisan migrate:rollback Laravel regresará el último lote de migraciones ejecutado:
 
+<<<<<<< HEAD
 #
 php artisan migrate:rollback
+=======
+    > php artisan migrate:rollback
+>>>>>>> chapter3
