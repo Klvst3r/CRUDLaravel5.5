@@ -21,7 +21,7 @@ En la leccion anterior, vimos una breve introduccion al sistema de migraciones d
 
 La URL del proyecto se queda con localhost, ya que como estamos utilizando un entorno de desarrollo no habra complicaciones, pero; cuando las condiciones cambien a producción, es importante modificar la RL real del servidor de producción, asi como el nombre del proyecto:
 
-    APP_NAME=CURDLaravel5.5
+    APP_NAME=CURDLaravel5_5
     ...
     APP_URL=http://localhost
 
@@ -67,7 +67,7 @@ Guardamos y regresamos a la terminal; sin embargo luego de terminar esto y regre
 Detectaremos que nada pasa y si regresamos al navegador y recargamos la estructura de la tabla de usuarios, veremos que aun no se tiene la columan o campo "profesion",y esto es por que esta migración ya ha sido ejecutada previamiente, Laravel no la va a ejecutar nuevamente.
 
 Pero podemos solucionar esto de varias formas por supuesto una seria elimiando toda la estructura de la base de datos, pero esto no es lo que se quiere hacer. Si no que vamos a regresar a la consola y vamos a ejecutar el comando
-    > php artisanmigrate:reset
+    > php artisan migrate:reset
 
 
 Este comando va a devolver todas las migraciones que han sido ejecutadas, en orden inverso.
@@ -90,7 +90,7 @@ Para ello entonces vamos a modificar la migracion "CreateUserTable" de la migrcu
 En lugar de los comandos anteriores podemos ejecutar el comando:
     > php artisan migrate:refresh
 
-Este comando primero va a ejecutar un "reset" de todas las migraciones, es decir se van a ejecutar todos los metoshos down() de las migraciones que se han ejecutado hasta ahora, en este caso en orden unverso.
+Este comando primero va a ejecutar un "reset" de todas las migraciones, es decir se van a ejecutar todos los metodos down() de las migraciones que se han ejecutado hasta ahora, en este caso en orden unverso.
 
 De esta manera primero se va a eliminar la table "password_resets". Notemos que en el metodo no se indica si se va a elimimarar la tabla si existe, luego se va a eliminar la tabla "users", y acontinuación y en orden ascendente va a recrear la tabal de "users" y luego va a crear la tabla "password_resets". Esto se va a lograr con solo camando, luego despues de hacer esto, podemos regresar la estructura de la tabla "users". Verificamos el cambio desde phpmyadmin.
 
@@ -105,7 +105,7 @@ Ej
 
 
 Ya con el contenido de la tabla "users" y regresamos en la consola:
-    > php artistas migrate:refresh
+    > php artistan migrate:refresh
 
 en este caso si volvemos a examinar esta tabla.
 
@@ -208,22 +208,12 @@ Teniendo ya los metodos completados, regresamos a la consola y ejecutamos:
 
 En este caso se va a ejecutar una sola migración la cual es la unica migración que no habia sido ejecutada.
 
-<<<<<<< HEAD
-    
-
-
-
-
-
-
-
-
-
 
 =======
 $ php artisan migrate
-Migrating: 2022_06_01_172104_add_profession_to_users
-Migrated:  2022_06_01_172104_add_profession_to_users
+Migrating: 2022_06_04_230004_add_profession_to_users
+Migrated:  2022_06_04_230004_add_profession_to_users
+
 
 
 Es decir que ahora no necesitamos eliminar y recrear la tabla usuarios para agregar esta columna y podemos ver el resultado en el navegador.
@@ -270,15 +260,12 @@ Laravel va a regresar el ultimo lote de miigraciones que fueron ejecutadas.
 En este caso el lote dos donde se agrego la columna profesion a la tabla de usuarios en este caso se esta ejecutando el metodo down() donde nosotos entonces eliminamos la columna profesion, por lo que ahora si revisamos la estruictura de la tabla usuarios ya no tenemos la columna "profesion" y si revisamos el contenido de nuestra tabla "migrations" podemos ver que ya no tenemos el lote 2. Lo que se pretende establecer es que podemos regresar a la consola y reejcutar el comando 
     > php artisan migrate
 
-De esta manera logramos cambiar el orden de la columna profession en la tabla usuarios sin tener que destruir dicha tabla. Es decir sin que laravel eliminase la tabal de usuarios y la crease nuevamente. en este punto restara respaldar los datos y volver a incorporarlos de acuerdo a lo ya resgistrado en las tablas correspondientes.
->>>>>>> chapter3
+De esta manera logramos cambiar el orden de la columna profession en la tabla usuarios sin tener que destruir dicha tabla. Es decir sin que laravel eliminase la tabla de usuarios y la crease nuevamente. 
 
+En este punto restara respaldar los datos y volver a incorporarlos de acuerdo a lo ya resgistrado en las tablas correspondientes.
 
+Hacemos una exportación de datos y la incorporamos a la doucmentación de la presente guia.
 
-
-
-
-    
 
 
 
