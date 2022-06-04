@@ -114,6 +114,34 @@ Una de las tantas ventajas de usar el constructor de esquemas de Laravel, es que
 
 "En programación un Helper no es más que una función de apoyo que permite resolver tareas genéricas / comunes."
 
+Generar la BD
+--------------
+
+Para poder trabajar con las migraciones es necesario primera establecer la base de datos con la que se trabajara, por ello debemos ingresar a la consola y entrar a la Base de datos, vamos a establecer un conjunto de caracteres UTF-8 General_ci
+
+
+    >   mysql -u root -p
+    Enter password: **********
+    Welcome to the MySQL monitor.  Commands end with ; or \g.
+    Your MySQL connection id is 96
+    Server version: 8.0.17 MySQL Community Server - GPL
+
+    Copyright (c) 2000, 2019, Oracle and/or its affiliates. All rights reserved.
+
+    Oracle is a registered trademark of Oracle Corporation and/or its
+    affiliates. Other names may be trademarks of their respective
+    owners.
+
+    Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+    mysql> CREATE DATABASE crudlaravel5_5 CHARACTER SET utf8 COLLATE utf8_general_ci;
+    Query OK, 1 row affected, 2 warnings (0.01 sec)
+
+    mysql>exit;
+
+
+
+
 
 Configurar la base de datos
 ----------------------------
@@ -123,8 +151,8 @@ La configuración de la base de datos la hacemos en el archivo .env que está de
     DB_CONNECTION=mysql
     DB_HOST=127.0.0.1
     DB_PORT=3306
-    DB_DATABASE=homestead
-    DB_USERNAME=dev
+    DB_DATABASE=crudlaravel5_5 
+    DB_USERNAME=root
     DB_PASSWORD=desarrollo
 ---
 
