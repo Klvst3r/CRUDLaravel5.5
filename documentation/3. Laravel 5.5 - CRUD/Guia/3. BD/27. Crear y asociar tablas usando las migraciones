@@ -148,3 +148,15 @@ Si se intenta asi como me dices pero el problema es que no se crea la relación 
 	- php artisan migrate:rollback => Para eliminar los lotes de migraciones y dejar limpia la tabla.
 
 	- php artisan migrate:fresh => Para eliminar el contenido de las otras tablas y te ejecute de nuevo las migraciones.
+
+Documntar referencias:
+
+	https://styde.net/migraciones-en-laravel/
+
+	https://styde.net/creando-migraciones-en-laravel-5/
+
+	https://styde.net/creacion-de-tablas-con-el-sistema-de-migraciones-de-laravel/
+
+	https://styde.net/modificando-migraciones-en-laravel/
+
+	https://styde.net/migraciones-seeders-y-model-factories/
