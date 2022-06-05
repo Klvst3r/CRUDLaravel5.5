@@ -364,3 +364,12 @@ Utilizando el camando de Artisan migrate:rollback Laravel regresará el último 
 php artisan migrate:rollback
 =======
     > php artisan migrate:rollback
+
+
+Comentarios
+=============
+
+En caso de que quien trabaje en el proyecto ya sepa y tenga en claro el uso de sql, y crease toda la estructura de la bd con un script sql, esto afectaria el desempeño de la aplicacion laravel?, es indistinto desde donde se cree la bd?
+
+    Si se esta claro en el uso de SQL y aún así se usa el sistema de migraciones tiene una razon y es porque es más conveniente que escribir SQL de forma manual, por los beneficios que se han explicado en las secciones del capitulo 3. Pero si se crean las tablas de forma manual y se hace de manera correcta (colocando todas las llaves primarias y foráneas, indexes, etc. de forma correcta) el desempeño va a ser el mismo. 
+    Los problemas serán otros (compartir / replicar la estructura, recrear las tablas, ver el historial de cambios, regresar a una versión anterior, etc).

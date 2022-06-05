@@ -1,0 +1,150 @@
+27. Crear y asociar tablas usando las migraciones de Laravel (con claves foráneas)
+
+
+Notas
+=====
+
+En esta sección del Capitulo 3 de la guia del Framework de Laravel desde cero veremos más a fondo el sistema de migraciones de Laravel. En esta oportunidad, veremos cómo crear nuevas tablas y cómo crear asociaciones entre una tabla y otra utilizando claves foráneas. También veremos un poco más sobre las convenciones que podemos utilizar al momento de generar nuevas migraciones y sobre otros métodos para definir campos.
+
+Convenciones al ejecutar migraciones
+------------------------------------
+
+Al generar una migración con el comando php artisan make:migration si utilizamos el siguiente formato para el nombre: create_NOMBRE DE LA TABLA_table, Laravel automáticamente generará el código requerido para crear dicha tabla:
+php artisan make:migration create_professions_table
+
+Producirá el siguiente código boilerplate:
+----
+	public function up()
+	{
+	    Schema::create('professions', function (Blueprint $table) {
+	        $table->increments('id');
+	        $table->timestamps();
+	    });
+	}
+
+---
+Ahora sólo tenemos que definir las columnas.
+
+También podemos pasar la opción --create en caso de que no queramos usar la convención:
+	php artisan make:migration new_professions_table --create=professions
+
+A la opción create pasamos como valor el nombre de la tabla.
+
+
+
+Restricción de clave foránea
+----------------------------
+Podemos añadir una restricción de clave foranea a nuestro campo utilizando el método foreign():
+---
+	Schema::create('users', function (Blueprint $table) {
+	    // ...
+	    $table->unsignedInteger('profession_id'); 
+	    $table->foreign('profession_id')->references('id')->on('professions');
+	    // ...
+	});
+---
+
+En este caso indicamos que el campo profession_id va a hacer referencia al campo id en la tabla professions.
+
+Aquí es importante que el tipo del campo profession_id coincida con el campo id en la tabla professions. Es decir el campo profession_id debe ser definido como un entero positivo, para ello usamos el método:
+
+$table->unsignedInteger('nombre_del_campo_aqui'); o $table->integer('nombre_del_campo')->unsigned();
+
+
+Claves primarias
+----------------
+Cuando diseñamos una base de datos, suele ser importante tener un campo (o combinación de campos) que pueda identificar de manera única a cada fila. Así como se tiene un número de pasaporte que es único, cada usuario o profesión va a tener un identificador (id) único. En esta base de datos usaremos identificadores de tipo auto-incremento, es decir la primera fila obtendrá el identificador 1, la segunda 2, y así sucesivamente. Estos identificadores serán generados por el motor de la base de datos.
+
+
+
+Claves Foráneas
+---------------
+Para asociar una tabla con otra, vamos a utilizar una clave foránea. Por ejemplo en la tabla de usuarios, utilizaremos el campo profession_id, cuyo valor va a ser un identificador (id) válido de uno de los registros de la tabla de profesiones. De esta manera asociaremos un registro (fila) la tabla usuarios con un registro (fila) de la tabla de profesiones. En este tipo de relaciones solemos decir que un Usuario pertenece a una Profesión. También podemos decir que una Profesión tiene muchos Usuarios. Puesto que pueden existir 100 usuarios que sean desarrolladores back-end o 50 usuarios que sean desarrolladores front-end, cada profesión va a tener asignada muchos usuarios. Por otro lado cada usuario solo puede tener asignada una profesión (aunque en la vida real hay personas que tienen más de una profesión, en nuestro sistema esto no es relevante).
+
+
+
+Practica
+========
+
+
+Ejercicio
+=========
+
+¿Crear migraciones o modificar las ya existentes?
+-------------------------------------------------
+
+Para evitar que el número de migraciones crezca sin control, puede modificar las migraciones ya existentes. Tenga en cuenta que esto suele ser posible en etapas tempranas del desarrollo donde la base de datos no existe en producción y todos los datos son de prueba (no importa destruir y reconstruir la base de datos cada vez). Si luego de 3 meses de lanzar su proyecto debe agregar un campo a la tabla de usuarios, en este caso le recomendaría crear una migración nueva. Porque así no solo podrá modificar la tabla de usuarios (sin eliminarla y recrearla) sino que además mantendrá un historial de los cambios que se han producido en diferentes versiones de su aplicación.
+
+
+Cambié una migración y ya nada funciona…
+---------------------------------------
+En casos donde ejecutar php artisan migrate:refresh y comandos similares, siempre produzca un error, puede solucionarlo borrando todas las tablas de su base de datos o ejecutando:
+	> php artisan migrate:fresh.
+
+Tenga en cuenta que ejecutar php artisan migrate:fresh va a eliminar todas las tablas. Hagalo solamente si no le importa perder los datos (porque solo son de prueba, etc).
+
+Aunque podria hacer un respaldo de esa información para luego importarla, segun se requiera, siempre y cuando estructuralmente no existan cambios y los mismos dagtos no creen conflicto en el desarrollo del proyecto.
+
+
+
+Comentarios almomento de crear llaves foraneas, aplica para versiones posteriores al a 5.5
+
+Para los que tienen problemas en crear las llaves foranes en las nuevas versiones de Laravel utilicen o cambien la función unsignedInteger() por unsignedBigInteger()
+
+YA NO FUNCIONA EL (unsignedInteger) en laravel 5.8-> me genero mucho estres.
+
+Debido a que laravel ahora usa de forma predeterminada "bigIncrements", tienes que usar "unsignedBigInteger" para hacer referencias a esta columna
+	o bien $table->bigInteger('id')->unsigned();
+
+
+
+Referencias
+===========
+
+Variables de Entorno en Laravel
+-------------------------------
+Con el uso de las credenciales y nuestra configuración de la base de datos en el archivo .env siempre sera distinto o al menos la mayoria de las veces en un entorno local de desarrollo que en un entorno de producción, es por ello que vamos a hacer referencia al tema de "Variables de entorno en laravel" Esta referencia se encentra dentro de las referencias del capitulo 3. con el mismo nombre.
+
+
+
+Comentarios
+-----------
+
+Comentario 1: cuando creo una tabla nueva como 'professions' que deba enlazarla a 'users' con la clave foránea 'professions_id', siento cómodo crear una migración donde dentro del mismo up() creo la tabla 'professions' y además añado en 'users' la columna 'professions_id' y la clave foránea correspondiente. En este ejercicio no se a intentado hacer así y a mí me resulta intuitivo y cómodo, pero la consulta es: ¿Puede traerme complicaciones en el futuro estructurarlo así?
+
+
+Comentario 2:
+Escribir el comando php artisan make:migration add_profession_id_to_users al final tambien le agregan lo siguiente table=users Para que ahorren tener que especificar la tabla despues de que se genere el archivo de migraccion.
+Quedando:
+	> php artisan make:migration add_profession_id_to_users --table=users
+
+Comentario 3:
+En el metodo down hay que especificarlo como un array $table->dropForeign(['profession_id']); y si no coloco [ ] genera un error cuando ejecuto el comando php artisan migrate:refresh	
+	No habia notado que colocaba corchetes dentro de dropForeign([''])
+	Por si ayuda tambien se puede hacer sin corchetes pero se usa el nombre de la restriccion como tal
+	Por ejemplo en lugar de
+	$table->dropForeign(['profession_id']);
+	Uso
+	$table->dropForeign('profession_id_foreign'); // Siendo profession_id_foreign el nombre que mysql le da a la restriccion	
+
+Comentario 4:
+En el archivo de migración de la tabla professions crea los siguientes campos:
+
+Schema::create('professions', function (Blueprint $table) {
+$table->increments('id');
+$table->string('title');
+$table->timestamps();
+});
+
+En el archivo de migración de la tabla users debes crear primero el campo profession_id para poder hacer la relacion:
+
+$table->unsignedInteger('profession_id');
+$table->foreign('profession_id')->references('id')->on('professions'); //Create foreign key
+
+Si se intenta asi como me dices pero el problema es que no se crea la relación con la tabla professions aun puedo seguir poniendo id que no existen en dicha tabla
+
+	Intente con los siguientes comandos
+
+	- php artisan migrate:rollback => Para eliminar los lotes de migraciones y dejar limpia la tabla.
+
+	- php artisan migrate:fresh => Para eliminar el contenido de las otras tablas y te ejecute de nuevo las migraciones.
