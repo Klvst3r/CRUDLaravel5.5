@@ -1,0 +1,59 @@
+Creación de tablas con el sistema de migraciones de Laravel
+-----------------------------------------------------------
+
+Laravel nos permite crear tablas en la base de datos mediante una interfaz orientada a objetos, de esta manera se estará creando un sistema compatible con las distintas bases de datos que soporta Laravel por defecto.  Por otro lado, las migraciones nos permiten tener un registro de las modificaciones que se han hecho o se harán en la base de datos. Esta función es muy útil cuando se trabaja en equipo. 
+Notas
+
+    Recuerda que los motores de datos que soporta Laravel son:
+        MySQL
+        Postgres
+        SQLite
+        SQL Server
+
+    La configuración de esos motores están en /config/database.php
+
+    La tabla migrations que se crea en la base de datos, es la que mantiene el historial de las migraciones y controla cual migraciones ejecutar y cual no. (Depende del comando que se ejecute en consola)
+    
+
+    El comando  nos muestra la lista completa de comandos de Laravel.
+
+    php artisan list
+
+Comandos migrate:
+-----------------
+ Para crear tabla migrations 
+
+        > php artisan migrate:install
+
+     Nota: si ejecuta una migración de una tabla y no existe la tabla migration, será creada automáticamente.
+        
+        
+Para borrar todas las tablas de la base de datos y luego volverlas a crear:
+        
+        > php artisan migrate:refresh
+        
+
+Para eliminar todas las tablas
+
+        > php artisan migrate:reset
+
+Permite deshacer el último grupo de migraciones ejecutadas
+
+        > php artisan migrate:rollback
+
+        
+Para ver el estatus de cada migración
+
+        > php artisan migrate:status
+
+Para crear una migración:
+    	> php artisan make:migration create_categories_table
+
+
+Nota: con el atributo –create=   podemos indicar como se llamará la tabla en la base de datos para esa migración.
+    
+Para ejecutar las nuevas migraciones creadas
+    	> php artisan migrate
+
+Esperando que haya sido de utilidad esta referencoia. continuamos con la seccion 3.
+
