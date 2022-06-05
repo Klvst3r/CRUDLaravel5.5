@@ -1,1 +1,330 @@
-27.1. Variables de entorno en Laravel
+27.1. Nuevo comando migrate:fresh en Laravel 5.5
+---------------------------------------------------
+
+Notas:
+======
+
+A partir de Laravel 5.5 tenemos disponible un nuevo comando de artisan para trabajar con la base de datos usando las migraciones, el cual nos ayudará a evitar problemas o conflictos en la base de datos que se presentan a menudo cuando usamos migrate:refresh luego de cambiar nuestras migraciones durante el desarrollo de una aplicación.
+
+Para trabajar con este comando debemos primero crear y configurar una base de datos para la aplicación. Primero la creamos con cualquier manejador de base de datos como phpMyAdmin, Sequel Pro, etc. o simplemente desde consola por medio de MySQL.
+
+
+Ej.
+
+ >   mysql -u root -p
+    Enter password: **********
+    Welcome to the MySQL monitor.  Commands end with ; or \g.
+    Your MySQL connection id is 96
+    Server version: 8.0.17 MySQL Community Server - GPL
+
+    Copyright (c) 2000, 2019, Oracle and/or its affiliates. All rights reserved.
+
+    Oracle is a registered trademark of Oracle Corporation and/or its
+    affiliates. Other names may be trademarks of their respective
+    owners.
+
+    Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+    mysql> CREATE DATABASE crudlaravel5_5 CHARACTER SET utf8 COLLATE utf8_general_ci;
+    Query OK, 1 row affected, 2 warnings (0.01 sec)
+
+    mysql>exit;
+
+
+
+
+Luego puede configurar las credenciales en el archivo de variables de entorno .env que se encuentra en la raíz del proyecto, agregando los datos a las variables DB_DATABASE, DB_USERNAME y DB_PASSWORD.
+
+---
+    DB_CONNECTION=mysql
+    DB_HOST=127.0.0.1
+    DB_PORT=3306
+    DB_DATABASE=crudlaravel5_5 
+    DB_USERNAME=root
+    DB_PASSWORD=desarrollo
+---
+
+
+Para crear una nueva migración ejecutamos, por ejemplo:
+
+php artisan make:migration create_profiles_table
+
+Esta es otra novedad que trae Laravel 5.5 pues ya no se necesita especificar el nombre de la tabla de base de datos a crear con la opción --create, siempre y cuando, el nombre de la migración tenga el patrón create_nombre_tabla_table. Así, Laravel automáticamente reconoce el nombre de la tabla a partir del nombre de la migración y nos evita tener que escribir algo como: php artisan make:migration create_profiles_table --create=profiles
+
+Puede mirar el Pull Request que incluye esta funcionalidad en: https://github.com/laravel/framework/pull/20032
+
+
+---{Github}
+ [5.5] Guess the --create option in make:migration #20032 
+
+
+This is probably a silly PR but I always find myself writing this:
+
+art mak:mig create_users_table --create=users
+art mak:mig create_products_table --create=products
+art mak:mig create_product_categories_table --create=product_categories
+art mak:mig create_another_table_with_really_long_name_table --create=another_table_with_really_long_name
+
+So maybe we can have the make:migration command guess the table to create for us?
+
+
+---
+
+Ahora con el nuevo comando migrate:fresh puede volver a ejecutar las migraciones sin necesidad que Laravel ejecute el método down de cada migración (ésta es la finalidad del comando migrate:refresh), sino que simplemente elimina todas las tablas y luego vuelve a ejecutar las migraciones.  Este comando es útil para omitir los conflictos producidos por cambios en las migraciones y lo que ya está definido en la base de datos. De esta manera si está en la fase de diseño de la base de datos ahorrará algo del tiempo que empleaba en resolver estos conflictos (por ejemplo eliminando todas las tablas manualmente antes de re-ejecutar migrate:refresh).
+
+Podemos además pasarle las opciones:
+
+--database para especificarle la base de datos en la que queremos se ejecute el comando, definida en el archivo config/database.php en la clave connections
+
+--force para forzar ejecutar el comando cuando se está en ambiente de producción.
+
+--seed para que adicionalmente se ejecuten los seeders.
+
+--path para indicar la ubicación de los archivos de migración.
+
+--seeder para indicar la clase Seeder que cumple la función de ser como la clase DatabaseSeeder, es decir, que agrupa los seeder que queremos que se ejecuten.
+
+Puede ver el commit realizado para añadir este comando en: https://github.com/laravel/framework/commit/f6511d47
+
+
+
+Practica
+========
+
+Para esta seccion comenzaremos a trabajar con la base de datos empleando el nuevo comando migrate:fresh, disponible a partir de Laravel 5.5. Para ello nos vamos a conectar entonces para crear una base de dagtos que llamaremos: laravel5_5. 
+
+	>   mysql -u root -p
+    Enter password: **********
+    Welcome to the MySQL monitor.  Commands end with ; or \g.
+    Your MySQL connection id is 96
+    Server version: 8.0.17 MySQL Community Server - GPL
+
+    Copyright (c) 2000, 2019, Oracle and/or its affiliates. All rights reserved.
+
+    Oracle is a registered trademark of Oracle Corporation and/or its
+    affiliates. Other names may be trademarks of their respective
+    owners.
+
+    Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+    mysql> CREATE DATABASE laravel5_5 CHARACTER SET utf8 COLLATE utf8_general_ci;
+    Query OK, 1 row affected, 2 warnings (0.01 sec)
+
+    mysql>exit;
+
+Regresamos a la carpeta del proyecto
+
+Vamos a generar una nueva migración con el comando 
+	php artisan make:migration create_profiles_table 
+
+Si abrimos la migración podremos ver:
+---
+<?php
+
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
+
+class CreateProfilesTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('profiles', function (Blueprint $table) {
+            $table->increments('id'); 
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('profiles');
+    }
+}
+---
+
+Laravel ya genera el blilerplate para la tabla de perfiles, notemos que no hiso falta especificar la opcion create con el nombre de la tabla.
+
+	> php artisan make:migration create_profiles_table --create=profiles
+
+Sino que Laravel automaticamente descubrio esto por mi, de vuelta a la migración de perfiles, se agregaran algunos campos:
+
+---
+...
+public function up()
+    {
+        Schema::create('profiles', function (Blueprint $table) {
+            $table->increments('id'); 
+            $table->unsignedInteger('user_id'); //Para indicar la relacion entre un perfil y un usuario
+            $table->foreing('user_id')->references('id')-on('users'); //se especifica la llave foranea que haria referencia a la columna id en la tabla de users.
+            $table->mediumText('bio'); //Biografia
+            $table->string('twitter'); //Usuario de Twitter
+            $table->string('github');  //Usuario de Github
+            $table->timestamps();
+        });
+    }
+...    
+---
+
+
+Luego despues de ello nos vamos a ir al archivo de entorno para configurar los detalles de la BD
+
+--- .env
+...
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=laravel5_5 
+DB_USERNAME=root
+DB_PASSWORD=desarrollo
+...
+---
+
+Devuelta a la consola podemos ejecutar:
+	> php artisan migrate
+
+Podemos ver que las migraciones se ejecutaron con exito, si exploramos la Bd conectandonos nuevamente;
+
+	 mysql> use laravel5_5;
+
+	 mysql>show tables;
+
+
+Vemos que tenemos la tabla de usuarios y perfiles.
+
+Pero luego decido que quiero cambiar el nombre a la tabla perfiles por algo como por ejemplo, user profiles, esto se puede lograr cambiando esta migración, por ejemplo renombrandola o crando una nueva.
+
+Vamos a crear una nueva 
+	> php artisan make:migration  create_user_profile_table		
+
+Una vez recibido el mensaje de confimración y en la migracion que se tenia anteriormente copiamos todo el codigo interno
+
+
+quedando:
+
+
+---
+...
+public function up()
+    {
+        Schema::create('user_profiles', function (Blueprint $table) {
+            $table->increments('id'); 
+            $table->unsignedInteger('user_id'); //Para indicar la relacion entre un perfil y un usuario
+            $table->foreing('user_id')->references('id')-on('users'); //se especifica la llave foranea que haria referencia a la columna id en la tabla de users.
+            $table->mediumText('bio'); //Biografia
+            $table->string('twitter'); //Usuario de Twitter
+            $table->string('github');  //Usuario de Github
+            $table->timestamps();
+        });
+    }
+...
+
+---	
+
+Finalmente se elimina la migración anterior es decir: "create_profiles_table.php". 
+
+Al hacer esto tipicamente nosotros regresamos a la consola, para restaurar la migración con el ocmando 
+	>php artisan migrate:refresh
+
+Pero aca nos vamos a encontrar con un error, pos que se esta intentando eliminar la tabla de "usuarios" sin eliminar la tabla de perfiles que se creo anteriormente, en este caso por que eliminamos el archivo de la migración de "profiles" pero en este caso no importa si yo eleimine o no una migración, en este caso yo quiero volver a crear mis tablas anteriormente, cuando sucedia un error como este
+
+	>>> Error
+	SQLSTATE [23000]: Integrity constrait violation: 1451 Cannot delete or update a parnt row: a foreing key constrait fails (SQL: drop table if exist 'users').
+
+	[PDOException]
+	SQLSTATE [23000]: Integrity constrait violation: 1451 Cannot delete or update a parnt row: a foreing key constrait fails 
+
+	>>>
+
+Entonces lo que debemos hacer es irnos a mysql ya sea a traves de la consola o con un aherramienta grafica y entonces aca asegurarnos de eliminar todas las tablas o la tabla problematica:
+	mysql> drop table profiles:
+
+De esta forma, luego ya podria continuar y ejecutar nuevamente las migraciones:
+	> php artisan migrate:refresh
+
+en este caso Laravel 5.5 advierte que una de las migraciones no fue encontrada, anteriormente esto tambien provocaria un error, de cualquier forma Laravel 5.5 tiene un nuevo comando llamado 
+	> php artisan migrate:fresh
+
+	en vez de:
+		> php artisan migrate:refresh
+
+y este comando lo que hace es que va a eliminar todas las tablas existentes, tengan o no una migración, las va a eliminar por completo y luego va a ejecutar las migraicones desde cero, en este caso los metodos up().
+
+Ahora si regresamos a la consola y ejecutamos:
+	> php artisan:fresh
+
+Notemos que indicamos que esta eliminando todas las tablas y luego ejecutando las migraciones, entonces en este caso ya no importa por ejemplo si yo cambio de parecer y decido por ejemplo crear otra migración llamada perfiles
+
+	> php artisan make:mirgation create_profiles_table
+
+Puede darnos un posible error tal como:
+
+[ErrorException]
+include(/Users/Klvst3r/projects/laravel5_5/vendor/composer/.../.../database/migration/2022_06_04114525_create_profiles_table.php)
+failed to open stream: No such file or directory
+
+Este error es de composer
+
+Por ello
+ > composer dump-autoload
+
+ Y vamos a inetentar generar la migración.
+
+ Nuevamente entonces copiamos los campos y 
+
+ ---
+...
+public function up()
+    {
+        Schema::create('profiles', function (Blueprint $table) {
+            $table->increments('id'); 
+            $table->unsignedInteger('user_id'); //Para indicar la relacion entre un perfil y un usuario
+            $table->foreing('user_id')->references('id')-on('users'); //se especifica la llave foranea que haria referencia a la columna id en la tabla de users.
+            $table->mediumText('bio'); //Biografia
+            $table->string('twitter'); //Usuario de Twitter
+            $table->string('github');  //Usuario de Github
+            $table->timestamps();
+        });
+    }
+...    
+---
+
+eliminamos la migración anterior: "create_user_profiles_table.php"
+
+Y de nuevo en la consola ejecutamos:
+	> php artisan migrate:refresh
+
+Obtendremos un error, pero si ejecutamos:
+	> php artisan migrate:fresh	
+
+Entonces no pasa nada por que simplemente se van a eliminar las migraciones y se van a recrear desde cero y esto es excelente cuando trabajamos en entorno local o de desarollo, Utilizando este nuevo metodo ya ni siquiera se necesita preocupar por los metodos down().  
+Podemos eliminar el codigo de los metodos down()
+
+---
+...
+ public function down()
+    {
+       //
+    }
+...
+---
+
+
+Ahora si ejecutamos:
+	> php artisan migrate:refresh
+
+Obtendremos un error, pero si ejecutamos:
+
+	>php artisan migrate:fresh
+
+No vamos a obtener ningun error, asi que este comando podremos pasar mas tiempo planeando la creacion de las tablas y menos luchando con el sistema de migraciones.
+
