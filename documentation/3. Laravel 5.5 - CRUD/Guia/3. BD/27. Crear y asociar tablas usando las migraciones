@@ -23,6 +23,7 @@ Producirá el siguiente código boilerplate:
 	}
 
 ---
+
 Ahora sólo tenemos que definir las columnas.
 
 También podemos pasar la opción --create en caso de que no queramos usar la convención:
@@ -65,6 +66,150 @@ Para asociar una tabla con otra, vamos a utilizar una clave foránea. Por ejempl
 
 Practica
 ========
+
+
+Cuando se comienza con el desarrollo de un proyecto con Laravel, no se suele empezar creando toda las tablas, es decir todas las migraciones, ni diseñando la base de datos primero que nada. Sino que se puede comentar con las pruebas automatizadas vistas en secciones atras. Y son estas pruebas las que suelen indicar que tablas, y columnas se deben crear. Y asi se va poco a poco estructurando la BD, sin embargo se ha pretendido exoplicar con esta guia desde cero de forma que vayamos aprendiendo componente por compomenente. 
+
+En esta sección vamos a aprender más sobre el sistema de migraciones de Laravel. 
+
+Suponiendo que ya tenemos nuestro formulario de registro y que ya se tienen usuarios registrandose en nuesto proyecto, y nos hemos dado cuenta que varios usuarios que se han registrado tienen la misma profesión, sin embargo la han escrito de forma diferente; por ejemplo, el primer usuario escribio "Backend developer", el segundo "Back-end developer" y un tercero "Back-end programmer". Entonces tenemos tres usuarios que tienen la misma profesión, pero estan escritas de forma diferente y esto va a dificultar que nosotros puedamos hacer busquedas o mostrar resultados dependiendo de la profesion que tengan. Asi deberiamos solucionarlo de una mejor manera y seguramente hemos padecido esta situacion en donde para registrar la profesión debemos seleccionarla de una lista y no escribirla en un campo de texto. Esto es lo que se pretende aca. 
+
+Primero a nivel de base de datos y más adelante en secciones futuras en un formulario de busqueda.
+
+Para ello, vamoa a regresar a la consola y vamos a crear una nueva migración:
+	> php artisan make:migration create_professions_table
+
+
+Puesto que se va a querer crear una tabla de profesiones, y es ahi donde vamos a colocar las profesiones que consideramos validas para que el usuario seleccione una al momento de registra su información en el formulario o de editar su perfil de usuario. 	
+
+
+Regresando al editor veremos que ahora tenemos un nuevo archivo de migración, y como utilizamos una foram de convención, Laravel automaticamente nos va a dar el codivo boilerplate para crear la tabla de profesiones:
+
+---2022_06_06_174018_create_professions_table.php
+...
+	public function up()
+    {
+        Schema::create('professions', function (Blueprint $table) {
+            $table->increments('id');
+            $table->timestamps();
+        });
+    }
+...
+---
+
+
+Podemos demostrar como funciona esto si se inspecciona una de las clases del Framework que se llama "MigrateMakeCommand"
+
+En la ruta:
+	C:\AppServ\www\dev\CRUDLaravel5.5\vendor\laravel\framework\src\Illuminate\Database\Console\Migrations
+---
+...
+	class MigrateMakeCommand extends BaseCommand
+{
+    /**
+     * The console command signature.
+     *
+     * @var string
+     */
+    protected $signature = 'make:migration {name : The name of the migration.}
+        {--create= : The table to be created.}
+        {--table= : The table to migrate.}
+        {--path= : The location where the migration file should be created.}';
+
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
+    protected $description = 'Create a new migration file';
+...
+---	
+
+
+Esta es la clase donde va a estar el codigo para generar una nueva migracion, donde se puede ver la declaración del comando, pero lo que se pretender ver es lo siguiente en el mismo archivo:
+---
+...line 86
+if (! $table) {
+            if (preg_match('/^create_(\w+)_table$/', $name, $matches)) {
+                $table = $matches[1];
+
+                $create = true;
+            }
+        }
+...
+---
+
+Que en el metodo "handle" que se va a encargar de crear esta migración Laravel en elgun momento va a revisar si el patrón que se esta utilizando para el nombre de la migración incluye el prefijo "create" y el subfijo "table". De ser asi entonces Laravel automaticamente va a generar el código boilerplate para que entonces se pueda crear una nueva tabla, esto no va a suceder si uno por ejemplo ejecuta el comando:
+	> php artisan make:migration new_professions_table
+
+Si escribimos de esta manera el comando y regresamos a la migración notaremos que no tenemos el codigo boilerplate para crear una nueva tabla
+
+---
+class NewProfessionsTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        //
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        //
+    }
+
+---
+
+
+Por supuesto uno puede escribirlo rapidamente, pero si utilizamos la convención entonces ahorraremos algo de tiempo, tambien podremos especificar esto manualmente si no quememos utilizar la convencion, ejecutando:
+
+Sintaxis
+	> php artisan make migration <nombre_archivo> --create=<nombre_tabla>
+
+Comando:
+	> php artisan make:migration new_professions_table --create=professions
+
+
+Regresando al editor y abriendo la migración creada podremos observar que se tiene creada el codigo boilerplate con la utilización del parametro "--create" volvemos a tener el codigo boilerplate para comenzar a crear nuestra tabla en el metodo up() y en el metodo down(), debemos fijarnos que tenemos el codigo para crear y eliminar la tabla respectimanete. Esto fue agregado por Laravel automaticamente al momento de crear la nueva migración.
+
+Vamos  a trabajar con la primera migración que se creo, entonces queremos que la tabla tenga:
+
+---2022_06_06_174018_create_professions_table.php
+...
+	public function up()
+    {
+        Schema::create('professions', function (Blueprint $table) {
+            $table->increments('id');
+
+			$table->increments('title', 100);	
+
+            $table->timestamps();
+        });
+    }
+...
+---
+
+Si regresamos a la consola y ejecutamos el comando:
+	> php artisan migrate
+
+
+Min 4m40, >> Crear y ejecutar Migracion: create_profession_table
+
+
+
+
+
+
+
 
 
 Ejercicio
