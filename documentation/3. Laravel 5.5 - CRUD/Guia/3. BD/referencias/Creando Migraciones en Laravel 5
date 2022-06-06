@@ -1,0 +1,40 @@
+Creando Migraciones en Laravel 5
+
+
+Notas:
+======
+Las migraciones son una serie de archivos y clases en PHP que actúan como un control de versiones de base de datos, tanto para crear las tablas al inicio del desarrollo de nuestra aplicación, como para realizar cambios como agregar o eliminar una tabla, agregar o eliminar una columna y así sucesivamente, a medida que desarrollamos nuestro proyecto.
+
+Las migraciones permiten definir las tablas con programación orientada a objetos en vez de SQL, lo cual nos da portabilidad a los diferentes motores que soporta Laravel: MySQL, Postgres, SQLite, y SQL Server.
+
+También son ideales para que nuestro equipo de trabajo mantenga los cambios y pueda ejecutarlos con un comando en vez de estar adivinando que SQLs cargar y cuales no.
+
+A pesar de su ventaja son totalmente opcionales, así que puedes prescindir de ellas y crear tus tablas con herramientas como PHPMyAdmin o SequelPro pero yo recomiendo usar las migraciones cada vez que se pueda.
+
+
+
+
+
+Actividades
+============
+    - Crea una nueva tabla usando una migración
+    - Modifica una tabla usando una migración
+
+
+    - ¿Cuál es la ventaja de usar migraciones?
+    	El sistema de migraciones es totalmente opcional, pero usarlo tiene varias ventajas. Dos de ellas son: Que no tienes que hacer modificaciones manualmente y que queda un registro de tus modificaciones en la base de datos para poder deshacer esos cambios en un futuro si fuera necesario.
+
+
+    - ¿Cuándo no se usan migraciones en un proyecto?
+
+		Yo también lo entiendo de esa forma, pero no estoy seguro de cómo crear las migraciones cuando la base de datos ya tiene registros.
+		Cuando quiero agregar una nueva columna o eliminar una, modifico directamente la migración de dicha tabla y sin hacer commit, luego debo ir a la base de datos en producción y escribir SQL a fin de hacer los cambios sin perder datos. Por ejemplo, quería aislar algunos campos en otra tabla agregando datos adicionales, entonces tenía que crear la nueva tabla, crear sus relaciones y copiar el contenido para luego poder recién borrar la columna.
+		Es decir, modifico las migraciones para que no queden desactualizadas pero terminado haciéndolo manualmente. De momento solo yo trabajo en este pequeño proyecto, pero me pregunto si hay una mejor forma de hacerlo usando las migraciones.
+		Tal vez puedas darme alguna idea de cómo realizar mejor este proceso. Estaba pensando en que tal vez, la creación de esta tabla, el movimiento de los datos, debería escribirlos todos dentro de una migración en su método up, y escribir código que devuelva los datos a como estaban en su método down, pero es un tanto complejo.
+
+
+		Si por lo que he creído entender, modificas las migraciones a mano y luego haces también los cambios a mano en producción, ¿Para qué mantienes las migraciones? Quizás en ese caso sería más cómodo para tí no usar migraciones para esos cambios.
+
+		Ahora bien, como entiendo que buscas el modo de usar las migraciones en lugar de hacer los cambios manualmente, en ese caso las migraciones de Laravel no hacen 'nada extraño', en definitiva ejecutan código SQL que en lugar de escribirlo como tal, lo solemos escribir usando Eloquent.
+
+		Por tanto, si conoces las sentencias SQL necesarias para hacer esos cambios sin perder los datos (las que en estos momentos estás realizando manualmente) y te parecen complejas para ejecutarlas con Eloquent, siempre puedes usar Fluent en los métodos up() y down() de las migraciones para ejecutar SQL tal cual.
