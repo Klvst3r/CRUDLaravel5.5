@@ -1,0 +1,5 @@
+Migraciones en Laravel
+
+Las migraciones en Laravel son  una herramienta que nos permite crear una especie de sistema de control de versiones de bases de datos donde podemos definir tablas con POO en vez de SQL, es compatible con los diferentes motores de base de datos dado que Laravel genera el SQL por nosotros,  adaptado al tipo de base de datos con la que estemos trabajando. Laravel soporta: MySQL, Postgres, SQLite, y SQL Server.
+
+Son ideales para trabajar en equipo, dado que elimina la necesidad de enviar fragmentos de SQL a través de email, mensajería, etc. Los programadores simplemente necesitan generar una nueva migración, escribir los cambios a la base de datos en ella y el resto del equipo puede simplemente ejecutar la migración.
