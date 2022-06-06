@@ -1,0 +1,183 @@
+Modificando migraciones en Laravel
+
+
+
+A medida que avanzamos en el desarrollo de una aplicación puede que las tablas o los campos creados en la base de datos ya no se adapten o que simplemente necesitamos hacer algunos cambios.  Sin embargo, para ese momento no es posible hacer rollback a las migraciones hechas, pues, por ejemplo, la aplicación ya está en producción. Por consiguiente, para modificar la base de datos debemos hacer uso de las migraciones, tal y como lo hicimos al crear las tablas, pero ahora para cambiarlas. Hoy vamos a ver cuáles opciones tenemos disponibles para ello.
+
+Tomemos en cuenta que debemos tener el archivo de configuración .env creado y con los datos de conexión a la base de datos.
+
+Vamos a crear una migración para una tabla llamada profiles:
+	> php artisan make:migration create_profiles_table --create=profiles
+
+y en los métodos up y down colocamos:
+---
+	public function up()
+	    {
+	        Schema::create('profiles', function (Blueprint $table) {
+	            $table->increments('id');
+	            $table->string('name_company')->nullable();
+	            $table->string('contact')->nullable();
+	            $table->string('phone')->nullable();
+	            $table->text('comments')->nullable();
+	            $table->timestamps();
+	        });
+	    }
+	    /**
+	     * Reverse the migrations.
+	     *
+	     * @return void
+	     */
+	    public function down()
+	    {
+	        Schema::drop('profiles');
+	    }
+
+---
+
+
+Creamos el modelo Profile, ejecutando por consola:
+	> php artisan make:model Profile
+
+y añadimos lo siguiente a la clase creada en Profile.php ubicado en el directorio app:
+---
+ protected $table = 'profiles';
+ protected $fillable = ['name_company', 'contact', 'comments', 'phone'];
+---
+
+
+Además, vamos a crear un model factory para agregar datos ficticios a nuestra tabla profiles, en el archivo ModelFactories.php que se encuentra en el directorio database/factories:
+
+--
+$factory->define(App\Profile::class, function ($faker) {
+    return [
+        'name_company' =>$faker->company,
+        'contact'=> $faker->name,
+        'phone' => $faker->phoneNumber,
+        'comments' => $faker->paragraph
+    ];
+});
+--
+
+
+    Si no conoces cómo trabajar con ellos puedes consultar: Model Factories en Laravel 5.1
+
+Para ejecutar dicha migración hacemos por consola:
+
+	> php artisan migrate --seed
+
+Con lo cual obtenemos un arreglo del contenedor de la información de la tabla.
+
+
+Antes de hacer los cambios que queremos a una columna debemos agregar a nuestro composer.json una dependencia en la sección require:
+"doctrine/dbal": "2.5.1"
+
+y luego hacer composer update.
+
+ 
+
+Doctrine es un ORM (Object Relational Mapper) que permite interactuar con la base de datos desde código de PHP, sin trabajar directamente con consultas de SQL, es decir, que está en la capa de abstracción de la base de datos.  Posee muchas características como la introspección de esquema de base de datos, gestión de esquema y abstracción PDO. Por lo que Doctrine DBAL  es la biblioteca usada por Laravel para determinar el actual estado de un columna o campo y crear las consultas SQL necesarias para hacer los ajustes especificados a dicha columna.
+
+Esta dependencia es requerida según la documentación oficial de Laravel, si no la agregas puedes obtener errores como:
+---
+    [Symfony\Component\Debug\Exception\FatalErrorException]
+
+    Class ‘Doctrine\DBAL\Driver\PDOMySql\Driver’ not found
+---
+
+
+Opciones a cambiar las migraciones
+------------------------------------
+
+Ahora bien, los posibles cambios que les podemos hacer a la tabla profiles puede ser:
+
+Renombrar la tabla
+------------------
+	Schema::rename(‘profiles’, 'nombre_nuevo');
+
+
+Eliminar la tabla
+------------------
+	Schema::drop(‘profiles’);
+	Agregar nuevos campos o columnas
+	Schema::table(‘profiles’, function ($table) {
+	   $table->string(‘address');
+	});
+
+Si estamos usando MySQL podemos agregar la columna después de una en específico, es decir:
+
+Schema::table('profiles', function ($table) {
+   $table->string(‘address')->after(‘phone’);
+});
+
+
+Cambiar el tipo o los atributos de una columna
+------------------
+Schema::table('profiles', function ($table) {
+   $table->string('comments', 100)->change();
+});
+
+
+Renombrar a una columna
+------------------
+Schema::table('profiles', function ($table) {
+   $table->renameColumn('nombre_anterior', 'nombre_nuevo');
+});
+
+
+Eliminar una columna
+------------------
+Schema::table('profiles', function ($table) {
+   $table->dropColumn(‘phone’);
+});
+
+
+Agregar una llave foranea
+------------------
+Schema::table('posts', function ($table) {
+   $table->integer('user_id')->unsigned();
+   $table->foreign('user_id')->references('id')->on('users');
+});
+
+
+Eliminar una llave foranea
+------------------
+$table->dropForeign('posts_user_id_foreign');
+
+En este caso se concatena el nombre de la tabla a modificar, más el nombre de la columna y por último la cadena “_foreign”
+Ejemplo de uso
+
+Para nuestro caso vamos a hacer algunos cambios en nuestra tabla profiles: renombrar la columna contact a contact_person, agregar la columna website y address y eliminar la columna comments, creando en un solo archivo de migración:
+
+	> php artisan make:migration alter_profiles_table --table=profiles
+
+Este comando crea un nuevo archivo que contiene los métodos up y down vacíos para nosotros agregar los cambios a realizar. Nuestro método up quedaría así:
+---
+public function up()
+    {
+        Schema::table('profiles', function (Blueprint $table) {
+            $table->renameColumn('contact', 'contact_person');
+            $table->string('address')->after('phone');
+            $table->string('website', 100)->after('address');
+            $table->dropColumn('comments');
+        });
+    }
+---
+
+y el método down debería revertir las operaciones realizadas con el método up; esto para cuando se haga migrate:rollback se puedan deshacer dichas operaciones, por tanto nuestro método down queda de esta manera:
+
+---
+public function down()
+    {
+        Schema::table('profiles', function (Blueprint $table) {
+            $table->renameColumn('contact_person', 'contact');
+            $table->dropColumn('address');
+            $table->dropColumn('website');
+            $table->string('comments')->nullable()->after('phone');
+        });
+    }
+---
+
+Al ejecutar por consola:
+	php artisan migrate
+
+Esto es todo, espero que sea de mucha ayuda. 	
