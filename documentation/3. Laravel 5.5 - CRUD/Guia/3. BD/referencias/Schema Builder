@@ -1,0 +1,322 @@
+Schema Builder
+
+Referencia de la Documentación Oficial:
+---
+
+	https://laravel.com/docs/5.0/schema
+
+
+Generador de esquemas
+
+    Introducción
+    Creación y eliminación de tablas
+    Agregar columnas
+    Cambio de columnas
+    Cambio de nombre de columnas
+    Dejar caer columnas
+    Comprobación de existencia
+    Adición de índices
+    Llaves extranjeras
+    Eliminación de índices
+    Eliminación de marcas de tiempo y eliminaciones suaves
+    Motores de almacenamiento
+
+# Introducción
+---------------
+
+La clase Laravel Schema proporciona una forma independiente de la base de datos de manipular tablas. Funciona bien con todas las bases de datos compatibles con Laravel y tiene una API unificada en todos estos sistemas.
+
+
+# Creación y eliminación de tablas
+----------------------------------
+Para crear una nueva tabla de base de datos, Schema::create se utiliza el método:
+
+
+  ---
+	Schema::create('users', function($table)
+	{
+	    $table->increments('id');
+	});
+  ---
+           
+
+El primer argumento pasado al método "create" es el nombre de la tabla, y el segundo es un "Closure" que recibirá un objeto "Blueprint" que puede usarse para definir la nueva tabla.
+
+Para cambiar el nombre de una tabla de base de datos existente, renamese puede utilizar el método:
+
+---
+	Schema::rename($from, $to);
+---
+           
+
+Para especificar en qué conexión debe tener lugar la operación de esquema, utilice el Schema::connectionmétodo:
+
+
+  ---
+	  Schema::connection('foo')->create('users', function($table)
+	{
+	    $table->increments('id');
+	});
+  ---
+           
+
+Para eliminar una tabla, puede usar el método "Schema::drop":
+
+---
+	Schema::drop('users');
+ 
+	Schema::dropIfExists('users');
+---
+
+
+# Agregar columnas
+--------------------
+
+Para actualizar una tabla existente, usaremos el método "Schema::table":
+
+---
+	Schema::table('users', function($table)
+	{
+	    $table->string('email');
+	});
+---
+
+El generador de tablas contiene una variedad de tipos de columnas que puede usar al crear sus tablas:
+
+----------------------------------------------------------------------------------------------
+	Dominio 									Descripción
+----------------------------------------------------------------------------------------------
+$table->bigIncrements('id'); 					Incrementar ID usando un equivalente de "entero grande"
+$table->bigInteger('votes'); 					BIGINT equivalente a la tabla
+$table->binary('data'); 						BLOB equivalente a la tabla
+$table->boolean('confirmed'); 					BOOLEAN equivalente a la tabla
+$table->char('name', 4); 						CHAR equivalente con una longitud
+$table->date('created_at'); 					FECHA equivalente a la tabla
+$table->dateTime('created_at'); 				DATETIME equivalente a la tabla
+$table->decimal('amount', 5, 2); 				Equivalente DECIMAL con precisión y escala
+$table->double('column', 15, 8); 				DOBLE equivalente con precisión, 15 dígitos en total y 8 después del punto decimal
+$table->enum('choices', ['foo', 'bar']); 		ENUM equivalente a la tabla
+$table->float('amount'); 						FLOAT equivalente a la tabla
+$table->increments('id'); 						Incrementando ID a la tabla (clave principal)
+$table->integer('votes'); 						INTEGER equivalente a la tabla
+$table->json('options'); 						JSON equivalente a la tabla
+$table->jsonb('options'); 						JSONB equivalente a la tabla
+$table->longText('description'); 				LONGTEXT equivalente a la tabla
+$table->mediumInteger('numbers'); 				MEDIUMINT equivalente a la tabla
+$table->mediumText('description'); 				MEDIUMTEXT equivalente a la tabla
+$table->morphs('taggable'); 					Agrega INTEGER taggable_idy STRINGtaggable_type
+$table->nullableTimestamps(); 					Igual que timestamps(), excepto que permite valores NULL
+$table->smallInteger('votes'); 					SMALLINT equivalente a la tabla
+$table->tinyInteger('numbers'); 				TINYINT equivalente a la tabla
+$table->softDeletes(); 							Agrega la columna delete_at para eliminaciones suaves
+$table->string('email'); 						Columna equivalente VARCHAR
+$table->string('name', 100); 					VARCHAR equivalente con una longitud
+$table->text('description'); 					TEXTO equivalente a la tabla
+$table->time('sunrise'); 						TIME equivalente a la tabla
+$table->timestamp('added_on'); 					TIMESTAMP equivalente a la tabla
+$table->timestamps(); 							Agrega las columnas created_at y updated_at
+$table->rememberToken(); 						Agrega remember_tokencomo VARCHAR(100) NULL
+->nullable() 									Designe que la columna permita valores NULL
+->default($value) 								Declarar un valor predeterminado para una columna
+->unsigned() 									Establezca INTEGER en UNSIGNED
+
+
+Usando después en MySQL
+-----------------------
+Si está utilizando la base de datos MySQL, puede usar el método "after" para especificar el orden de las columnas:
+
+---
+ 	$table->string('name')->after('email');          
+---
+           
+
+# Cambio de columnas
+--------------------
+
+Nota: antes de cambiar una columna, asegúrese de agregar la dependencia "doctrine/dbal" a su archivo "composer.json".
+
+A veces es posible que necesite modificar una columna existente. Por ejemplo, es posible que desee aumentar el tamaño de una columna de cadena. ¡ El método "changem" lo hace fácil! Por ejemplo, aumentemos el tamaño de la namecolumna de 25 a 50:
+
+---
+     Schema::table('users', function($table)
+		{
+		    $table->string('name', 50)->change();
+		});      
+---
+           
+
+También podríamos modificar una columna para que sea anulable:
+
+---
+    Schema::table('users', function($table)
+		{
+		    $table->string('name', 50)->nullable()->change();
+		});        
+---
+           
+
+Cambio de nombre de columnas
+
+Para cambiar el nombre de una columna, puede usar el método "renameColumn" en el generador de esquemas. Antes de cambiar el nombre de una columna, asegúrese de agregar la dependencia "doctrine/dbal" a su archivo "composer.json".
+
+---
+    Schema::table('users', function($table)
+	{
+	    $table->renameColumn('from', 'to');
+	});   
+---
+           
+
+    Nota:enum actualmente no se admite el cambio de nombre de las columnas en una tabla con columna.
+
+
+# Borrar columnas
+-----------------
+
+Para borrar una columna, puede usar el método  "dropColumn" en el generador de esquemas. Antes de soltar una columna, asegúrese de agregar la dependencia "doctrine/dbal" a su archivo "composer.json".
+
+Borrrar una columna de una tabla de base de datos
+
+---
+    Schema::table('users', function($table)
+	{
+	    $table->dropColumn('votes');
+	});     
+---
+
+Borrar varias columnas de una tabla de base de datos
+
+---
+   Schema::table('users', function($table)
+{
+    $table->dropColumn(['votes', 'avatar', 'location']);
+});        
+---
+           
+
+# Comprobación de existencia
+----------------------------
+
+Comprobación de la existencia de la tabla
+
+Puede verificar fácilmente la existencia de una tabla o columna utilizando los métodos "hasTable" y "hasColumn".
+
+---
+   if (Schema::hasTable('users'))
+	{
+	    //
+	}        
+---
+           
+
+Comprobación de la existencia de columnas
+
+---
+     if (Schema::hasColumn('users', 'email'))
+	{
+	    //
+	}      
+---
+           
+
+# Adición de índices
+--------------------
+
+El generador de esquemas admite varios tipos de índices. Hay dos formas de agregarlos. Primero, puede definirlos con fluidez en una definición de columna, o puede agregarlos por separado:
+
+
+---
+      $table->string('email')->unique();     
+---
+
+O bien, puede optar por agregar los índices en líneas separadas. A continuación se muestra una lista de todos los tipos de índices disponibles:
+
+
+Dominio 								Descripción
+---------------------------------------------------------------------------
+$table->primary('id'); 					Adición de una clave principal
+$table->primary(['first', 'last']); 	Adición de claves compuestas
+$table->unique('email'); 				Agregar un índice único
+$table->index('state'); 				Agregar un índice básico
+
+
+
+# Llaves foraneas
+-------------------
+
+Laravel también brinda soporte para agregar restricciones de clave externa a sus tablas:
+
+---
+    $table->integer('user_id')->unsigned();
+	$table->foreign('user_id')->references('id')->on('users');       
+---
+           
+
+En este ejemplo, afirmamos que la columna "user_id" hace referencia a la columna "id" de la tabla "users. ¡Asegúrese de crear primero la columna de clave externa!
+
+También puede especificar opciones para las acciones "al eliminar" y "al actualizar" de la restricción:
+
+---
+  $table->foreign('user_id')
+      ->references('id')->on('users')
+      ->onDelete('cascade');         
+---
+           
+
+Para soltar una clave externa, puede usar el método "dropForeign". Se utiliza una convención de nomenclatura similar para las claves foráneas que para otros índices:
+
+
+---
+     $table->dropForeign('posts_user_id_foreign');      
+---
+
+    Nota: Al crear una clave externa que hace referencia a un número entero incremental, recuerde siempre hacer la columna de clave externa unsigned.
+
+
+#Eliminación de índices
+-----------------------
+
+Para eliminar un índice, debe especificar el nombre del índice. Laravel asigna un nombre razonable a los índices por defecto. Simplemente concatene el nombre de la tabla, los nombres de la columna en el índice y el tipo de índice. Aquí hay unos ejemplos:
+
+
+Dominio 									Descripción
+--------------------------------------------------------------------------------------------------------
+$table->dropPrimary('users_id_primary'); 	Soltar una clave principal de la tabla "usuarios"
+$table->dropUnique('users_email_unique'); 	Descartar un índice único de la tabla de "usuarios"
+$table->dropIndex('geo_state_index'); 		Descartar un índice básico de la tabla "geo"
+
+
+
+#Eliminación de marcas de tiempo y eliminaciones suaves
+------------------------------------------------------
+
+Para eliminar los tipos de columna "timestamps", "nullableTimestamps" o "softDeletes", puede usar los siguientes métodos:
+
+
+Dominio 	Descripción
+-----------------------------------------------------------------------------------------------
+$table->dropTimestamps(); 	Eliminando las columnas created_at y updated_at de la tabla
+$table->dropSoftDeletes(); 	Eliminando la columna delete_at de la tabla
+
+
+
+# Motores de almacenamiento
+---------------------------
+
+Para configurar el motor de almacenamiento para una tabla, configure la enginepropiedad en el generador de esquemas:
+
+---
+    Schema::create('users', function($table)
+		{
+		    $table->engine = 'InnoDB';
+		 
+		    $table->string('email');
+		});   
+---
+
+             
+           
+
+           
+
+             
