@@ -1,0 +1,38 @@
+Migraciones, seeders y model factories
+-------------------------------------------
+
+aravel nos permite definir la estructura de la base de datos y cargarla con contenido de prueba utilizando 3 componentes:
+
+    Migraciones
+    Seeders
+    Model Factories (nuevo en Laravel 5.1)
+
+Ya de las migraciones y los seeders (incluyendo el componente externo Faker), te hablé en el curso básico de Laravel 5:
+
+    Creando migraciones en Laravel 5
+    Seeders y el componente faker en Laravel 5
+
+
+
+Seeders y el componente Faker en Laravel 5
+-------------------------------------------    
+
+
+Los seeders, son un recurso que nos permite cargar información a nuestras tablas para probar de manera sencilla y rápida el funcionamiento de nuestra aplicación (paginación, filtros, entre otros). Ya basta de estar insertando datos uno por uno, inventando nombres o colocando el típico y horrible “asdffasd” o “123”.
+
+Los seeders se ubican en la carpeta database/seeds y puedes crear tantos como desees.
+
+Cuando queremos crear un usuario tipo “admin” podemos hacerlo de forma manual en un seed, pero cuando queremos insertar muchos usuarios debe de existir una manera más agradable de lograrlo, ahí entra Faker.
+
+Faker es un componente que genera datos para ti. De manera que con solo agregar el componente, hacer el llamado del mismo en el seed más unas simples líneas de códigos, podrás tener tantos datos como sean necesarios para evaluar tu aplicación correctamente.
+
+Actividades
+
+    Crea un seed e inserta un registro en una tabla.
+    Instala Faker e inserta varios registros en una tabla.
+    Inserta un registro en una tabla relacionada a otra.
+
+
+    ¿Cuál es la ventaja de los seeders?
+    ¿Cuál es la ventaja de Faker?
+    ¿En qué otros escenarios podemos usar Faker?
