@@ -27,6 +27,9 @@ Actividades
 
     - ¿Cuándo no se usan migraciones en un proyecto?
 
+    	Laravel nos permite crear tablas en la base de datos mediante en una interfaz orientada a objetos, de esta manera se estará creando un sistema compatible con las distintas bases de datos que soporta Laravel por defecto.  Por otro lado, las migraciones nos permiten tener un registro de las modificaciones que se han hecho o se harán en la base de datos. Esta función es muy útil cuando se trabaja en equipo.
+
+
 		Yo también lo entiendo de esa forma, pero no estoy seguro de cómo crear las migraciones cuando la base de datos ya tiene registros.
 		Cuando quiero agregar una nueva columna o eliminar una, modifico directamente la migración de dicha tabla y sin hacer commit, luego debo ir a la base de datos en producción y escribir SQL a fin de hacer los cambios sin perder datos. Por ejemplo, quería aislar algunos campos en otra tabla agregando datos adicionales, entonces tenía que crear la nueva tabla, crear sus relaciones y copiar el contenido para luego poder recién borrar la columna.
 		Es decir, modifico las migraciones para que no queden desactualizadas pero terminado haciéndolo manualmente. De momento solo yo trabajo en este pequeño proyecto, pero me pregunto si hay una mejor forma de hacerlo usando las migraciones.
