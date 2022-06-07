@@ -202,7 +202,219 @@ Si regresamos a la consola y ejecutamos el comando:
 	> php artisan migrate
 
 
-Min 4m40, >> Crear y ejecutar Migracion: create_profession_table
+puedo entonces ir a PHPmyAdmin y ver que tengo una nueva tabla llamada profesions, sin embargo yo en la tabla de usuarios aun tengo 
+
++------------+------------------+------+-----+---------+----------------+
+| Field      | Type             | Null | Key | Default | Extra          |
++------------+------------------+------+-----+---------+----------------+
+| id         | int(10) unsigned | NO   | PRI | NULL    | auto_increment |
+| title      | varchar(100)     | NO   |     | NULL    |                |
+| created_at | timestamp        | YES  |     | NULL    |                |
+| updated_at | timestamp        | YES  |     | NULL    |                |
++------------+------------------+------+-----+---------+----------------+
+
+
+Más sin embargo en la tabla de usuarios aun se tiene la columna:
+
+
++----------------+------------------+------+-----+---------+----------------+
+| Field          | Type             | Null | Key | Default | Extra          |
++----------------+------------------+------+-----+---------+----------------+
+| id             | int(10) unsigned | NO   | PRI | NULL    | auto_increment |
+| name           | varchar(255)     | NO   |     | NULL    |                |
+| email          | varchar(255)     | NO   | UNI | NULL    |                |
+| password       | varchar(255)     | NO   |     | NULL    |                |
+| profession     | varchar(50)      | YES  |     | NULL    |                | <- Es una cadena de Texto
+| remember_token | varchar(100)     | YES  |     | NULL    |                |
+| created_at     | timestamp        | YES  |     | NULL    |                |
+| updated_at     | timestamp        | YES  |     | NULL    |                |
++----------------+------------------+------+-----+---------+----------------+
+
+
+Pero deseamos que esta columna "profession" que es una cadena de texto, pero queremos que ahora esta columna permita asociar a cada usuario registrado en el sistema con un profesion de la tabla professions, y puesto que cada profesion va a tener un "id" o un identificador, Vamos a desmostrarlo de la siguiente manera:
+
+Agregamos dos profesiones
+
+	- Back-end developer
+	- Front-end developer
+
+Mas adelante veremos como podemos insertar esta información directamente con Laravel, pero ahora lo haremos de manera manual, po lo que. Via phpmyadmin
+
+-*-*
+	INSERT INTO `professions` (`id`, `title`, `created_at`, `updated_at`) VALUES (NULL, 'Back-end developer', NULL, NULL), (NULL, 'Front-end developer', NULL, NULL);
+-*-*
+
+
++----+---------------------+------------+------------+
+| id | title               | created_at | updated_at |
++----+---------------------+------------+------------+
+|  1 | Back-end developer  | NULL       | NULL       |
+|  2 | Front-end developer | NULL       | NULL       |
++----+---------------------+------------+------------+
+
+Ya tenemos dos profesiones en el sistema, cada una de ellas tiene un identificador, y puesto que la intencion es asociar a cada uno de los usuaarios en el sistema, con una de las profesiones ya existentes en la tabla professions. vamos a utilizar no una cadena de texto, sino un entero sin signo, para que cada registro tenga relacion con el indentificador de la trabla "professions". 
+
+Asi por ejemplo la profession "Back-end developer" tiene el id 1, entones en la columna 
+
++----------------+------------------+------+-----+---------+----------------+
+| Field          | Type             | Null | Key | Default | Extra          |
++----------------+------------------+------+-----+---------+----------------+
+| id             | int(10) unsigned | NO   | PRI | NULL    | auto_increment |
+| name           | varchar(255)     | NO   |     | NULL    |                |
+| email          | varchar(255)     | NO   | UNI | NULL    |                |
+| password       | varchar(255)     | NO   |     | NULL    |                |
+| profession     | varchar(50)      | YES  |     | NULL    |                | <- Een ves de almacenar la cadena de texto "Back-end developer" vamos a almacenar el valor 1
+| remember_token | varchar(100)     | YES  |     | NULL    |                |
+| created_at     | timestamp        | YES  |     | NULL    |                |
+| updated_at     | timestamp        | YES  |     | NULL    |                |
++----------------+------------------+------+-----+---------+----------------+
+
+
+Y cuando en BD se utiliza un acolumna para hacer referencia con otra tabla se le da el nombre de clave foranea o llave foranea, puesto que esta columna que tienemos en la tabla professions, es la llave primaria de la tabla es decir el identificador unico para cada registro de esta tabla, para cuando queramos hacer referencia a una llave o clave ajena de esta tabla, entonces se le da el nombre de llave o clave foranea, y para identificar que una columna va a ser una clave foranea solemao darle el subfijo de "_id" o "id". Asi que vamos a crar una nueva migracion con el comando:
+	> php artisan make:migration add_profession_id_to_users
+
+Es decir vamos a agregar la columna "profession_id"	 a la tabla "users".
+
+Ya en la migración:
+
+
+---2022_06_07_154449_add_profession_id_to_users
+...
+	 public function up()
+    {
+        Schema::table('users', function(Blueprint $table){
+            $table->dropColumn('profession');
+
+            $table->unsignedInteger('profession_id');
+        });
+    }
+...
+---
+
+Se comienza a escribir esta migración nuevamente, utilizando el Phasas "Schema" con el nombre de la tabla va a ser 'users' nuevamente y nuevamente vamos a utilizar una funcion anonima con el objeto de la clase "Blueprint" para eliminar la columna profession y agregar otra columna que llamara "profesion_id" y esta columna va a ser un entero sin signo, es decir un entero positivo.
+
+Puedo hacerlo de esta manera o utilizar el metodo integer() y luego encadenar el metodo unsigned(), somo se muestra a continuación:
+
+---2022_06_07_154449_add_profession_id_to_users
+...
+	 public function up()
+    {
+        Schema::table('users', function(Blueprint $table){
+            $table->dropColumn('profession');
+
+            $table->integer('profession_id')->unsigned();
+        });
+    }
+...
+---
+
+Ahora en el metodo down(), queremos hacer la operación contraria, 
+ 
+ ---2022_06_07_154449_add_profession_id_to_users
+ ...
+
+	  public function down()
+	    {
+	        Schema::table('users', function(){
+	            $table->dropColumn('profession_id');
+
+	            $table->string('profession', 50)->nullable()->after('password');
+	        });
+	    }
+ ...
+ ---
+
+
+
+Aqui quiero eliminar la columna "profession_id" y crear nuevamente la columna "profession" despues de la columna password de tipo string con longitud de 50 caracteres.
+
+Probamos regresando a la consola:
+	> php artisan migrate 
+
+Y podemos ver si regreso ahora a a ver la estructura de la tabla y podemos observar que ahora tenemos la columna profession_id
+
+
++----------------+------------------+------+-----+---------+----------------+
+| Field          | Type             | Null | Key | Default | Extra          |
++----------------+------------------+------+-----+---------+----------------+
+| id             | int(10) unsigned | NO   | PRI | NULL    | auto_increment |
+| name           | varchar(255)     | NO   |     | NULL    |                |
+| email          | varchar(255)     | NO   | UNI | NULL    |                |
+| password       | varchar(255)     | NO   |     | NULL    |                |
+| remember_token | varchar(100)     | YES  |     | NULL    |                |
+| created_at     | timestamp        | YES  |     | NULL    |                |
+| updated_at     | timestamp        | YES  |     | NULL    |                |
+| profession_id  | int(10) unsigned | NO   |     | NULL    |                |
++----------------+------------------+------+-----+---------+----------------+
+
+
+Ahora podemos ver que tenemos la columna "profession_id" y ya no tenemos la columna "profession". Sin embargo nuestras migraciones estan un poco desordenadas, por que si regresamos al editor tenemos una migración para agragar una columna, pero luego tenemos una migración para eliminar la misma columna, 
+
+
+---
+<?php
+
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
+
+class AddProfessionIdToUsers extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::table('users', function(Blueprint $table){
+            $table->dropColumn('profession');
+
+            $table->unsignedInteger('profession_id');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::table('users', function(){
+            $table->dropColumn('profession_id');
+
+            $table->string('profession', 50)->nullable()->after('password');
+        });
+    }
+}
+
+
+---
+
+
+Esto puede hacerse un poco dificil de leel, casos como este que apenas estamos comenzando el desarrollo de nuestro proyecto donde no tenemos una base de datos en producción y no tenemos datos reales, etc.
+
+En vez de estar agregando un monton de migraciones sin sentido, nosotros simplemente podemos modificar migraciones ya existentes y recrear la base de datos, por ejemplo:
+
+
+---
+	$table->unsignedInteger('profession_id');
+---
+Yo puedo directamente puedo agregar la columna "profession_id" que va a ser una columna que simplemente va a ser un entero sin signo, es decir un entero positivo y puedo agregar esta columna directamente a la tabla de usuarios en la migracion de ["...create_users_table.php"]. De esta manera ya no voy a necesitar las dos migraciones (...add_profession_to_users.php y ...add_profession_id_to_users.php)
+
+---...create_users_table.php
+
+
+---
+
+
+
+
+
+
+
+
 
 
 
