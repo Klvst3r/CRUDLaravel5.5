@@ -405,19 +405,114 @@ Yo puedo directamente puedo agregar la columna "profession_id" que va a ser una 
 
 ---...create_users_table.php
 
+public function up()
+    {
+        Schema::create('users', function (Blueprint $table) {
+            $table->increments('id'); //Integer unsigned - Autoincrement
+            $table->string('name'); //varchar
+            $table->string('email')->unique(); //varchar - Unique
+            $table->string('password'); 
+            $table->unsignedInteger('profession_id');
+            $table->rememberToken();
+            $table->timestamps();
+        });
+    }
+---
 
+De esta manera puedo yo ya no necesitar a las dos migraciones que agregan una columna y que agregan una clave de "profession_id" para una clave foranea:
+
+eliminamos:
+
+- 2022_06_04_230004_add_profession_to_users.php
+- 2022_06_07_154449_add_profession_id_to_users.php
+
+
+Regresar a la consola y reejecutar el comando:
+	> php artisan migrate:refresh
+
+
+Salida:
+>>
+	$ php artisan migrate:refresh
+	Migration not found: 2022_06_07_154449_add_profession_id_to_users 	<- Error por no encontrar el archivo
+	Rolling back: 2022_06_06_182413_create_professions_table
+	Rolled back:  2022_06_06_182413_create_professions_table
+	Migration not found: 2022_06_04_230004_add_profession_to_users 		<- Error por no encontrar el archivo
+	Rolling back: 2014_10_12_100000_create_password_resets_table
+	Rolled back:  2014_10_12_100000_create_password_resets_table
+	Rolling back: 2014_10_12_000000_create_users_table
+	Rolled back:  2014_10_12_000000_create_users_table
+	Migrating: 2014_10_12_000000_create_users_table
+	Migrated:  2014_10_12_000000_create_users_table
+	Migrating: 2014_10_12_100000_create_password_resets_table
+	Migrated:  2014_10_12_100000_create_password_resets_table
+	Migrating: 2022_06_06_182413_create_professions_table
+	Migrated:  2022_06_06_182413_create_professions_table
+
+
+Podemos ver que hay un par de errores, sin embargo Laravel vera la manera de regresar todas las migraciones y reejecutarlas nuevamante, y asi ahora regresamos a la Base de datos en la tabla 'users' y veremos que ahora tenemos la columna "profession_id" en la tabla de usuarios.
+
++----------------+------------------+------+-----+---------+----------------+
+| Field          | Type             | Null | Key | Default | Extra          |
++----------------+------------------+------+-----+---------+----------------+
+| id             | int(10) unsigned | NO   | PRI | NULL    | auto_increment |
+| name           | varchar(255)     | NO   |     | NULL    |                |
+| email          | varchar(255)     | NO   | UNI | NULL    |                |
+| password       | varchar(255)     | NO   |     | NULL    |                |
+| profession_id  | int(10) unsigned | NO   |     | NULL    |                |
+| remember_token | varchar(100)     | YES  |     | NULL    |                |
+| created_at     | timestamp        | YES  |     | NULL    |                |
+| updated_at     | timestamp        | YES  |     | NULL    |                |
++----------------+------------------+------+-----+---------+----------------+
+
+Por otro lado se tiene la tabla "professions" en la tabla "professions" para guardar todas las profesiones del sistema, sin embargo veremos que si agregamos nuevamente dos profesiones;
+
+---MySQL
+	INSERT INTO `professions` (`id`, `title`, `created_at`, `updated_at`) VALUES (NULL, 'Back-end developer', NULL, NULL), (NULL, 'Front-end developer', NULL, NULL);
+---
+
+Inspeccionando la tabla "professions".
+
++----+---------------------+------------+------------+
+| id | title               | created_at | updated_at |
++----+---------------------+------------+------------+
+|  1 | Back-end developer  | NULL       | NULL       |
+|  2 | Front-end developer | NULL       | NULL       |
++----+---------------------+------------+------------+
+
+Y ahora nos camos a la tabla de 'users' y agregamos un usuario, si bien es cierto que desde un administrador grafico como phpmyadmin agregar por ejemplo la siguiente informacion:
+
+name 'Klvst3r'
+email 'klvst3r@klvst3r.io'
+password 'clave'
+profession 1 o 2 <- Para hacer referencia a la profesion 1 o 2 de la tabla professions
+
+---
+	INSERT INTO `users` (`id`, `name`, `email`, `password`, `profession_id`, `remember_token`, `created_at`, `updated_at`) VALUES (NULL, 'Klvst3r', 'admin@klvst3r.io', 'clave', '1', NULL, NULL, NULL);
+---
+
+No tengo nada que me impida por ejemplo, que yo regrese aca y edite un usuario registrando un numero con el valor por ejemplo '50' en el campo profession_id, a pesar de que la profession 50 no existe en la base de datos. Yo puedo evitar que esto suceda y mantener la integridad de la base de datos si agrego una restricción de clave o llave foranea. Esto puedo hacerlo directamente con Laravel.
+
+Para ello vamos a regresar al editor y modificar la migracion "...create_users_table.php" para crear la tabla de usuarios y voy agregar entonces una restriccion de clave foranea-
+
+Para ello entonces voy a definir la columna como antes pero 
+
+---
+ public function up()
+    {
+        Schema::create('users', function (Blueprint $table) {
+            $table->increments('id'); //Integer unsigned - Autoincrement
+            $table->string('name'); //varchar
+            $table->string('email')->unique(); //varchar - Unique
+            $table->string('password'); 
+            $table->rememberToken();
+            $table->timestamps();
+        });
+    }
 ---
 
 
-
-
-
-
-
-
-
-
-
+11.10
 
 
 
