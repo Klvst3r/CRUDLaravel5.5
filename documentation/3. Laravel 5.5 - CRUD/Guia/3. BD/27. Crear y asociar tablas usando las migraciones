@@ -497,7 +497,8 @@ Para ello vamos a regresar al editor y modificar la migracion "...create_users_t
 
 Para ello entonces voy a definir la columna como antes pero 
 
----
+---...create_users_table
+
  public function up()
     {
         Schema::create('users', function (Blueprint $table) {
@@ -511,8 +512,436 @@ Para ello entonces voy a definir la columna como antes pero
     }
 ---
 
+  
+Se agrega una restricción de clave foranea, para ello se define la columna como antes pero se va a llmar al metodo foreing para decir que la columna "profession_id"  va a hacer referencia al campo "id" en la tabla "professions".
 
-11.10
+
+---...create_users_table
+
+ public function up()
+    {
+        Schema::create('users', function (Blueprint $table) {
+            $table->increments('id'); //Integer unsigned - Autoincrement
+
+            $table->unsignedInteger('profession_id');
+            $table->foreing('profession_id')->references('id')->on('professions');
+
+            $table->string('name'); //varchar
+            $table->string('email')->unique(); //varchar - Unique
+            $table->string('password'); 
+            $table->rememberToken();
+            $table->timestamps();
+        });
+    }
+---
+
+
+si yo hago esto puedo regresar a la consola y reejecutar
+
+Sin embargo ahora si se va a obtener un error.
+
+
+>>>
+
+Rolling back: 2022_06_06_182413_create_professions_table
+Rolled back:  2022_06_06_182413_create_professions_table
+Rolling back: 2014_10_12_100000_create_password_resets_table
+Rolled back:  2014_10_12_100000_create_password_resets_table
+Rolling back: 2014_10_12_000000_create_users_table
+Rolled back:  2014_10_12_000000_create_users_table
+Migration not found: 2022_06_07_154449_add_profession_id_to_users 	<-Migración ya no incluida
+Migration not found: 2022_06_04_230004_add_profession_to_users
+Migrating: 2014_10_12_000000_create_users_table
+Migrated:  2014_10_12_000000_create_users_table
+Migrating: 2014_10_12_100000_create_password_resets_table
+Migrated:  2014_10_12_100000_create_password_resets_table
+Migrating: 2022_06_06_182413_create_professions_table
+Migrated:  2022_06_06_182413_create_professions_table
+
+
+En este caso
+
+
+	> php artisan migrate:refresh
+
+
+>>>
+$ php artisan migrate:refresh
+Rolling back: 2022_06_06_182413_create_professions_table
+Rolled back:  2022_06_06_182413_create_professions_table
+Rolling back: 2014_10_12_100000_create_password_resets_table
+Rolled back:  2014_10_12_100000_create_password_resets_table
+Rolling back: 2014_10_12_000000_create_users_table
+Rolled back:  2014_10_12_000000_create_users_table
+Migration not found: 2022_06_07_154449_add_profession_id_to_users
+Migration not found: 2022_06_04_230004_add_profession_to_users
+
+In Macroable.php line 96:
+
+  Method foreing does not exist.
+
+Esto inidica que no puede modificar la tabla de usuarios para agregar esta restricción y esto ocurre por que esta tabla "professions" no existe es decir no ha sido creada, puesto que Laravel va a ejecutar la migración para crear la tabla de usuarios y luego es que va a ejecutar la migracion para crear la tabla de professions. Asi que si queremos evitar este eoror. tendo dos alternativas. 
+
+Primer Metodo
+-------------
+La primera seria modificar la marca de tiempo en el archivo de migración.
+
+	De 2014_10_12_000000_create_users_table.php
+
+Para que quede despues de la migración de "professions"
+
+	A 2022_07_06_180000_create_users_table.php
+
+donde la tabla de "profesions tiene la siguiente marca de tiempo:
+	
+	2022_06_06_182413_create_professions_table.php
+
+Si yo hago esto y regreso a la consola y reejecuto el comando:
+	> php artisan migrate:refresh
+
+Lamentablemente se sigue obteniendo un error.
+
+Esto sucede a veces cuando ocurre un error y ejecutamos una migración y las migraciones quedan en un estado inconsistente que Laravel no sabe como recuperarse.
+
+somo es nuestro caso, hay dos formas muy sencillas en que se puede arreglar el problema.
+
+La primera es 
+
+1. regresar con phpmyadmin en la base de datos y eliminar todas las tablas por completo. Habilitando la revisión de llaves foraneas.
+
+	Hecho esto podremos regresar a la consola y simplemente ejecutar 
+
+		> php artisan migrate 
+
+	Laravel va a crear las migraciones desde cero, como si nada hubiese pasado.
+
+
+2. Otra solución que esta disponible a partir de Laravel 5.5 es utilizar el comando 
+	> php artisan migrate:fresh
+
+	Este comando va a eliminar todas las tablas de la base de datos y va a comanzar desde cero, creando la tabla de migraciones y luego ejecutando cada migración una por una.
+
+	Este comando es muy util, pero de nuevo es muy destructivo, en este caso va a eliminar todas las tablas que hayan sido creadas con el sistema de migraciones o no. Por su puesto si tenemos temor de que Laravel vaya a eliminar todas las tablas del proyecto, esto va a suceder unicamente si se ejecutan estos comandos. 
+
+	De hecho si estamos en el entorno de producción y para ello, vamos a modificar el archivo de entorno para colocar que vamos a estar en un entorno de producción y no en un entorno local.
+
+	Editanto
+		.env	
+
+		Cambiando:
+
+			 APP_ENV=local
+
+			 por
+
+			 APP_ENV=production
+
+	 y ejecutamos:
+
+	 	> php artisan migrate:fresh
+
+	 Laravel va a preguntar si realemnte deseamos ejecutar este comando,
+
+	 En este caso concelamos.
+
+	 Asi que Laravel nos va a proteger un poco de que cometamos uno de estos errores si estamos directamente trabajando en el servidor de producción si estamos modificando la bas de datops del servidor de produccón. Por que antes de todo deberiamos crear un respaldo, independientemente de si estamos trabajando con un freamework o no. siempre es imporatne respaldar antes de haceer cualquier cambio en la base de datos de producion del proyecto especifico.
+
+
+Segundo Metodo
+-------------
+	 Otra solución por supuesto si no queremos cambiar la fecha de la migración para la tabla de usuarios, seria crear la tabla de "usuarios" sin la llave foranea "profession_id" luego crear en otra migración la tabla de "professions" y finalmente agregar una migración extra para entonces agregar esta columna y clave foranea. 
+
+
+
+	 Tomando considerachón que a este punto solo existen tres migraciones a ejecutar:
+
+	 - create_password_resets_table
+	 - create_users_table
+	 -create_professions_table
+
+
+
+
+Regresando 	 la migración de "...create_users_table.php" a:
+
+	De 2014_10_12_000000_create_users_table.php
+
+Posterior a ellos seria crear la tabla de usuarios sin la llave "profession_id"
+
+Cambiando de esto:
+
+---2014_10_12_000000_create_users_table.php
+
+	public function up()
+    {
+        Schema::create('users', function (Blueprint $table) {
+            $table->increments('id'); //Integer unsigned - Autoincrement
+
+            $table->unsignedInteger('profession_id');
+            $table->foreing('profession_id')->references('id')->on('professions');
+
+            $table->string('name'); //varchar
+            $table->string('email')->unique(); //varchar - Unique
+            $table->string('password'); 
+            $table->rememberToken();
+            $table->timestamps();
+        });
+    }
+---
+
+
+A esto:
+
+
+---2014_10_12_000000_create_users_table.php
+
+	public function up()
+    {
+        Schema::create('users', function (Blueprint $table) {
+            $table->increments('id'); //Integer unsigned - Autoincrement
+
+            
+            $table->string('name'); //varchar
+            $table->string('email')->unique(); //varchar - Unique
+            $table->string('password'); 
+            $table->rememberToken();
+            $table->timestamps();
+        });
+    }
+---
+
+
+Luego crear en otra migración la tabla de "professions"
+
+
+
+---2022_06_06_182413_create_professions_table.php
+
+	class CreateProfessionsTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('professions', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('title', 100);
+            $table->timestamps();
+        });
+    }
+---
+
+
+
+Y finalmente agregar una migración extra, para entonces agrgar esta columna y clave foranea:
+
+	>  
+
+>>>
+	$ php artisan make:migration add_profession_id_to_users
+	Created Migration: 2022_06_09_181531_add_profession_id_to_users
+
+Como ya hemos aprendido.
+
+--- 2022_06_09_181531_add_profession_id_to_users.php
+...
+	class AddProfessionIdToUsers extends Migration
+	{
+	    /**
+	     * Run the migrations.
+	     *
+	     * @return void
+	     */
+	    public function up()
+	    {
+	        Schema:table('users', function(Blueprint $table){
+
+	        	$table->unsignedInteger('profession_id');
+            	$table->foreing('profession_id')->references('id')->on('professions');
+
+	        });
+	    }
+
+	    /**
+	     * Reverse the migrations.
+	     *
+	     * @return void
+	     */
+	    public function down()
+	    {
+	        //
+	    }
+	}
+
+---
+
+
+en este caso sin embargo debemos tener cuidado de agregar entonces en el metodo down() para eliminar esta columna. y tambien la clave foranea
+
+--- 2022_06_09_181531_add_profession_id_to_users.php
+
+...
+public function down()
+    {
+        Schema:table('users', function(Blueprint $table){
+
+            $table->dropForeign(['profession_id']);
+            $table->dropColumn('profession_id');
+
+        });
+    }
+
+---
+
+
+eliminando priomero la clave foranea con el metodo dropForeing(), y luego eliminar la columna con el metodo dropcolumn(). 
+
+
+Hecho esto entonces podemos regresar a la consola y ejecutar:
+	> php migrate:fresh
+
+y tambien ahora puede ejecutarse el comando:
+	> php artisan migrate:refresh
+
+
+Para comprobar que se ha creado la tabla de "migrations" corretamente. 
+
+Como nota adicional.
+
+Si no necesitamos la funcionalidad de rollback ni de refresh solamente vamos a utilizar el metodo fresh en este caso. Ya no hace falta que se defina el codigo en el metodo down()
+
+---ad_profession_id_to_user
+
+ public function down()
+    {
+        /*Schema::table('users', function(Blueprint $table){
+
+            $table->dropForeign(['profession_id']);
+            $table->dropColumn('profession_id');
+
+        });*/
+    }
+
+---
+
+
+Coemntamos las lineas del metodo down()
+
+Regresamos a la consola y ejecutamos:
+	> php artisan migrate:refresh
+
+-vanios a obtener un error, nuevamante un error de restrccion de llave foranea puesto que estamos tratando de eliminar la tabla professions cuando tenemos una llave foranea asociada a esta tabla. Puesto que aca cuando se regreso esta migración para gregar la columna profession_id a users no se elimino la clave foranea en este caso la base de datos no esta dejando eliminar la tabla de profesiones, pero si nosotros ejecutamos el comando 
+
+	> php artisan migrate:fresh
+
+Puesto que Laravel simplemente va a eliminar todas las tablas, en este caso no importa si yo he definio o no el codigo dentro del metodo down()	 , asi que podemos excluir este codigo.
+
+Al escribir la logica en el metodo down es opcional si solamente vamos a utilizar el comando
+	php artisan migrate:fresh
+
+sin embargo es obligatorio si vamos a utilizar la funcionalidad de refresh y de rollback.
+
+Por ultimo vamos a inspeccionar la base de datos una vez mas
+
++--------------------------+
+| Tables_in_crudlaravel5_5 |
++--------------------------+
+| migrations               |
+| password_resets          |
+| professions              |
+| users                    |
++--------------------------+
+
+Podemos ver algo curioso
+
++------------+------------------+------+-----+---------+----------------+
+| Field      | Type             | Null | Key | Default | Extra          |
++------------+------------------+------+-----+---------+----------------+
+| id         | int(10) unsigned | NO   | PRI | NULL    | auto_increment |
+| title      | varchar(100)     | NO   |     | NULL    |                |
+| created_at | timestamp        | YES  |     | NULL    |                |
+| updated_at | timestamp        | YES  |     | NULL    |                |
++------------+------------------+------+-----+---------+----------------+
+
+
+Si agregamos ahora dos porfesiones como a la tabla professions:
+
+	- Back-end developer
+	- Front-end developer
+
+Y en la siguiente secciona veremos como podemos hacer esto con Laravel para evitar agregar estos datos manualmente una y otra vez.
+
+<<< MySQL	
+	
+	INSERT INTO `professions` (`id`, `title`, `created_at`, `updated_at`) VALUES (NULL, 'Back-end developer', NULL, NULL), (NULL, 'Front-end developer', NULL, NULL);
+
+
+Si ahora regresamos a la tabla de usuarios podemo ver que en la columna "profession_id" tiene una llave asociada a esta columna.
+
++-------------------+------------------+------+-----+---------+----------------+
+| Field          	| Type             | Null | Key | Default | Extra          |
++-------------------+------------------+------+-----+---------+----------------+
+| id             	| int(10) unsigned | NO   | PRI | NULL    | auto_increment |
+| name           	| varchar(255)     | NO   |     | NULL    |                |
+| email          	| varchar(255)     | NO   | UNI | NULL    |                |
+| password       	| varchar(255)     | NO   |     | NULL    |                |
+| remember_token 	| varchar(100)     | YES  |     | NULL    |                |
+| created_at     	| timestamp        | YES  |     | NULL    |                |
+| updated_at     	| timestamp        | YES  |     | NULL    |                |
+| profession_id(*)  | int(10) unsigned | NO   | MUL | NULL    |                |
++-------------------+------------------+------+-----+---------+----------------+
+
+En la parte inferior podemos ver el indice de esta tabla:
+
+Keyname							Type			Unique			column 			Cardinality 			Collation 			Null 			Comment
++---------------------------+----------------+-------------+---------------+-----------------------+-------------------+-----------+----------------+
+PRIMARY							BTREE			yes				id 					0 						A 				No
+Users_email_unique				BTREE			yes				email				0 						A 				No
+users_profession_id_foreign		BTREE			yes				profession_id		0 						A 				No
+
+
+Esto no solamente va a permitir crear una relación con la tabla de profesiones, si no que hara que las busquedas relacionadas a esta columna sean mas rapidas, 
+
+Por otro lado si yo ahora intento crear un usuario, entonces PHpmyAdmin en vez de poner una caja de texto, va a dar la opcin para seleccioanr de la tabla de profesiones.
+
+Tal como podemos ver ahora 
+
+Por ultimo si yo creo un usuario 
+
+name:	Klvst3r
+email: 	klvst3r@crudlaravel.io
+clave. 123
+
+>>>
+	INSERT INTO `users` (`id`, `name`, `email`, `password`, `remember_token`, `created_at`, `updated_at`, `profession_id`) VALUES (NULL, 'klvst3r', 'klvst3r@crudlaravel.io', '123', NULL, NULL, NULL, '1');
+
+Este mismo codigo puede utilizarse paa regisrar otro usuario con un email diferente pero en este caso vamos a colocar una profesion no valida, por ejemplo la profesion "50"
+Ejemplo no un registro no valido
+
+>>>
+
+	INSERT INTO `users` (`id`, `name`, `email`, `password`, `remember_token`, `created_at`, `updated_at`, `profession_id`) VALUES (NULL, 'klvst3r', 'klvst3r@crudlaravel.io', '123', NULL, NULL, NULL, '50');
+
+el 50 corresponde a la ultima columna que en este caso es profession_id y ahora presionamos "go". Vamos a notar lo siguiente:
+
+Notaresmo els iguiente error:
+
+-*-!!!
+Error
+SQL query:
+
+
+INSERT INTO `users` (`id`, `name`, `email`, `password`, `remember_token`, `created_at`, `updated_at`, `profession_id`) VALUES (NULL, 'klvst3r', 'klvst3r@crudlaravel.io', '123', NULL, NULL, NULL, '50')
+MySQL said: Documentation
+
+#1062 - Duplicate entry 'klvst3r@crudlaravel.io' for key 'users_email_unique'
+
+
+El error es por restricción de clave foranea en la base de datos, asi que de esta manera si mantiene la integridad de la base de datos, por supuesto esto es a nivel de sistemas, nosotros mas adelante vamos a neesitar, agregar validación y otros candados de seguridad, cuando trabajemos con el codigo de nuestra aplicación como tal. Eso se vera mas adelante. podemos hacer ejericios modificando tablas nuevas, utilizando el sistema de migraciones de Laravel.
+
 
 
 
