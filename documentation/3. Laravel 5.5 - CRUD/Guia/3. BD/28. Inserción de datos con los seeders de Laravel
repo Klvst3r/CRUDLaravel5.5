@@ -421,6 +421,18 @@ public function run()
 
 Entonces simplemente acomodamos:
 
+Consultamos antes:
+
+mysql> select * from professions;
++----+---------------------+------------+------------+
+| id | title               | created_at | updated_at |
++----+---------------------+------------+------------+
+|  1 | Back-end developer  | NULL       | NULL       |
+|  2 | Front-end developer | NULL       | NULL       |
++----+---------------------+------------+------------+
+
+
+
 ---
 public function run()
     {
@@ -433,14 +445,247 @@ public function run()
 
 De esta manera y de regtreso a la consola, entonces se va a a ejecutar nuevamente:
 	> php artisan db:seed
-
-
-	"ProfessionSeeder"
+	Seeding: ProfessionSeeder
 
 
 Hecho esto podemos, comprobar el resultado de varias maneras:
 
-- 	Una de ellas es regresamos al administrador de base de datos y podemos ver que tenemos una nueva profession:
+- 	Una de estas opciones es regresar al administrador de base de datos y podemos ver que tenemos una nueva profession:
+
+
+ select * from professions;
++----+---------------------+------------+------------+
+| id | title               | created_at | updated_at |
++----+---------------------+------------+------------+
+|  1 | Back-end developer  | NULL       | NULL       |
+|  2 | Front-end developer | NULL       | NULL       |
+|  3 | Back-end developer  | NULL       | NULL       |
++----+---------------------+------------+------------+
+3 rows in set (0.00 sec)
+
+
+
+Ahora lo que queremos es regresar al editor y agregar otra professión, por ejemplo "Front-end developer" o de "Desarrollador Front-end". Y otra professión para "diseñador Web" y asi sucesivamenmte.
+
+---ProfessionSeeder.php
+
+public function run()
+    {
+        DB::table('professions')->insert([
+            'title' => 'Back-end developer'
+        ]);
+
+
+        DB::table('professions')->insert([
+            'title' => 'Front-end developer'
+        ]);
+
+         DB::table('professions')->insert([
+            'title' => 'Web Designer'
+        ]);
+
+    }
+
+---
+
+
+Si hacemos esto y regresamos a la consola y reejecutamos el comando 
+
+	> php artisan db:seed
+	Seeding: ProfessionSeeder
+
+
+Podremos ver si regresamos al administrador de la base de datos, y podemos observar que tenemos varias profesiones repetidas:
+
+mysql> select * from professions;
++----+---------------------+------------+------------+
+| id | title               | created_at | updated_at |
++----+---------------------+------------+------------+
+|  1 | Back-end developer  | NULL       | NULL       |
+|  2 | Front-end developer | NULL       | NULL       |
+|  3 | Back-end developer  | NULL       | NULL       |
+|  4 | Back-end developer  | NULL       | NULL       |
+|  5 | Front-end developer | NULL       | NULL       |
+|  6 | Web Designer        | NULL       | NULL       |
++----+---------------------+------------+------------+
+
+
+
+Por cierto quizas seria adecuado agregar una restricción de base de datos en la tabla de profesiones para eviar que tengamos duplicadas las profesioens con el mismo nobre o mismo titulo. Mediante el metodo "unique".
+
+---2022_06_06_182413_create_professions_table.php
+...
+  public function up()
+    {
+        Schema::create('professions', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('title', 100)->unique();
+            $table->timestamps();
+        });
+    }
+...
+---
+
+Haciendo esto y regresamos a la consola para reejecutar:
+	> php artisan db:seed
+	Seeding: ProfessionSeeder
+
+
+No se tienen errores, por que no se ha reejecutado las migraciones, entonces lo que se puede hacer en este caso es reejecuctar las migraciones:
+	> php artisan migrate:fresh
+	Dropped all tables successfully.
+	Migration table created successfully.
+	Migrating: 2014_10_12_100000_create_password_resets_table
+	Migrated:  2014_10_12_100000_create_password_resets_table
+	Migrating: 2014_10_12_100000_create_users_table
+	Migrated:  2014_10_12_100000_create_users_table
+	Migrating: 2022_06_06_182413_create_professions_table
+	Migrated:  2022_06_06_182413_create_professions_table
+	Migrating: 2022_06_09_210550_add_profession_id_to_users
+	Migrated:  2022_06_09_210550_add_profession_id_to_users
+
+
+
+Y ahora revisar la estructura de la base de datos para ver que la tabla de profesiones esta vacia.
+
+mysql> select * from professions;
+Empty set (0.00 sec)
+
+
+
+
+En este punto, entonces podemos regresar a ejecutar el comando
+	> php artisan db:seed
+	Seeding: ProfessionSeeder
+
+
+Para reejecutar los seeders
+
+mysql> select * from professions;
++----+---------------------+------------+------------+
+| id | title               | created_at | updated_at |
++----+---------------------+------------+------------+
+|  1 | Back-end developer  | NULL       | NULL       |
+|  2 | Front-end developer | NULL       | NULL       |
+|  3 | Web Designer        | NULL       | NULL       |
++----+---------------------+------------+------------+
+
+
+De esta manera entonces, crear los primeros registros en la tabla "professions" de forma muy sencilla. Ahora notemos que si volvemos a ejecutar 
+
+	> php artisan db:seed
+
+	Seeding: ProfessionSeeder
+
+	In Connection.php line 664:
+
+	  SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'Back-end developer' for key 'professions_title_unique' (SQL: insert into `profession
+	  s` (`title`) values (Back-end developer))
+
+
+	In Connection.php line 458:
+
+	  SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'Back-end developer' for key 'professions_title_unique'
+
+
+Ahora se produce un error por que se tiene una entrada duplicada, en esto caso en la tabla de "professions":
+	>>>
+	...SQL: insert into `professions` (`title`) values (Back-end developer)
+
+
+Y esto es por que al reejecutar las migraciones entonces se creo la restriccion y no podemos tener 2 profesiones con el mismo nombre o el mismo titulo. Asi que si quiero eliminar todas las profesiones de la base de datos antes de crearlas nuevamente.
+
+Para solucionar este problema puedo utilizar el metodo "truncate".
+
+
+---ProfessionSeeder.php
+    public function run()
+    {
+        
+        DB::table('professions')->truncate(); 
+
+
+        DB::table('professions')->insert([
+            'title' => 'Back-end developer'
+        ]);
+
+
+        DB::table('professions')->insert([
+            'title' => 'Front-end developer'
+        ]);
+
+        DB::table('professions')->insert([
+            'title' => 'Web Designer'
+        ]);
+    }
+
+---
+
+En este caso notemos que se utiliza el "facade" DB luego "::" al metodo "table" y pasando el nombre de la tabla como primer argumento y luego entonces vamos a encadenar el metodo "truncate". Este metodo mi va a permitir vaciar la tabla.
+
+asi que si regtresarmos, a la consola y volvemos a ejecuar
+
+
+mysql> select * from professions;
++----+---------------------+------------+------------+
+| id | title               | created_at | updated_at |
++----+---------------------+------------+------------+
+|  1 | Back-end developer  | NULL       | NULL       |
+|  2 | Front-end developer | NULL       | NULL       |
+|  3 | Web Designer        | NULL       | NULL       |
++----+---------------------+------------+------------+
+
+
+	> php artisan db:seed
+
+
+	Seeding: ProfessionSeeder
+
+	In Connection.php line 664:
+
+	  SQLSTATE[42000]: Syntax error or access violation: 1701 Cannot truncate a table referenced in a foreign key constraint (`crudlaravel5_5`.`users`, CONSTRAIN
+	  T `users_profession_id_foreign`) (SQL: truncate `professions`)
+
+
+	In Connection.php line 458:
+
+	  SQLSTATE[42000]: Syntax error or access violation: 1701 Cannot truncate a table referenced in a foreign key constraint (`crudlaravel5_5`.`users`, CONSTRAIN
+	  T `users_profession_id_foreign`)
+
+
+
+Ahora en este caso vamos a recibir un nuevo error, esto no quiere decir que mi codigo este mal escrito, si no que la table de profesiones tiene una restricción de clave foranea.Asociada en este caso en el campo "profession_id" en la tabla de usuarios. 
+
+Asi que yo no puedo vaciar esta tabla de buenas a primeras a menos que desactive la revisión de llaves foraneas, pero de todas formas vamos  regresar al editor y se va a eliminar en:
+
+Esta restricción de llave foranea
+
+---2022_06_09_210550_add_profession_id_to_users.php
+
+public function up()
+    {
+        Schema::table('users', function(Blueprint $table){
+
+                $table->unsignedInteger('profession_id');
+                
+
+                //$table->foreign('profession_id')->references('id')->on('professions');
+
+            });
+    }
+
+
+---
+
+
+
+
+
+
+
+
+
+
 
 
 
