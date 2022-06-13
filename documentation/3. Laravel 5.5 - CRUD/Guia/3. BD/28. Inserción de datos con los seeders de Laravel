@@ -179,21 +179,268 @@ En caso de que quieras insertar usuarios de esta manera, recuerda encriptar las 
 Practicas
 =========
 
+Anteriormente creamos la base de la Base de datos, en esta sección vamos a comenzar a agregar los datos y para ello vamos a utilizar un nuevo componente llamado "seeders".
+
+En el ejemplo anterior para agregar algunas profesiones utilizamos phpmyadmin y bien desde la consola de MySQL o bien un administrador de base de datos a elegir. Lo importante es que se esta agrgegando la iformación o datos manualmente. Cada vez que se ejecute comandos como migrate:refresh o migrate:fresh perdamos dichos datos. Asi como estamos ejecutando un comando para crear las tablas, lo ideal es que se ejecute un comando para cargar los datos de prueba y no los perdamos cada vez que  necesitemos restaurar la base de datos, ademas estos datos estan como codigos dentro de nuestro proyecto cualquier persona que clone el repositori, va no solamente a reproducir la base de datos si no tambien cargar algunos datos de prueba.
+
+Para esto vamos a utilizar los "seeders" de Laravel y vamos a ejecutar el primero de ellos con el comando:
+	> php artisan make:seeder <nombre_seeder>
+
+Por ejemplo si queremos un "seeder"	para agregar profesiones, vamos a llamarla
+	> php artisan make:seeder ProfessionSeeder   
+
+En el editor podemos ver que tenemos una nueva clase, y de nuevo esta dando solo un caparazon donde uno puede comenzar a escribir el codigo.Esn este caso vamos a escribir el codigo dentro del metodo "run".
 
 
+--- ProfessionSeeder.php
+
+<?php
+
+use Illuminate\Database\Seeder;
+
+class ProfessionSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
+    public function run()
+    {
+        //
+    }
+}
 
 
+---
 
 
+Asiq ue vamos a utuilizar nuevamente un de los Facase de Laravel, em este caso al Facade DB, se puede utilizar el nombre de espacio completo, directamente desde aca desde el metodo "run": 
 
 
+---ProfessionSeeder
+
+	public function run()
+    {
+		Illuminate\Support\Facades\DB::;        
+    }
+---
 
 
+O se puede importar el nombre de espacio al principio del archivo. De la siguiente manera:
+
+Importando el nameespace:
 
 
+	use Illuminate\Support\Facades\DB;        
+
+---ProfessionSeeder
+
+<?php
+
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;        
+
+class ProfessionSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
+    public function run()
+    {
+        DB::
+    }
+}
+
+---
+
+Y al hacer esto podemos referirnos a esta clase simplemente como "DB::", luego se va a allamar al metdo "table" y entonces se va a colocar el nombre de la tabla con la que queremos interactuar, en este caso es la tabla "professions".
 
 
+---ProfessionSeeder
 
+<?php
+
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;        
+
+class ProfessionSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
+    public function run()
+    {
+        DB::table('professions')->insert([
+        	'name' => 'Back-end developer'
+        ]);
+    }
+}
+
+---
+
+Este metodo va a aceptar un array asociativo que  va a respresentar las columnas o atributos o valores que se quieren guardar en esta tabla de professiones, em este caso se va a etener una sola columna llamada "nombre"  y como valores se va a tener la profesion por ejemplo "Back-end developer" o "Desarrollador "Back-end. 
+
+Hecho el codigo anterior necesitamos registrar este seeder y para ello vamos a utilizar la clase Database Seeder que ya viene incluida en el proyecto base de Laravel "DatabaseSeeder"
+
+Como podemos ver en este ejemplo vamos a llamar al metodo "call" y luego como primer argumento vamos a pasar el nombre de nuestra clase en este caso "ProfessionSeeder"
+
+
+--- DatabaseSeeder.php
+
+<?php
+
+use Illuminate\Database\Seeder;
+
+class DatabaseSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
+    public function run()
+    {
+        // $this->call(UsersTableSeeder::class);
+
+        $this->call(ProfessionSeeder::class);
+    }
+}
+
+---
+
+Se esta utilizando esta sintaxis de class
+	$this->call(ProfessionSeeder::class);
+
+
+Y esto simplemente va a dar el  nombre de la clase.
+
+Para verificar esto:
+
+Se puede demostrar de la siguiente manera:
+
+---DatabaseSeeder.php
+
+public function run()
+    {
+
+
+    	dd(ProfessionSeeder::class);
+
+        // $this->call(UsersTableSeeder::class);
+
+        $this->call(ProfessionSeeder::class);
+    }
+---
+
+
+Haciendo uso del metodo "dd" para que se pueda ver el resultado de utilizar esta sintaxis.
+	dd(ProfessionSeeder::class);
+
+Y ahora si regresamos a la consola podemos ejecutar:	
+	> php artisan db:seed	
+	"ProfessionSeeder"
+
+En este caso solamente vamos a ver el nombre de la clase por que en este caso estamos utilizando  "dd". Podemos ver que el resultado es.
+
+	"ProfessionSeeder"
+
+Lo que quiere decir es que en lugar de utilizar esta sintaxis de class, tambien podria simplemente pasar el nombre de la clase y es equivalente. La diferencia de utilzar class es que si se comete un error, notese que la cadena de texto no va avisar que se tiene un error.
+
+Pero si cometemos un error en este caso, entonces es posible que reciba una advertencia del editor. 	
+
+	$this->call(ProfessionSeeder::class);
+
+Por ejemplo aca sabemos que la clase no esta definida, teniendo claro este, podemos eliminar el metodo de ejemplo "dd". 
+
+
+---DatabaseSeeder.php
+
+public function run()
+    {
+
+        // $this->call(UsersTableSeeder::class);
+
+        $this->call(ProfessionSeeder::class);
+    }
+---
+
+De regreso a la consola ejecutamos:
+	> php artisan db:seed
+
+$ php artisan db:seed
+"ProfessionSeeder"
+
+Puede uriginar un error.
+>>>
+
+[Illuminate\Database\QueryException]
+SQLSTATE[42S22]: Column not found: 1054 Unknown column 'name' in 'field list' (SQL: insert into 'professions' ('name') values (Desarrollador back-end)
+
+[PDOException]
+SQLSTATE [42S22]; Column not found: 1054 Unknown column 'name' in 'field list'
+
+
+Y esto es por que al parecer el nombre de la columna "name" no fue encontrada en la tabla de profesiones, y con el codigo SQL que se intento ejecutar y en este caso fallo por que la columna 'name' no existe en esta tabla. Y esto es por que cuando uno creo la tabla de profesiones 
+Mediante:
+	La migracion: 2022_06_06_182413_create_professions_table.php
+
+
+se le coloco, el nombre a laa columna 'title' en lugar de 'name'
+
+
+---2022_06_06_182413_create_professions_table.php
+  public function up()
+    {
+        Schema::create('professions', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('title', 100); //Este es el nombre de la columna registrado
+            $table->timestamps();
+        });
+    }
+
+---
+
+
+Lo que quiere decir es que  en este caso necesitamos acomodar el "seeder" a menos que quieramos renombrar la columna, 
+
+---	ProfessionSeeder.php
+
+public function run()
+    {
+        DB::table('professions')->insert([
+            'name' => 'Back-end developer'
+        ]);
+    }
+	
+---
+
+Entonces simplemente acomodamos:
+
+---
+public function run()
+    {
+        DB::table('professions')->insert([
+            'title' => 'Back-end developer'
+        ]);
+    }
+
+---
+
+De esta manera y de regtreso a la consola, entonces se va a a ejecutar nuevamente:
+	> php artisan db:seed
+
+
+	"ProfessionSeeder"
+
+
+Hecho esto podemos, comprobar el resultado de varias maneras:
+
+- 	Una de ellas es regresamos al administrador de base de datos y podemos ver que tenemos una nueva profession:
 
 
 
