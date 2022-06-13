@@ -895,11 +895,145 @@ Utilizando DB:statement y la sentencia va a ser: "SET FEREIGN_KEY_CHECKS = 0", c
 ---
 
 
-Con esto puedo regresar a la consola y entonces. Ahora podemos ejecutar el siguiente comando sin singun problema
+Con esto puedo regresar a la consola y entonces. Ahora podemos ejecutar el siguiente comando sin singun problema tantas veces como se requiera
 	> php artisan db:seed
+	Seeding: ProfessionSeeder
 
 
+De regreso a la base de datos podemos explorar la tabla de profesiones y ver que siempre tengo tres profesiones:
+
+mysql> select * from professions;
++----+---------------------+------------+------------+
+| id | title               | created_at | updated_at |
++----+---------------------+------------+------------+
+|  1 | Back-end developer  | NULL       | NULL       |
+|  2 | Front-end developer | NULL       | NULL       |
+|  3 | Web Designer        | NULL       | NULL       |
++----+---------------------+------------+------------+
+
+
+
+
+quiza lo que interese reactivar el proceso de revisión de llaves foraneas, una vez que haya sido eliminada a tabla,  
+
+---ProfessionSeeder.php
+    public function run()
+    {
+
+    	DB::statement('SET FOREIGN_KEY_CHECKS = 0');
+        
+        DB::table('professions')->truncate(); 
+
+        DB::statement('SET FOREIGN_KEY_CHECKS = 1');
+
+        DB::table('professions')->insert([
+            'title' => 'Back-end developer'
+        ]);
+
+        DB::table('professions')->insert([
+            'title' => 'Front-end developer'
+        ]);
+
+        DB::table('professions')->insert([
+            'title' => 'Web Designer'
+        ]);
+    }
+
+---
+
+
+Quizas interese eliminar varias tablas, en ese caso entonces podemos mover este codigo a nuestro seeder general que esta en: "DatabaseSeeder"
+
+
+--- DatabaseSeeder.php
+
+ public function run()
+    {
+        
+    	DB::statement('SET FOREIGN_KEY_CHECKS = 0');
+        
+        DB::table('professions')->truncate();
+
+        DB::statement('SET FOREIGN_KEY_CHECKS = 1');
+
+
+        //dd(ProfessionSeeder::class);
+
+        // $this->call(UsersTableSeeder::class);
+
+        $this->call(ProfessionSeeder::class);
+    }
+
+---
+
+Con esto podriamos ser capaces entonces de regresar a la consola y ejecutar, el siguiente comando tantas veces como queramos:
+
+	> php artisan db:seed
+	Seeding: ProfessionSeeder
+
+
+
+mysql> select * from professions;
++----+---------------------+------------+------------+
+| id | title               | created_at | updated_at |
++----+---------------------+------------+------------+
+|  1 | Back-end developer  | NULL       | NULL       |
+|  2 | Front-end developer | NULL       | NULL       |
+|  3 | Web Designer        | NULL       | NULL       |
++----+---------------------+------------+------------+
+
+
+Obteniendo siempre los mismos resultados sin ninguna complicación. Como a nosostros nos gusta trabajar de forma ordenada vamos a extraer el codigo
+
+---
+	DB::statement('SET FOREIGN_KEY_CHECKS = 0');
+       
+    DB::table('professions')->truncate();
+
+    DB::statement('SET FOREIGN_KEY_CHECKS = 1');
+
+---
 	
+A un metodo diferente con la ayuda del editor 
+
+Extract method
+
+Llamaresmoa a este "truncateTables", Pero queremos que este metodo reciba un array con los nombres de las tablas que queremos vaciar, en este caso entonces vamos a colocar un nuevo parametro llamado "$tables" que debe ser un array; en este caso no se le va a dar valor por defecto por que es obligatorio y entonces se coloca el codigo para vaciar las tablas dentro de un foreach de la siguiente forma:
+
+---DatabaseSeeder.php
+...
+   public function run()
+    {
+
+    	$this->truncateTables([
+	      'professions'
+    	]);
+        
+        //dd(ProfessionSeeder::class);
+
+        // $this->call(UsersTableSeeder::class);
+
+        $this->call(ProfessionSeeder::class);
+    }
+
+
+     protected function truncateTables(array $tables)
+    {
+        DB::statement('SET FOREIGN_KEY_CHECKS = 0');
+        
+        DB::table('professions')->truncate();
+
+        DB::statement('SET FOREIGN_KEY_CHECKS = 1');
+    }
+
+...
+---
+
+
+Min 10.14
+
+
+
 
 
 
@@ -992,3 +1126,180 @@ gn_key_checks» (SQL: SET FOREIGN_KEY_CHECKS = 0;) " eso al ejecutar "php artisa
 * pero cambiando DB::statement('TRUNCATE TABLE professions CASCADE;'); se soluciono
 
 * Cuando utilizas esta opción, cuando se va a borrar una profesión, ¿Primero se borran todos los usuarios que tienen esa profesión? ¿Manteniendo así la integridad de la base de datos?
+
+
+
+
+Referencias:
+============
+
+
+Cómo mejorar la apariencia y funcionalidad de PhpStorm
+
+Vamos a enseñar cómo configurar PhpStorm para trabajar en tus proyectos con Laravel y Vue.js.
+
+
+¿Qué IDE usas?
+
+Comencemos con el IDE: en casi todos los cursos de PHP y Laravel utilizo PhpStorm
+
+PhpStorm es un IDE muy completo y ya trae todo lo que necesitas para trabajar con PHP, sin embargo necesitarás realizar varios pasos extra para que luzca como la imagen debajo y además soporte la sintaxis del sistema de plantillas de Laravel (Blade) y los componentes de Vue.js.
+
+Alternativas a PhpStorm
+
+PhpStorm no es gratis, Jet Brains lo ofrece a cambio de una membresía mensual o anual que te permitirá obtener el software con sus respectivas actualizaciones. Así que cuando yo no tenía la posibilidad de comprarlo usaba NetBeans IDE para PHP o Aptana 3 que son excelentes IDEs y son gratuitos.
+
+PhpStorm también ofrece una licencia para estudiantes universitarios, si quieres usar el IDE para fines educativos (no comerciales).
+
+También puedes descargar y utilizar el editor Sublime Text el cuál no es un IDE, lo que quiere decir que no ofrece el mismo auto completado de PhpStorm, Netbeans o Aptana, aunque puedes configurarlo para emular las características de dichos IDEs guiándote con el excelente post de Matt Stauffer que explica cómo configurar Sublime para desarrolladores de PHP.
+
+Sea cual sea la opción que elijas por favor elige una opción legal, descargar programas piratas no sólo daña nuestra industria, sino que puede dañar tu computador y hacerte perder horas y horas que puedes aprovechar estudiando, trabajando o configurando tu editor. Usar software legal te da actualizaciones automáticas e incluso soporte si tienes un problema. Te recomiendo además leer cuestión de actitud.
+Plugins para PhpStorm
+
+Una vez instalado el IDE, te recomiendo que instales y actives los siguientes plugins:
+
+    Blade Support
+    Material Theme UI
+    vue-for-idea
+    SASS Support
+
+Pasos para instalar los plugins:
+
+    Ve al menú principal de PhpStorm
+    Luego: preferences
+    Dentro busca la opción plugins
+    Verás la lista de plugins que ya vienen por defecto
+    Usa el buscador para filtrar la opción que buscas
+    Si no la consigues entonces presiona «Search in repositories» (ver imagen debajo)
+    Asegúrate que el plugin que quieras esté activado
+    Desactiva los plugins que no necesitas.
+    Reinicia el IDE.
+
+
+
+Una vez que instales y habilites todos los plugins recuerda reiniciar el IDE para que los cambios tengan efecto.
+Tema para PhpStorm
+
+Como puedes ver en la lista de plugins instalamos Material Theme UI,  este es el tema de colores para el IDE como tal. Sin embargo yo no uso Material Theme para el editor (es decir para el código) porque me parece que los colores son muy brillantes.
+
+Un tema que me gusta mucho y he usado bastante en los videos es Spacegray, si quieres usarlo has lo siguiente:
+
+    Sigue las instrucciones de instalación desde el repositorio del tema Spacegray, para tu sistema operativo.
+    Luego de instalar el tema, reinicia el IDE.
+    Ve al menú principal de PhpStorm
+    Luego: preferences
+    Ahora ve a la opción Colors & Fonts dentro de Editor y selecciona el tema.
+    Luego selecciona «Save As…» y cámbiale el nombre a algo como «Spacegray custom», esto creará una copia del tema
+    Reinicia el IDE.
+
+Normalizar color de fondo de la barra lateral y del editor de texto
+
+Luego de instalar Material Theme UI y el tema Spacegray notarás que el color de fondo de la barra lateral y del editor de texto no son los mismos, si esto te quita el sueño como a mí, puedes arreglarlo de dos formas:
+
+    Instala el plugin Color Ide que hará que la barra lateral de PhpStorm sea del mismo color del fondo del editor de texto (en este caso el color del tema Spacegray).
+    Ve a General en la opción de Fonts & Color en preferencias y cambia el color de fondo (background) en las opciones «Editor / Gutter background» y «Text / Default Text» al color hexadecimal #263238 que es el color de Material Theme UI. Esta es la opción que yo elegí, 
+
+
+
+
+Si recibiera 1 dólar cada vez que alguien me pregunta qué editor, fuente o tema uso, no necesitaría tener planes pagos en Styde para mantener el proyecto y pagar la renta. Pero como eso no va a pasar, permíteme contestarte con este post, donde además te enseñaré cómo configurar PhpStorm para trabajar en tus proyectos con Laravel y Vue.js.
+
+¿Qué IDE usas?
+
+Comencemos con el IDE: en casi todos los cursos de PHP y Laravel utilizo PhpStorm, excepto en el curso de Programación orientada a objetos donde utilicé Sublime Text.
+
+PhpStorm es un IDE muy completo y ya trae todo lo que necesitas para trabajar con PHP, sin embargo necesitarás realizar varios pasos extra para que luzca como la imagen debajo y además soporte la sintaxis del sistema de plantillas de Laravel (Blade) y los componentes de Vue.js.
+
+Captura del proyecto «Crea una aplicación con Laravel 5.3»
+Alternativas a PhpStorm
+
+PhpStorm no es gratis, Jet Brains lo ofrece a cambio de una membresía mensual o anual que te permitirá obtener el software con sus respectivas actualizaciones. Así que cuando yo no tenía la posibilidad de comprarlo usaba NetBeans IDE para PHP o Aptana 3 que son excelentes IDEs y son gratuitos.
+
+PhpStorm también ofrece una licencia para estudiantes universitarios, si quieres usar el IDE para fines educativos (no comerciales).
+
+También puedes descargar y utilizar el editor Sublime Text el cuál no es un IDE, lo que quiere decir que no ofrece el mismo auto completado de PhpStorm, Netbeans o Aptana, aunque puedes configurarlo para emular las características de dichos IDEs guiándote con el excelente post de Matt Stauffer que explica cómo configurar Sublime para desarrolladores de PHP.
+
+Sea cual sea la opción que elijas por favor elige una opción legal, descargar programas piratas no sólo daña nuestra industria, sino que puede dañar tu computador y hacerte perder horas y horas que puedes aprovechar estudiando, trabajando o configurando tu editor. Usar software legal te da actualizaciones automáticas e incluso soporte si tienes un problema. Te recomiendo además leer cuestión de actitud.
+Plugins para PhpStorm
+
+Una vez instalado el IDE, te recomiendo que instales y actives los siguientes plugins:
+
+    Blade Support
+    Material Theme UI
+    vue-for-idea
+    SASS Support
+
+Pasos para instalar los plugins:
+
+    Ve al menú principal de PhpStorm
+    Luego: preferences
+    Dentro busca la opción plugins
+    Verás la lista de plugins que ya vienen por defecto
+    Usa el buscador para filtrar la opción que buscas
+    Si no la consigues entonces presiona «Search in repositories» (ver imagen debajo)
+    Asegúrate que el plugin que quieras esté activado
+    Desactiva los plugins que no necesitas.
+    Reinicia el IDE.
+
+Una vez que instales y habilites todos los plugins recuerda reiniciar el IDE para que los cambios tengan efecto.
+Tema para PhpStorm
+
+Como puedes ver en la lista de plugins instalamos Material Theme UI,  este es el tema de colores para el IDE como tal. Sin embargo yo no uso Material Theme para el editor (es decir para el código) porque me parece que los colores son muy brillantes.
+
+Un tema que me gusta mucho y he usado bastante en los videos es Spacegray, si quieres usarlo has lo siguiente:
+
+    Sigue las instrucciones de instalación desde el repositorio del tema Spacegray, para tu sistema operativo.
+    Luego de instalar el tema, reinicia el IDE.
+    Ve al menú principal de PhpStorm
+    Luego: preferences
+    Ahora ve a la opción Colors & Fonts dentro de Editor y selecciona el tema.
+    Luego selecciona «Save As…» y cámbiale el nombre a algo como «Spacegray custom», esto creará una copia del tema
+    Reinicia el IDE.
+
+Normalizar color de fondo de la barra lateral y del editor de texto
+
+Luego de instalar Material Theme UI y el tema Spacegray notarás que el color de fondo de la barra lateral y del editor de texto no son los mismos, si esto te quita el sueño como a mí, puedes arreglarlo de dos formas:
+
+    Instala el plugin Color Ide que hará que la barra lateral de PhpStorm sea del mismo color del fondo del editor de texto (en este caso el color del tema Spacegray).
+    Ve a General en la opción de Fonts & Color en preferencias y cambia el color de fondo (background) en las opciones «Editor / Gutter background» y «Text / Default Text» al color hexadecimal #263238 que es el color de Material Theme UI. Esta es la opción que yo elegí, como puedes ver en la imagen debajo:
+
+Si eliges la opción 2 asegúrate de no instalar o deshabitar Color Ide. Además no olvides reiniciar el IDE en caso de que haga falta.
+Fuente para PhpStorm
+
+Para programar necesitas una fuente que sea monospaced, esto quiere decir que cada carácter va a ocupar el mismo espacio, sin importar si es una «i» o una «m» y por supuesto hay varias opciones que puedes elegir.
+
+Laravel News publicó un artículo sobre las 5 fuentes principales para programar. De ellas yo utilizo Menlo (creo que ya viene por defecto en OSX) y hace poco instalé «Fira Code» con la opción de ligaduras de fuente que hace que símbolos en PHP como «->» o «!=» luzcan como un solo carácter.
+
+Pasos para instalar la fuente:
+
+    Busca la fuente que quieras en Google e instálala para tu sistema operativo
+    Reinicia el IDE
+    Ve al menú principal de PhpStorm
+    Luego: preferences
+    Ahora ve a la opción Fonts dentro de Fonts & Colors y selecciona la fuente que quieras.
+    Si estás usando una fuente como Fira Code, asegúrate de marcar la opción «Enable font ligatures» (ver imagen debajo)
+
+El tamaño de fuente e interlineado depende del tamaño de tu monitor y tus preferencias personales, yo creo que un interlineado de al menos 1.2 con un máximo de 1.6 es ideal. La fuente puede ser de tamaño 14 a 20 pero de nuevo depende de tus preferencias. Yo uso una fuente grande para que el código se pueda ver en los videos aunque no los veas en pantalla completa.
+Habilitar el formato en los archivos .vue
+
+Aunque instales el plugin vue-for-idea, es posible que los archivos .vue (que sirven para programar componentes de Vue.js) no tengan formato. En ese caso:
+
+    Ve de nuevo a preferencias
+    Busca la opción «File Types» dentro de Editor
+    Selecciona «HTML» en «Recognized File Types»
+    Revisa la lista «Registered Patterns» que aparecerá debajo, debe tener *.htm, *.html y otras.
+    Presiona en el icono + debajo de la lista de Registered Patterns y agrega *.vue.
+    Presiona «Apply»
+
+Desaparecer los menus que trae PhpStorm
+
+Los programadores nos distraemos muy fácilmente y PhpStorm por defecto no ayuda mucho en este tema. 
+
+Para ocultarlas ve a la opción «View» del menú y desmarca las opciones «Toolbar», «Toolbar buttons», etc.
+
+También puedes eliminar las pestañas desde preferencias, busca «Tabs» en el buscador y en «Placement» selecciona «None»:
+
+Ahora busca la opción Web browser y deshabilita «Show browser popup in the editor» y también busca y deshabilita los «breadcrumbs» buscando «Breadcrumbs» y luego desmarcando la opción «Show breadcrumbs».
+Conclusión
+
+Con todos estos cambios obtendrás un IDE no solo bastante completo sino visualmente atractivo y ya estarás casi listo para desarrollar aplicaciones increíbles con Laravel.
