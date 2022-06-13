@@ -678,14 +678,228 @@ public function up()
 ---
 
 
+Hecho esto entonces en la consola y reejecutar:
+	> php artisan migrate:fresh
+
+	Dropped all tables successfully.
+	Migration table created successfully.
+	Migrating: 2014_10_12_100000_create_password_resets_table
+	Migrated:  2014_10_12_100000_create_password_resets_table
+	Migrating: 2014_10_12_100000_create_users_table
+	Migrated:  2014_10_12_100000_create_users_table
+	Migrating: 2022_06_06_182413_create_professions_table
+	Migrated:  2022_06_06_182413_create_professions_table
+	Migrating: 2022_06_09_210550_add_profession_id_to_users
+	Migrated:  2022_06_09_210550_add_profession_id_to_users
+
+
+
+Para eliminar todas las tablas y reejecutar las migraciones.	
+>>>
+	mysql> select * from professions;
+	Empty set (0.00 sec)
+
+
+En este caso nuevamente vamos a ejecutar el comando:
+	> php artisan db:seed   
+	Seeding: ProfessionSeeder
+
+
+Si revisamos en la tabla de profesioens el contenido;
+
+
+mysql> select * from professions;
+Empty set (0.00 sec)
+
+
+Explorando la tabla de profesiones, 
+
+
+mysql> select * from professions;
++----+---------------------+------------+------------+
+| id | title               | created_at | updated_at |
++----+---------------------+------------+------------+
+|  1 | Back-end developer  | NULL       | NULL       |
+|  2 | Front-end developer | NULL       | NULL       |
+|  3 | Web Designer        | NULL       | NULL       |
++----+---------------------+------------+------------+
+
+
+Podremos ver que tenemos nuestras tres profesioens aca y que ahora podemos reejecutar este comando cuantas veces se quiera.
+	> php artisan bd:seed
+
+
+Y siempre se va a tener las mismas tres profesiones;
+
+mysql> select * from professions;
++----+---------------------+------------+------------+
+| id | title               | created_at | updated_at |
++----+---------------------+------------+------------+
+|  1 | Back-end developer  | NULL       | NULL       |
+|  2 | Front-end developer | NULL       | NULL       |
+|  3 | Web Designer        | NULL       | NULL       |
++----+---------------------+------------+------------+
+3 rows in set (0.00 sec)
+
+
+Que se estan agregando en "ProfessionSeeder", puesto que se esta vaciando la tabla antes de agregar las profesiones en:
+
+
+
+---ProfessionSeeder.php
+    public function run()
+    {
+        
+        DB::table('professions')->truncate(); 
+
+
+        DB::table('professions')->insert([
+            'title' => 'Back-end developer'
+        ]);
+
+
+        DB::table('professions')->insert([
+            'title' => 'Front-end developer'
+        ]);
+
+        DB::table('professions')->insert([
+            'title' => 'Web Designer'
+        ]);
+    }
+
+---
+
+De regreso a la migración: "2022_06_09_210550_add_profession_id_to_users.php". si yo restauro la linea donde se esta definiendo la clave foranea.
+
+
+---2022_06_09_210550_add_profession_id_to_users.php
+
+public function up()
+    {
+        Schema::table('users', function(Blueprint $table){
+
+                $table->unsignedInteger('profession_id');
+                
+
+                $table->foreign('profession_id')->references('id')->on('professions');
+
+            });
+    }
+
+
+---
+
+
+Por cierto se va a aproveechar para descomentar las lineas del metodo "down"
+
+
+
+---2022_06_09_210550_add_profession_id_to_users.php
+...	
+	class AddProfessionIdToUsers extends Migration
+	{
+	    /**
+	     * Run the migrations.
+	     *
+	     * @return void
+	     */
+	    public function up()
+	    {
+	        Schema::table('users', function(Blueprint $table){
+
+	                $table->unsignedInteger('profession_id');
+	                //$table->foreign('profession_id')->references('id')->on('professions');
+
+	            });
+	    }
+
+	    /**
+	     * Reverse the migrations.
+	     *
+	     * @return void
+	     */
+	    public function down()
+	    {
+	        Schema::table('users', function(Blueprint $table){
+
+	            $table->dropForeign(['profession_id']);
+	            $table->dropColumn('profession_id');
+
+	        });
+	    }
+...
+---
+
+Regresamos a la consola y reejecutamos:
+	> php artisan migrate:fresh
+	Dropped all tables successfully.
+	Migration table created successfully.
+	Migrating: 2014_10_12_100000_create_password_resets_table
+	Migrated:  2014_10_12_100000_create_password_resets_table
+	Migrating: 2014_10_12_100000_create_users_table
+	Migrated:  2014_10_12_100000_create_users_table
+	Migrating: 2022_06_06_182413_create_professions_table
+	Migrated:  2022_06_06_182413_create_professions_table
+	Migrating: 2022_06_09_210550_add_profession_id_to_users
+	Migrated:  2022_06_09_210550_add_profession_id_to_users
+
+
+
+Para recrear las tablas
+
+Y ahora ejecutamos:
+	> php artisan db:seed
+
+	Seeding: ProfessionSeeder
+
+	In Connection.php line 664:
+
+	  SQLSTATE[42000]: Syntax error or access violation: 1701 Cannot truncate a table referenced in a foreign key constraint (`crudlaravel5_5`.`users`, CONSTRAIN
+	  T `users_profession_id_foreign`) (SQL: truncate `professions`)
+
+
+	In Connection.php line 458:
+
+	  SQLSTATE[42000]: Syntax error or access violation: 1701 Cannot truncate a table referenced in a foreign key constraint (`crudlaravel5_5`.`users`, CONSTRAIN
+	  T `users_profession_id_foreign`)
 
 
 
 
+Nuevamente vamos a obtenerel mismo error, en este caso podemos evitar este error si ejecutamos la siguiente sentencia:
+
+Utilizando DB:statement y la sentencia va a ser: "SET FEREIGN_KEY_CHECKS = 0", con la cual vamos a desactivar la revisión de llaver foraneas en la base de datos, este es una sentencia SQL que se va a ejecutar en la base de datos antes de entonces mandar la orden para vaciar la tabla de "professions".
+ 
+
+---ProfessionSeeder.php
+    public function run()
+    {
+
+    	DB::statement('SET FOREIGN_KEY_CHECKS = 0');
+        
+        DB::table('professions')->truncate(); 
+
+        DB::table('professions')->insert([
+            'title' => 'Back-end developer'
+        ]);
+
+        DB::table('professions')->insert([
+            'title' => 'Front-end developer'
+        ]);
+
+        DB::table('professions')->insert([
+            'title' => 'Web Designer'
+        ]);
+    }
+
+---
 
 
+Con esto puedo regresar a la consola y entonces. Ahora podemos ejecutar el siguiente comando sin singun problema
+	> php artisan db:seed
 
 
+	
 
 
 
