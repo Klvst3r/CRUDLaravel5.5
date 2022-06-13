@@ -1,0 +1,288 @@
+28. Inserción de datos con los seeders de Laravel
+
+
+Notas
+=====
+
+
+En la sección anterior cargamos datos de prueba utilizando un administrador de base de datos, sin embargo esto trae como consecuencia que cada vez que ejecutemos migrate:refresh o migrate:fresh perdamos dichos datos. En esta lección veremos una mejor forma de cargar datos de prueba utilizando los Seeders de Laravel.
+
+
+
+Generar un seeder
+-----------------
+
+Para generar un seeder utilizamos el comando de Artisan make:seeder seguido del nombre del seeder:
+php artisan make:seeder ProfessionSeeder
+
+Al ejecutar este comando se generará un archivo ProfessionSeeder.php dentro del directorio database/seeds.
+
+
+Código del seeder
+-----------------
+Dentro del método run() del archivo ProfessionSeeder.php escribimos el código de nuestro seeder:
+
+---
+	class ProfessionSeeder extends Seeder
+	{
+	    public function run()
+	    {
+	        DB::table('professions')->insert([
+	            'title' => 'Desarrollador back-end',
+	        ]);
+	    }
+	}
+--
+
+
+Para insertar datos, utilizaremos el constructor de consultas SQL de Laravel. Que incluye una interfaz fluida para construir y ejecutar consultas a la base de datos. Para ello llamaremos al método "table" del Facade "DB" pasando como argumento el nombre de la tabla con la que queremos interactuar. El método "insert" acepta un array asociativo que representará las columnas y valores que queremos guardar en la tabla.
+
+
+>> Para utilizar el facade DB:: debemos importar \Illuminate\Support\Facades\DB al principio del archivo:
+
+
+---
+	<?php
+	// (namespace opcional aqui)
+	use Illuminate\Support\Facades\DB;
+---
+
+
+
+
+Registrar seeder
+----------------
+
+Los seeders son registrados en la clase "DatabaseSeeder" dentro de "database/seeds/DatabaseSeeder.php". Dentro del método "run" llamamos al método "call" pasando como argumento el nombre de la clase de nuestro seeder:
+
+---
+	class DatabaseSeeder extends Seeder
+	{
+	    public function run()
+	    {
+	        $this->call(ProfessionSeeder::class);
+	    }
+	}
+---
+
+
+
+
+En este caso "ProfessionSeeder::class" devolverá el nombre de la clase. En lugar de utilizar "::class" también podemos pasar el nombre de la clase como una cadena de texto 'ProfessionalSeeder'.
+
+
+
+Eliminar registros
+-------------------
+
+Es posible que antes de ejecutar un seeder necesitemos eliminar el contenido existente. Para realizar esto podemos utilizar el método "truncate", que se encarga de vaciar la tabla:
+
+---
+	class ProfessionSeeder extends Seeder
+	{
+	    public function run()
+	    {
+	        DB::table('professions')->truncate();
+	        // ..
+	    }
+	}
+---
+
+
+Ejecutar un seeder
+------------------
+
+Para ejecutar los seeders utilizamos el comando db:seed desde la terminal:
+	> php artisan db:seed
+
+
+En caso de que tengas múltiples seeders, puedes pasar la opción "--class" que te permite ejecutar solamente el seeder pasado como argumento:
+	> php artisan db:seed --class=ProfessionSeeder
+
+
+También puedes ejecutar el comando "migrate:fresh" o "migrate:refresh" junto con los seeders pasando la opción "--seed":
+	> php artisan migrate:fresh --seed
+
+
+
+Desactivar revisión de claves foráneas
+--------------------------------------
+
+Si una tabla tiene una referencia de clave foránea, necesitarás desactivar la revisión de claves foráneas utilizando un sentencia antes de vaciar dicha tabla (por ejemplo usando el método "truncate").
+
+Esto podemos lograrlo con la sentencia SQL "SET FOREIGN_KEY_CHECKS=[0|1]". En Laravel podemos ejecutar dicha sentencia usando el método "DB::statement" de esta manera:
+
+---
+	class ProfessionSeeder extends Seeder
+	{
+	    public function run()
+	    {
+	        DB::statement('SET FOREIGN_KEY_CHECKS = 0;'); // Desactivamos la revisión de claves foráneas
+	        DB::table('professions')->truncate();
+	        DB::statement('SET FOREIGN_KEY_CHECKS = 1;'); // Reactivamos la revisión de claves foráneas
+	        // ..
+	    }
+	}
+---
+
+Utilizando la misma sentencia pero con el valor 1 reactivamos la revisión de claves foráneas luego de ejecutar nuestro seeder.
+
+
+
+En caso de que quieras vaciar varias tablas a la vez, puedes utilizar el siguiente código dentro de la clase "DatabaseSeeder":
+
+---
+	class DatabaseSeeder extends Seeder
+	{
+	    public function run()
+	    {
+	        $this->truncateTables([
+	            'nombre_de_la_tabla_aqui',
+	            'nombre_de_otra_tabla',
+	        ]);
+	  
+	        // Ejecutar los seeders:
+	        $this->call(ProfessionSeeder::class);
+	    }
+	    public function truncateTables(array $tables)
+	    {
+	        DB::statement('SET FOREIGN_KEY_CHECKS = 0;');
+	        foreach ($tables as $table) {
+	            DB::table($table)->truncate();
+	        }
+	        DB::statement('SET FOREIGN_KEY_CHECKS = 1;');
+	    }
+	}
+---
+
+
+Ahora podrás llamar al método "truncateTables" pasando un arreglo con los nombres de las tablas que quieras vaciar.
+
+
+Contraseñas dentro de un seeder
+--------------------------------
+
+En caso de que quieras insertar usuarios de esta manera, recuerda encriptar las contraseñas utilizando el helper "bcrypt":
+
+---
+
+	DB::table('users')->insert([
+	    // ..
+	    'password' => bcrypt('laravel')
+	]);
+
+---
+
+
+
+
+Practicas
+=========
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Ejericios
+=========
+
+
+En el caso de extremo, podríamos poner el atributo onDelete('cascade') junto con engine='InnoDB' y las relaciones de clave externa se eliminarían automáticamente.
+
+
+Hola, cómo sería la forma de ingresar una cantidad de 700 registros a un seeder de una forma no tan manual?
+
+Se puede cargar un CSV en una DB de la siguiente manera
+
+
+--- database > seeds > CIEsSeeder.php
+
+/* Run de database seed.
+*
+* @return function run()
+{
+	try {
+
+		$doc = explode("\r\n", Storage::disk('public')->get('/docs/cie-10.csv'));
+		DB::table('c_i_e_s')->insert([
+			'id' => 1,
+			'name' => CIE-10,
+		]);
+
+		foreach($doc as $key => $ln) {
+			if ($ln != ";") {
+				$diseases = explode (";", $ln);
+				if (count($diseases) == 2){
+					DB::table('diseases')->insert([
+						'code' => $deseases[0],
+						'description' => $diseases[1],
+						'cie_id' => 1,
+					]);
+				}
+			}
+		}
+
+	}catch(Exception $err){
+
+	}
+}
+
+
+} //funtion main
+
+---
+
+* $users = factory(User::class, 700)->create();
+solo que tendrias que crear un fabrica para generar datos de prueba
+
+* Me di cuenta que al ejecutar un Seeder en particular, por ejemplo:
+$ php artisan db:seed --class=ProfessionSeeder
+
+No pasa por DatabaseSeeder.php
+En ese caso, creo que tendria que colocar la logica de truncate dentro de ProfessionSeeder.php en el metodo run() antes de los inserts.
+
+* Me pasaba que cuando ejecutaba el comando:
+php artisan db:seed
+
+Resultado:
+Seeding: ProfessionSeeder
+
+Class ProfessionSeeder does not exist
+
+Y la clase estaba bien creada y el call a la clase en el archivo: DatabaseSeeder.php estaba llamado correctamente:
+$this->call(ProfessionSeeder::class);
+
+Probe haciendo un:
+composer dump-autoload
+
+Y luego funcionó correctamente.
+
+
+*  Tengo un inconveniente con el siguiente error "SQLSTATE[42704]: Undefined object: 7 ERROR: parámetro de configuración no reconocido: «forei
+gn_key_checks» (SQL: SET FOREIGN_KEY_CHECKS = 0;) " eso al ejecutar "php artisan db:seed"
+
+* pero cambiando DB::statement('TRUNCATE TABLE professions CASCADE;'); se soluciono
+
+* Cuando utilizas esta opción, cuando se va a borrar una profesión, ¿Primero se borran todos los usuarios que tienen esa profesión? ¿Manteniendo así la integridad de la base de datos?
