@@ -1030,8 +1030,16 @@ Llamaresmoa a este "truncateTables", Pero queremos que este metodo reciba un arr
 ---
 
 
-Min 10.14
+En la función truncateTable se utiliza el codigo siguiente para vaciar las tablas dentro de un "foreach" de la siguiente forma
 
+---DatabaseSeeder.php
+...
+foreach ($$tables as $table) {
+            
+            DB::table('professions')->truncate();
+        }
+...
+---
 
 
 

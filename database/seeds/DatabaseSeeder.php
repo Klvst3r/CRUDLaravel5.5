@@ -29,7 +29,11 @@ class DatabaseSeeder extends Seeder
     {
         DB::statement('SET FOREIGN_KEY_CHECKS = 0');
         
-        DB::table('professions')->truncate();
+        
+        foreach ($tables as $table) {
+            
+            DB::table($table)->truncate();
+        }
 
         DB::statement('SET FOREIGN_KEY_CHECKS = 1');
     }
