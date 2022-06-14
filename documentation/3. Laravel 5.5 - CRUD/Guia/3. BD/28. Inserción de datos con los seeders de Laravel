@@ -1041,10 +1041,21 @@ foreach ($$tables as $table) {
 ...
 ---
 
+Se pasa el nombre de la tabla de forma dinamica, utilizzando la variable "$table":
 
 
+---DatabaseSeeder.php
+...
+foreach ($$tables as $table) {
+            
+            DB::table($table)->truncate();
+        }
+...
+---
 
 
+Hecho esto regresamos a la consola para ejecutar:
+	> php artisan db:seed
 
 
 
