@@ -1058,6 +1058,328 @@ Hecho esto regresamos a la consola para ejecutar:
 	> php artisan db:seed
 
 
+Incluso podemos ejecutar el anterior comando varias veces.
+
+	> php artisan db:seed
+	Seeding: ProfessionSeeder
+
+
+	> php artisan db:seed
+	Seeding: ProfessionSeeder
+
+
+	A php artisan db:seed
+	Seeding: ProfessionSeeder
+
+
+
+Y si revisamos en la tabla correspondiente "professions" notaremos que se hizo la refactorización paso a paso 
+
+mysql> select * from professions;
++----+---------------------+------------+------------+
+| id | title               | created_at | updated_at |
++----+---------------------+------------+------------+
+|  1 | Back-end developer  | NULL       | NULL       |
+|  2 | Front-end developer | NULL       | NULL       |
+|  3 | Web Designer        | NULL       | NULL       |
++----+---------------------+------------+------------+
+
+
+
+Seeder de la tabla usuarios
+---------------------------
+
+Vamos ahora a agrgar un nuevo Seeder para la tabla de usuarios mediante el comando:
+	> php artisan make:seeder UserSeeder
+
+
+Se crea el archivo y lo editamos para comenzar a escribir el codigo:
+
+---UserSeeder.php
+
+ public function run()
+ <?php
+
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+
+class UserSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
+    public function run()
+    {
+        //
+    }
+}
+
+---
+
+
+Dentro del metodo "run"  utilizamos "DB::table" con la tabla de "usuarios", por supuesto debemos importar la clase, lo hacemos con la ayuda del editor, aunque podemos hacerlo manualmente, podemos utilizar un ide que incluya la funcionalidad de importación, o instalar un plugin en el editor que se este utilizando.
+
+Vamos a utilizar el metodo "insert" pero ahora para crear un usuario vamos a necesitar mas de un atributo por ejemplo el atributo "nombre", luego "email", "password", encriptada con la funcion helper bcrypt, y finalmente debemos pasar una "profesion", en este caso no vamos a pasar "desarrollador Backend" si no que queremos pasar el id asiciado a dicha profesion. 
+
+
+¡Como podemos hacer esto?
+
+Esto es algo que de hecho se vera en la sección siguiente, por ahora vamos a exluir este campo, quedando de la siguiente manera en la funcion "run:
+
+---UserSeeder.php
+...
+  */
+    public function run()
+    {
+       DB::table('users')->insert([
+            'name' => 'Klvst3r',
+            'email' => 'klvst3r@email.com',
+            'password' => bcrypt('laravel'),
+
+       ]);
+    }
+
+...
+---
+
+
+ Regresamos a la consola y vamos a ejecutar:
+ 	> php artisan db:seed
+ 	Seeding: ProfessionSeeder
+
+
+Notemos que se muestra un solo mensaje de confirmación para el Seeder ProfessionSeeder, esto sucede por que si recordamos que denbemos registrar el Seeder dentro de "DatabaseSeeder.php".
+
+Nuevamente llamamos al metodo "call" dentro de esta clase
+
+---DatabaseSeeder.php
+public function run()
+    {
+
+        $this->truncateTables([
+          'professions'
+        ]);
+
+
+
+        //dd(ProfessionSeeder::class);
+
+        // $this->call(UsersTableSeeder::class);
+
+        $this->call(ProfessionSeeder::class);
+        //Registro de UserSeeder
+        $this->call(UserSeeder::class);
+
+    }
+
+---
+
+Hecho esto ahora si podemos regresar a la terminal y reejecutar el comando:
+	> php artisan db:Seeder
+	Seeding: ProfessionSeeder
+	Seeding: UserSeeder
+>>>
+	In Connection.php line 664:
+
+	  SQLSTATE[HY000]: General error: 1364 Field 'profession_id' doesn't have a default value (SQL: insert into `users` (`name`, `email`, `password`) values (Klv
+	  st3r, klvst3r@email.com, $2y$10$0AuV0tJhnb5tUgaiNup35OEQcEERMKGFmPZiUo4L9fsUj.F5feDda))
+
+
+	In Connection.php line 458:
+
+	  SQLSTATE[HY000]: General error: 1364 Field 'profession_id' doesn't have a default value
+
+
+
+---
+
+
+En este caso db:seed genera un error ya que profession_id no tiene un valor por defecto, puede deberse a que este campo no es "nullable", de cualquier forma se permite la corrección en la migración "2022_06_09_210550_add_profession_id_to_users.php"
+
+Cambiando la linea :
+	$table->unsignedInteger('profession_id');
+
+---2022_06_09_210550_add_profession_id_to_users.php
+public function up()
+    {
+        Schema::table('users', function(Blueprint $table){
+
+                $table->unsignedInteger('profession_id')->nullable();
+                
+                $table->foreign('profession_id')->references('id')->on('professions');
+
+            });
+    }
+
+---
+
+Regresamos a la consola para reejecutar las migraciones nuevamente:
+
+	> php artisan migrate:fresh
+	Dropped all tables successfully.
+	Migration table created successfully.
+	Migrating: 2014_10_12_100000_create_password_resets_table
+	Migrated:  2014_10_12_100000_create_password_resets_table
+	Migrating: 2014_10_12_100000_create_users_table
+	Migrated:  2014_10_12_100000_create_users_table
+	Migrating: 2022_06_06_182413_create_professions_table
+	Migrated:  2022_06_06_182413_create_professions_table
+	Migrating: 2022_06_09_210550_add_profession_id_to_users
+	Migrated:  2022_06_09_210550_add_profession_id_to_users
+
+
+
+Reejecutamos las migraciones, y ahora se pueden reejejcutar los seeders.
+
+	> php artisan db:seed
+	Seeding: ProfessionSeeder
+	Seeding: UserSeeder
+
+Podemos revisar la tabla de "usuarios".
+
+mysql> select * from users;
++----+---------+-------------------+--------------------------------------------------------------+----------------+------------+------------+---------------+
+| id | name    | email             | password                                                     | remember_token | created_at | updated_at | profession_id |
++----+---------+-------------------+--------------------------------------------------------------+----------------+------------+------------+---------------+
+|  1 | Klvst3r | klvst3r@email.com | $2y$10$JZJjL3oBSHp7CfLne.Iln.54IKsmygI7/x.5Dxlbam.nSNMfk3oJy | NULL           | NULL       | NULL       |          NULL |
++----+---------+-------------------+--------------------------------------------------------------+----------------+------------+------------+---------------+
+
+
+Podemos revisar que se creo un usuario exitosamente.
+
+Ahora si regresamos a la consola y reejecutamos los seeders nuevamente:
+
+	> php artisan db:seed
+>>>	
+	Seeding: ProfessionSeeder
+	Seeding: UserSeeder
+
+	In Connection.php line 664:
+
+	  SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'klvst3r@email.com' for key 'users_email_unique' (SQL: insert into `users` (`name`, `
+	  email`, `password`) values (Klvst3r, klvst3r@email.com, $2y$10$jSDAghKonFKrX/Eg0Mjnw.5vXjPnwkpmU7ev1pXPNRJxdzk4N2A6e))
+
+
+	In Connection.php line 458:
+
+	  SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'klvst3r@email.com' for key 'users_email_unique'
+
+---
+
+
+Obtendremos otro error por que en este caso estamos intentando crear el mismo resgistro del usuario dos veces, cuando en la tabla de "usuarios", donde se indica que el campo "email" es unico.
+
+---2014_10_12_100000_create_users_table.php
+ public function up()
+    {
+        Schema::create('users', function (Blueprint $table) {
+            $table->increments('id'); //Integer unsigned - Autoincrement
+
+            $table->string('name'); //varchar
+            $table->string('email')->unique(); //varchar - Unique
+            $table->string('password'); 
+            $table->rememberToken();
+            $table->timestamps();
+        });
+    }
+---
+
+
+Es decir no podemos registrar a dos usuarios con el mismo email con la base de datos; todas estas protecciones son a nivel de base de datos, mas adelante se vera como se puede hacer esta protección a nivel de aplicación, es decir a nivel de interfaz de usuario, formualrios, etc.
+
+
+Para prevenir el error mostrado durante la ejecuación de los seeders, simplemante debemos regresar al seeder "DatabaseSeeder.php" e indicar que queremos vaciar tambien la tala de usuarios. Si es que queremos volvar de inicio toda la inforamción tambien de esta tabla.
+
+--- DatabaseSeeder.php
+
+public function run()
+    {
+
+        $this->truncateTables([
+          'users',
+          'professions'
+        ]);
+
+
+
+        //dd(ProfessionSeeder::class);
+
+        // $this->call(UsersTableSeeder::class);
+
+        $this->call(ProfessionSeeder::class);
+        //Registro de UserSeeder
+        $this->call(UserSeeder::class);
+
+    }
+
+---
+
+
+Ahora se tiene este pequeño metodo que es muy facil de hacerlo.
+---DatabaseSeeder.php
+
+   $this->truncateTables([
+          'users',
+          'professions'
+        ]);
+
+---
+
+
+Regresamos a la consola y rejecutamos:
+	> php artisan db:seed
+	Seeding: ProfessionSeeder
+	Seeding: UserSeeder
+
+Y ahora podemos reejecutar cuantas veces sea neceario
+
+	> php artisan db:seed
+	Seeding: ProfessionSeeder
+	Seeding: UserSeeder
+
+	> php artisan db:seed
+	Seeding: ProfessionSeeder
+	Seeding: UserSeeder
+
+	> php artisan db:seed
+	Seeding: ProfessionSeeder
+	Seeding: UserSeeder
+
+
+Por cierto si queremos ejecutar el comando "migrate:fresh", seguido del comando "db:seed" al comando migrate fresh
+	> php artisan migrate:fresh --seed
+	Dropped all tables successfully.
+	Migration table created successfully.
+	Migrating: 2014_10_12_100000_create_password_resets_table
+	Migrated:  2014_10_12_100000_create_password_resets_table
+	Migrating: 2014_10_12_100000_create_users_table
+	Migrated:  2014_10_12_100000_create_users_table
+	Migrating: 2022_06_06_182413_create_professions_table
+	Migrated:  2022_06_06_182413_create_professions_table
+	Migrating: 2022_06_09_210550_add_profession_id_to_users
+	Migrated:  2022_06_09_210550_add_profession_id_to_users
+	Seeding: ProfessionSeeder
+	Seeding: UserSeeder
+
+
+
+Podemos fijarnos que se eliminan todas las tablas con el sistema de migraciones y finalmente se ejecutan los seeders.
+
+De esta manera es mucho mejor y mas rápido.
+
+
+Posteriormente se vera la introducción a los modelos de Laravel, crear usuarios que tengan profesiones asociadas.
+
+
+
+
+
+
+
+
+
 
 
 
