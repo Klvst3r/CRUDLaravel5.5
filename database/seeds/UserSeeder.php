@@ -16,6 +16,11 @@ class UserSeeder extends Seeder
        $professions = DB::select('SELECT id FROM professions LIMIT 0,1');
 
        dd($professions);
+       
+       //$professions = DB::table('professions')->select('id')->take(1)->get();
+
+       //dd($professions);
+
 
        DB::table('users')->insert([
             'name' => 'Klvst3r',
