@@ -202,20 +202,7 @@ Por ultimo solamente se necesita obtener el id de la profesión. En este caso se
 
 
 
-Opcion 13:
-
-
 Observamos que obtenemos el 1, de manera muy simple. Por lo cual ahora puedo renombrar la variable a "professionId" y tambien se debe hacer en la inserción del usuario en la tabla de usuarios. No se va a trabajar con un objeto sino el Id directamente.
-
-
-
-
----UserSeeder.php
-
-
-
----
-
 
 
 
