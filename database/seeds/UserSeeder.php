@@ -35,6 +35,8 @@ class UserSeeder extends Seeder
         //Se obtiene el mismo resultado de la opcion 3
         //dd($professions);
        
+       
+
        /*
        Utilizando el constructor de consultas vamos a trabvajhar con la tabla de profesiones, seleccionando unicamente el campo id
        Obteniendo un solo resultado mediante el metodo take, ahora se llama al metodo get() para opbtener los resultados.
@@ -72,25 +74,47 @@ class UserSeeder extends Seeder
             por que a onotros nos interesa en este momento trabajar con una sola profesión, por ello ahora ya no vamos a necesitar llamar a first dentro de professions, sino que vamos a utilizar unicamente, profesions->id, y como ahora tenemos una sola profesión y no un listado de profesiones ahora se va a renombrar la variable para que sea en singular. 
             */
 
-            //$profession = DB::table('professions')->select('id')->first();
+            $profession = DB::table('professions')->select('id')->first();
+
+            /*
+            
+            Hasta aca despues de ejecutar los seeders en la tabla de usuarios ya esta relacionado con el id de la profesion condicente
+             */
             
 
+
+
+            /*Consultas con condicionales (WHERE)
+            -----------------------------------
+            */
+           
             /*
             Opcion 7:
             Podemos llamar al metodo "where()" pasando como primer argumento el nombre de la columna, como segundo argumento el operador de comparación y como tercer argumento el valor que queremos encontrar, en este caso: "Back-end developer".
 
              */
        
-            $profession = DB::table('professions')->select('id')->where('title', '=', 'Back-end developer')->first();
-            dd($profession); 
+          /*  $profession = DB::table('professions')->select('id')->where('title', '=', 'Back-end developer')->first();
+            dd($profession); */
 
 
             DB::table('users')->insert([
                         'name' => 'Klvst3r',
                         'email' => 'klvst3r@email.com',
                         'password' => bcrypt('laravel'),
+                        //Iniciando con el constructor de consultas de Laravel
+                        //'profession_id' => $profession[0]->id,
+                        
+                        //Segunda opcion para obtener el primer elemento del objeto de la coleccion de profesiones  y no un array como listado de objetospor ellos
+                        //Para obtener un solo resultado con opcion 5 en la consulta,
+                        //'profession_id' => $profession->first()->id,                        
+                        
+                        //obtenemos un objeto en luhar de un array, opcion 5, ya no vamos a necesitar llamar a first dentro de professions sino que
+                        //vamos a utilizar unicamente profesions()->id, 
+                        //Opcion 6
+                        //Ya que tenemos ahora una sola profesió y no un listado de profesiones, por ello vamos arenombrar la variable //para que sea en singular.
                         'profession_id' => $profession->id,
-
+                        
                    ]);
 
 
