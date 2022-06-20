@@ -702,8 +702,238 @@ De nuevo se trabaja con la tabla de profesiones, donde se quiere seleccionar uni
 
 Guardamos y ejecutamos en consola:
     > php artisan db:seed
+    Seeding: ProfessionSeeder
+    Seeding: UserSeeder
+    Illuminate\Support\Collection {#560
+      #items: array:1 [
+        0 => {#570
+          +"id": 1
+        }
+      ]
+    }
 
-08.08
+Nuevamente podemos observar que se tiene un resultado similar, aunque en este caso, se ve por primera vez un objeto de la clase "collection", esta es una clase que se utiliza mucho en Laravel para envolver los Arrays, y al ser un objeto en lugar de ser un array plano, se va a tener una interfaz orientada a objetos con la que hay que trabajar con los resualtados y mas funciones de las que se incluyen en PHP para trabajar con arrauy por defecto.
+
+Por ejemplo ahora se puede regresar editor y para obtener la primera profesión se puede llamar al metodo "first()".
+
+--- UserSeeder.php
+
+ public function run()
+    {
+
+        $professions = DB::table('professions')->select('id')->take(1)->get();
+              
+       dd($professions->first()); 
+       
+
+
+       DB::table('users')->insert([
+            'name' => 'Klvst3r',
+            'email' => 'klvst3r@email.com',
+            'password' => bcrypt('laravel'),
+            'profesion_id' => $professions[0]->id,
+
+       ]);
+    }
+
+---
+
+Podemos observar que utilizando first() es mas legible que  utilizar
+    $professions[0]
+
+Haciendo esto y regresando a la consola se reejecuta la consulta:
+    > php artisan db:seed
+    Seeding: ProfessionSeeder
+    Seeding: UserSeeder
+    {#570
+      +"id": 1
+    }
+
+Notamos que obtenemos un objeto de esta manera, por su puesto este objeto tiene la propieda id, asi que podemos obtener el id.
+
+
+--- UserSeeder.php
+
+public function run()
+    {
+
+        $professions = DB::table('professions')->select('id')->take(1)->get();
+              
+       dd($professions->first()->id); 
+       
+
+
+       DB::table('users')->insert([
+            'name' => 'Klvst3r',
+            'email' => 'klvst3r@email.com',
+            'password' => bcrypt('laravel'),
+            'profesion_id' => $professions[0]->id,
+
+       ]);
+    }
+
+---
+
+
+Reejecutamos para obtener el id
+    > php artisan db:seed
+    Seeding: ProfessionSeeder
+    Seeding: UserSeeder
+    1
+
+
+Ahora estamo strabajando con objetos tanto en la colección de profesiones como en nuestro objeto de profesiones y no entonces como un array que contiene un listado de objetos
+
+--- UserSeeder.php
+public function run()
+    {
+
+        $professions = DB::table('professions')->select('id')->take(1)->get();
+              
+       dd($professions->first()->id); 
+       
+
+
+       DB::table('users')->insert([
+            'name' => 'Klvst3r',
+            'email' => 'klvst3r@email.com',
+            'password' => bcrypt('laravel'),
+            'profesion_id' => $professions->first()->id,
+
+       ]);
+    }
+
+---
+
+
+Sinb embargo otra de las limitaciones que teniamos anteriormente al escribir la consulta SQL de forma manual, es que se queria obtener un solo fresultado, ahora vemos como obtener un solo resultado y no una colección de resultados, utilizando el constructor de consultas de SQL:
+
+
+Para ello en lugar de utilizar el metodo take(1) para indicar que quiero obtener un solo resaultado y luego llamar al metodo get(), puedo llmar a otro metodo, que en este caso es el metodo first(), de esta manera se esta conrstuyendo la consulta SQL y con el metodo first se esta ejecutando para obtener un solo resultado. En este caso el primer resultado que se arroje de  la consulta.
+
+--- UserSeeder.php
+public function run()
+    {
+
+       $professions = DB::table('professions')->select('id')->first();
+       
+       dd($professions); 
+
+       
+       DB::table('users')->insert([
+            'name' => 'Klvst3r',
+            'email' => 'klvst3r@email.com',
+            'password' => bcrypt('laravel'),
+            'profesion_id' => $professions->first()->id,
+
+       ]);
+    }
+
+---
+
+
+
+Luego despues de hacer esto se utiliza
+    dd($professions); 
+
+Para imprimir el resultado de la consola podremos ver que por primera vez se obtiene un objeto, en lugar de un array o una colección con un objeto, 
+
+
+     > php artisan db:seed
+    Seeding: ProfessionSeeder
+    Seeding: UserSeeder
+    {#570
+      +"id": 1
+    }
+
+
+
+
+Esto es positivo, por que a onotros nos interesa en este momento trabajar con una sola profesión, por ello ahora ya no vamos a necesitar llamar a first dentro de professions, sino que vamos a utilizar unicamente, profesions->id, y como ahora tenemos una sola profesión y no un listado de profesiones ahora se va a renombrar la variable para que sea en singular. 
+
+
+---UserSeeder.php
+
+public function run()
+    {
+        $profession = DB::table('professions')->select('id')->first();
+       
+       //dd($profession); 
+
+
+        DB::table('users')->insert([
+                    'name' => 'Klvst3r',
+                    'email' => 'klvst3r@email.com',
+                    'password' => bcrypt('laravel'),
+                    'profesion_id' => $profession->id,
+
+               ]);
+    }
+
+
+
+Con esto ya se puede dejar el codigo finalmente y ejecutar los seeders y revisar la BD
+
+
+    > php artisan db:seed
+    Seeding: ProfessionSeeder
+    Seeding: UserSeeder
+
+
+Revisando la base de datos, en la tabla de usuarios, podre ver que el primer usuario esta relacionado con la profesion numero 1
+
+
+mysql> select * from users;
++----+---------+-------------------+--------------------------------------------------------------+----------------+------------+------------+---------------+
+| id | name    | email             | password                                                     | remember_token | created_at | updated_at | profession_id |
++----+---------+-------------------+--------------------------------------------------------------+----------------+------------+------------+---------------+
+|  1 | Klvst3r | klvst3r@email.com | $2y$10$wdsei1.EBNkxRjx7pX2vC.yC/TZSNfGxStz5rjdltiVAVfowZikoe | NULL           | NULL       | NULL       |             1 |
++----+---------+-------------------+--------------------------------------------------------------+----------------+------------+------------+---------------+
+
+
+Incluso nuestro administrador de base de datos nos permite hacer click sobre el 1 del campo "profession_id" y nos enlazara a la table de "professions". Puesto que nosotros configuramos nuestras restricciones de llaves foraneas y el constructor de consultas de Laravel tambien permite por supuesto utilizar otro mestodos, como por ejemplo condicionales:
+
+
+mysql> select * from professions where id= '1';
++----+--------------------+------------+------------+
+| id | title              | created_at | updated_at |
++----+--------------------+------------+------------+
+|  1 | Back-end developer | NULL       | NULL       |
++----+--------------------+------------+------------+
+
+
+
+Podemos llamar al metodo "where()" pasando como primer argumento el nombre de la columna, como segundo argumento el operador de comparación y como tercer argumento el valor que queremos encontrar, en este caso: "Back-end developer".
+
+
+    $profession = DB::table('professions')->select('id')->where('title', '=', 'Back-end developer')->first();
+
+Si se hace esto y se regresa a la consola, rejecutando los seeders, notaremos que estan funcionando corractamente.
+
+    > php artisan db:seed
+    Seeding: ProfessionSeeder
+    Seeding: UserSeeder
+
+
+Se puede utilizar una visualización con dd para ver el resultado 
+
+    >  php artisan db:seed
+    Seeding: ProfessionSeeder
+    Seeding: UserSeeder
+    {#570
+      +"id": 1
+    }
+
+
+En este caso estamo obteniendo la profesion con el id= 1. Podemos tambien seleccionar mas campos:
+
+
+
+12'16
+
+
+
+
 
 
 

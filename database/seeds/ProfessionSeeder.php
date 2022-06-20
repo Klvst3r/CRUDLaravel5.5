@@ -19,12 +19,19 @@ class ProfessionSeeder extends Seeder
 
         DB::statement('SET FOREIGN_KEY_CHECKS = 1');*/
 
+        //Primera opcion si los datos no son introducidos por el usuario final
         //DB::insert('INSERT INTO professions (title) VALUES ("Desarrollador back-end")');
         
-       /* DB::insert('INSERT INTO professions (title) VALUES (:title)', [
-        'title'=>'Desarrollador Back-end'
-        ]);*/
 
+        //Segunda opcion, con un solo parametro
+        //DB::insert('INSERT INTO professions (title) VALUES (?)', ['Desarrollador back-end']);
+        
+
+        //Tercera opcion; cuando se tiene mucho parametros
+      /*  DB::insert('INSERT INTO professions (title) VALUES (:title)', [
+        'title'=>'Desarrollador Back-end'
+        ]);
+        */
         DB::table('professions')->insert([
             'title' => 'Back-end developer'
         ]);
