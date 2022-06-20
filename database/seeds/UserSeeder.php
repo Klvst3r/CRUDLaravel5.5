@@ -74,7 +74,7 @@ class UserSeeder extends Seeder
             por que a onotros nos interesa en este momento trabajar con una sola profesión, por ello ahora ya no vamos a necesitar llamar a first dentro de professions, sino que vamos a utilizar unicamente, profesions->id, y como ahora tenemos una sola profesión y no un listado de profesiones ahora se va a renombrar la variable para que sea en singular. 
             */
 
-            $profession = DB::table('professions')->select('id')->first();
+            //$profession = DB::table('professions')->select('id')->first();
 
             /*
             
@@ -94,10 +94,79 @@ class UserSeeder extends Seeder
 
              */
        
-          /*  $profession = DB::table('professions')->select('id')->where('title', '=', 'Back-end developer')->first();
+            //$profession = DB::table('professions')->select('id')->where('title', '=', 'Back-end developer')->first();
+            //dd($profession); 
+
+
+            /*
+            Opcioon 8 Seleccionando mas campos
+
+             */
+            
+            /*$profession = DB::table('professions')->select('id', 'title')->where('title', '=', 'Back-end developer')->first();
+            dd($profession); 
+            */
+           
+
+
+           /*
+           Opcion 9: Seleccionar todas las columnas
+            */
+           //$profession = DB::table('professions')->where('title', '=', 'Back-end developer')->first();
+            //dd($profession); 
+
+           /*
+           Opcion 10: Seleccionar todas las columnas omitioendo el operador =
+            */
+           /*$profession = DB::table('professions')->where('title', 'Back-end developer')->first();
             dd($profession); */
 
 
+            /*
+           Opcion 11: Seleccionar todas las columnas añadiendo un array
+            */
+          /* $profession = DB::table('professions')
+           ->select('id')
+           ->where(['title' => 'Back-end developer'])
+           ->first();
+
+            dd($profession); */
+
+
+            /*
+           Opcion 12: solamente se quiere obtener el id de la profesión, se puede hacer si se llama al metodo value() en lugar del metodo first(), pasando como argumento el nombre de la columna (id) de la cual queremos obtener su valor
+            */
+          /* $profession = DB::table('professions')
+           ->where(['title' => 'Back-end developer'])
+           ->value('id');
+           
+            dd($profession); 
+            */
+
+             /*
+           Opcion 13: 
+          Por lo cual ahora puedo renombrar la variable a "professionId" y tambien se debe hacer en la inserción del usuario en la tabla de usuarios. No se va a trabajar con un objeto sino el Id directamente. Se puede simplificar un poco el condicional, ya que no se utiliza el array sino se pasan los valores de la siguiente manera
+            */
+           /*$professionId = DB::table('professions')
+           ->where('title', 'Back-end developer')
+           ->value('id');*/
+           
+            //dd($profession); 
+            
+
+          /*
+          Opcion 14: 
+          Metodos Magicos, con el metodo "wheretitle" no esta definido si se ejecuta de la siguiente manera, Laravel entendera que title es el nombre de la columna y entonces el primer argumento va a 
+            */
+         /*  $professionId = DB::table('professions')
+           ->whereTitle('Back-end developer')
+           ->value('id');*/
+
+
+
+           /*Inserción de valores en la tabla de Usuarios posterior a la obtención del id de la tabla de profesiones*/
+
+           /*Antes de Opcion 14
             DB::table('users')->insert([
                         'name' => 'Klvst3r',
                         'email' => 'klvst3r@email.com',
@@ -113,10 +182,21 @@ class UserSeeder extends Seeder
                         //vamos a utilizar unicamente profesions()->id, 
                         //Opcion 6
                         //Ya que tenemos ahora una sola profesió y no un listado de profesiones, por ello vamos arenombrar la variable //para que sea en singular.
-                        'profession_id' => $profession->id,
+                        //'profession_id' => $profession->id,
+                        //La Linea anterior es hasta la opcion 12
+                        // opci[on 13
+                        'profession_id' => $professionId
                         
                    ]);
+            */
 
-
+            // opci[on 15
+             DB::table('users')->insert([
+                        'name' => 'Klvst3r',
+                        'email' => 'klvst3r@email.com',
+                        'password' => bcrypt('laravel'),
+                        'profession_id' => DB::table('professions')->whereTitle('Back-end developer')->value('id')
+                        
+                   ]);
     }
 }
