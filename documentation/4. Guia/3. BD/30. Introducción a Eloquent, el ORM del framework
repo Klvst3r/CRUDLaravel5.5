@@ -1,0 +1,230 @@
+30. Introducción a Eloquent, el ORM del framework Laravel
+---------------------------------------------------------
+
+
+Notas
+=====
+
+Para trabajar con bases de datos en Laravel no necesitamos escribir SQL de forma manual, ni siquiera utilizar el constructor de consultas. Laravel nos permite interactuar con la base de datos a un nivel mucho más alto a través del "ORM Eloquent". Utilizando Eloquent podemos trabajar con modelos, que son clases que representan nuestras tablas en la base de datos y nos proveen de métodos con los que podemos interactuar en una interfaz más «elocuente» y orientada a objetos. 
+
+
+Generar un modelo
+-----------------
+
+Los modelos los podemos generar desde la consola utilizando el comando "make:model" de Artisan:
+	> php artisan make:model Profession
+
+La convención es nombrar al modelo con su primera letra en mayúsculas y escribirlo en singular (por ejemplo: «Profession» en vez de «professions»). Si queremos agregar dos palabras en el nombre, la convención es colocar la primera letra de cada palabra en mayúscula:
+	> php artisan make:model ProfessionCategory
+
+Este formato es conocido como «Studly Caps».
+
+Por defecto modelos serán generados en el directorio app de nuestra aplicación, con su nombre más la extensión .php. En nuestra caso "Profession.php" o "ProfessionCategory.php". También podemos generar el modelo dentro de otro directorio, especificando el nombre del directorio antes del modelo:
+	> php artisan make:model Models/Profession
+
+En este caso el modelo "Profession.php" se encontrará en "app/Models/". De no existir el directorio especificado, Laravel lo va a crear por nosotros.
+
+
+Especificar la tabla relacionada al modelo manualmente
+------------------------------------------------------
+
+Al utilizar un modelo no es obligatorio especificar el nombre de la tabla si seguimos las convenciones de Eloquent. Por ejemplo si utilizamos como nombre de modelo "Profession" Laravel hará las consultas a la tabla "professions". Si utilizamos "User" Laravel hará las consultas a la tabla "users". Por último si nuestro modelo fuese "ProfessionCategory" la tabla por defecto sería "profession_categories".
+
+En caso de que el nombre de la tabla no sea igual al nombre del modelo, debemos especificarlo en el modelo definiendo la propiedad $table:
+---
+	class Profession extends Model
+	{
+	    protected $table = 'my_professions';
+	}
+
+---
+	
+
+
+
+Insertar datos utilizando un modelo
+------------------------------------
+
+---
+	Podemos insertar datos llamando al método "create" del modelo:
+
+	\App\Profession::create([
+	    'title' => 'Desarrollador back-end',
+	]);
+---
+
+Importando el modelo al principio del archivo, evitamos tener que hacer referencia a "\App\Profession" cada vez que trabajemos con el modelo:
+---	
+	use App\Profession;
+---
+
+
+Luego de importar el modelo, podemos hacerle referencia directamente:
+
+---
+	Profession::create([
+	    'title' => 'Desarrollador back-end',
+	]);
+---
+
+
+
+
+
+
+Eliminar campos timestamps
+--------------------------
+
+Al insertar datos utilizando un modelo, Eloquent se encargará de cargar los valores de los campos "created_at" y "updated_at" de la tabla. Si "no" queremos utilizar estos campos, dentro de nuestro modelo debemos agregar la propiedad pública $timestamps y darle el valor de false:
+public "$timestamps = false";
+
+
+
+Realizar consultas
+------------------
+
+Podemos utilizar los modelos para hacer consultas a la base de datos. Utilizando el método "all()"" obtenemos todo el contenido de la tabla:
+---
+	$professions = Profession::all();
+---	
+
+También podemos encadenar métodos del constructor de consultas para obtener resultados más específicos:
+---
+	$professionId = Profession::where('title', 'desarrollador back-end')->value('id');
+---
+
+Podemos retonar un resultado dependiendo de su id mediante el método "find()":
+---
+	$profession = Profession::find(1);
+---
+En la siguiente sección seguiremos aprendiendo aún más sobre Eloquent ORM.
+
+
+
+
+Practrica
+=========
+
+
+Laravel permite interactuar con la base de datos a un nivel mas alto con la base de datos en los proyectos, ya no solamente se va a necesitar interactuar con SQL de manera directa en la mayoria de los casos, pero tampoco vamos a necesitar trabajar con este contructor de consultas en la mayoria de los casos, por que si bien este constructor nos aleja un poco de SQL y nos da una interffaz un poco más orientada a objetos, todavia nos recurda bastante que estamos trabajando con una tabla de la base de datos y que estamos ejecutando operaciones para inserar, seleccionar, actualizar y eliminar datos, en este caso Laravel nos trae una implementación y adapatacion del patron Active Record llamada Eloquent u ORM.
+
+Eloquent nos permite trabajar con modelos; los modelos van a ser clases en nuestro proyecto que podemos generar por ejemplo desde la consola con el comando:
+	> php artisan make:model <nombre_modelo>.
+
+Ej. 	
+
+	> php artisan make:model Profession
+
+Notemos que el modelo esta en singular y la primera letra es mayuscula y si quisieramos un modelo con más de una palabra, entonces separaria cada palabra con una letra en mayusculas, comanzando con la primera letra en mayusculas como semuestra en el ejemplo siguiente:
+
+	> php artisan make:model ProfessionCategory
+
+Una vez hecho esto se genera el modelo, y en el editor estara en la ruta:
+	
+	/app/Profession.php
+
+Larave tiene un modelo llamado "User.php"	que viene con la instalación del proyecto, que bien se puede eliminar o agragar tantos modelos adicionales como hagan falta.
+
+Editando el archivo de modelo "Profession.php"
+
+---/app/Profession.php
+	
+--
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Ejercicios
+==========
+
+
+Eloquent lo que hace es poner en plural el nombre dela tabla, es decir, si tu creaste el modelo "Profession", Eloquent buscará automáticamente la tabla "Professions" como se explica en el video, si tienes el nombre de la tabla en singular, debes especificarla como ya hiciste. Lo mejor es siempre ponerles nombre plural a las tablas para evitarse el trabajo de especificar el nombre, porque si son muchas tablas, es bastante código que te ahorras.
+
+
+También puedes hacer Ctrl+P para navegar por nombres de archivo y Ctrl+R para navegar por métodos http://docs.sublimetext.inf...
+
+https://docs.sublimetext.io/guide/usage/file-management/navigation.html
+
+
+Keyboard shortcuts related to Goto Anything:
+Description 	Shortcut
+Open Goto Anything 	Ctrl P
+Open current item 	⏎
+Open current item and keep panel open 	→
+Close Goto Anything 	Esc
+
+
+
+The Goto Anything operators are bound to the following shortcuts:
+Description 	Shortcut
+**@** 	Ctrl R
+# 	Ctrl ;
+: 	Ctrl G
+#
+Goto Symbol In Project
+
+The Goto Anything shortcuts navigate the current file. If you have a project open, you can press Ctrl ⇧ R to launch Goto Anything In Project. This command will search for symbols across every file in your project.
+#
+Sidebar
+
+Description 	Shortcut
+Toggle side bar 	Ctrl K, Ctrl B
+Give the focus to the side bar 	Ctrl 0
+Return the focus to the view 	Esc
+Navigate side bar 	Arrow keys
+
+ Panes
+
+Panes are groups of views. In Sublime Text, you can have multiple panes open at the same time.
+
+Main keyboard shortcuts related to panes:
+Description 	Shortcut
+Create new pane 	Ctrl K, Ctrl ↑
+Close active pane 	Ctrl K, Ctrl ↓
+
+
+https://github.com/erichard/SublimePHPCompanion
+
+This Sublime Text 3 Package provides cool stuff for PHP 5.3+ coding session.
+
+
+Referencias
+===========
+
+el ORM de laravel al momento de modificar el objeto y al crearlo el valor de created_at y updated_at se modifican automaticamente. Hay alguna forma de que se pueda hacer ese tipo de eventos nosotros, es decir, supongamos que tengo un usuario logueado y quiero hacer una tabla o un archivo o en redis o algún tipo de control de logs para guardar que usuario ha modificado que tabla, la fecha y la hora. Se podrá hacer?
+
+https://laravel-auditing.com/docs/7.0/getting-audits
+
+
+
+Foro de Preguntas
+https://disqus.com/by/erickvargasramos/
+
+
+Preguntas
+=========
+
+Hola, al ejecutar el seeder una vez modificado el UserSedder no modifica las columnas create_at y update_at, que puede ser?
+	Utiliza el comando:
+		> php artisan migrate:fresh --seed
+
+
+Si bien, se puede resolver bien como se indica ejecutando >>> use App\Profession;
+
+>>> Profession::all();
+PHP Fatal error: Class 'Profession' not found in eval()'d code on line 1
+
+Luego de actualizar composer, con composer update, ya se puede ejecutar >>> Profession::all();
+

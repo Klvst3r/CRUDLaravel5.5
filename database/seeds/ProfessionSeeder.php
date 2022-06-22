@@ -28,10 +28,12 @@ class ProfessionSeeder extends Seeder
         
 
         //Tercera opcion; cuando se tiene mucho parametros
-      /*  DB::insert('INSERT INTO professions (title) VALUES (:title)', [
+        /*  DB::insert('INSERT INTO professions (title) VALUES (:title)', [
         'title'=>'Desarrollador Back-end'
         ]);
         */
+       
+       //Cuarta opción definitiva: Insercion de registros en la tabla Professions
         DB::table('professions')->insert([
             'title' => 'Back-end developer'
         ]);
