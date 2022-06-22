@@ -13,6 +13,8 @@ class ProfessionSeeder extends Seeder
     public function run()
     {
 
+        /*******  Tema del constructor de consultas de SQL de Laravel hasta el tema 29. ejecutado *******/
+
         /*DB::statement('SET FOREIGN_KEY_CHECKS = 0');
         
         DB::table('professions')->truncate();
@@ -34,6 +36,7 @@ class ProfessionSeeder extends Seeder
         */
        
        //Cuarta opción definitiva: Insercion de registros en la tabla Professions
+       /*
         DB::table('professions')->insert([
             'title' => 'Back-end developer'
         ]);
@@ -44,6 +47,18 @@ class ProfessionSeeder extends Seeder
 
         DB::table('professions')->insert([
             'title' => 'Web Designer'
-        ]);
+        ]);*/
+
+        /*******  Tema del constructor de consultas de SQL de Laravel hasta el tema 29. ejecutado *******/
+
+
+        /*******  Inicio del Tema 30. Eloquent, el ORM de Larael *******/
+
+        
+
+
+        /*******  Tema 30. Eloquent, el ORM de Larael *******/
+
+
     }
 }

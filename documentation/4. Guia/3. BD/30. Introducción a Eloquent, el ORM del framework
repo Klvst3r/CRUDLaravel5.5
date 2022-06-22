@@ -106,9 +106,39 @@ Practrica
 =========
 
 
-Laravel permite interactuar con la base de datos a un nivel mas alto con la base de datos en los proyectos, ya no solamente se va a necesitar interactuar con SQL de manera directa en la mayoria de los casos, pero tampoco vamos a necesitar trabajar con este contructor de consultas en la mayoria de los casos, por que si bien este constructor nos aleja un poco de SQL y nos da una interffaz un poco más orientada a objetos, todavia nos recurda bastante que estamos trabajando con una tabla de la base de datos y que estamos ejecutando operaciones para inserar, seleccionar, actualizar y eliminar datos, en este caso Laravel nos trae una implementación y adapatacion del patron Active Record llamada Eloquent u ORM.
+Laravel permite interactuar con la base de datos a un nivel mas alto con la base de datos en los proyectos, ya no solamente se va a necesitar interactuar con SQL de manera directa en la mayoria de los casos, pero tampoco vamos a necesitar trabajar con este contructor de consultas en la mayoria de los casos como el expuesto en el archivo "ProfessionSeeder.php".
 
-Eloquent nos permite trabajar con modelos; los modelos van a ser clases en nuestro proyecto que podemos generar por ejemplo desde la consola con el comando:
+
+--- ProfessionSeeder.php
+...
+	DB::insert('INSERT INTO professions (title) VALUES (:title)', [
+        'title'=>'Desarrollador Back-end'
+        ]);
+
+      DB::table('professions')->insert([
+            'title' => 'Back-end developer'
+        ]);
+...
+
+---
+
+
+Por que si bien este constructor nos aleja un poco de SQL y nos da una interffaz un poco más orientada a objetos, todavia nos recurda bastante que estamos trabajando con una tabla de la base de datos y que estamos ejecutando operaciones para inserar, seleccionar, actualizar y eliminar datos: 
+
+--- ProfessionSeeder.php
+...
+ DB::table('professions')->insert([
+            'title' => 'Back-end developer'
+        ]);
+...
+
+---
+
+
+
+En este caso Laravel nos trae una implementación y adapatacion del patron Active Record llamada Eloquent u ORM.
+
+Eloquent nos permite trabajar  con modelos; los modelos van a ser clases en nuestro proyecto que podemos generar por ejemplo desde la consola con el comando:
 	> php artisan make:model <nombre_modelo>.
 
 Ej. 	
@@ -128,18 +158,84 @@ Larave tiene un modelo llamado "User.php"	que viene con la instalación del proy
 Editando el archivo de modelo "Profession.php"
 
 ---/app/Profession.php
+	<?php
+
+	namespace App;
+
+	use Illuminate\Database\Eloquent\Model;
+
+	class Profession extends Model
+	{
+	    //
+	}
 	
 --
 
+Como podemos ver no es mas de una clase.
+
+Esta clase extiende de la clase "Eloquent\Model" en la linea indicada en la parte superior.
 
 
+---
+	use Illuminate\Database\Eloquent\Model;
+---
+
+Como el modelo extiende de la clase Model de Eloquent
+
+---
+	class Profession extends Model
+---
+
+Y de Laravel, entonces obtenemos una gran cantidad de funcionalidad por defecto con la que podemos trabajar e interactuar con la base de datos, como se comentaba anteriormente en el Seed de ProfessionSeeder.php
 
 
+---(Muestra en ProfessionSeeder.php)
+    DB::table('professions')->insert([
+            'title' => 'Front-end developer'
+        ]);
+---
 
 
+Donde se puede crear una nueva profesión de la anteior manera, utilizando el modelo Profession y luego llamando al metodo "create()" y pasando un array asociativo con los datos que se quieren insertar.
 
 
+Comentando la linea anterior mostrada para pasarlas al principio para poder ver la diferencia intre trabajar con SQL directamente, trabajar con el constructor de consultas directamente o hacerlo en un nivel mas alto trabajando con un modelo de Laravel.
 
+el codigo de los Seeders quedaria de la siquiente manera como ejemplo:
+
+
+---
+	class ProfessionSeeder extends Seeder
+	{
+	    /**
+	     * Run the database seeds.
+	     *
+	     * @return void
+	     */
+	    public function run()
+	    {
+
+	        //Ejemplo de funcionalidad con SQL directo en los Seeders
+	        /*  DB::insert('INSERT INTO professions (title) VALUES (:title)', [
+	        'title'=>'Desarrollador Back-end'
+	        ]);
+	        */
+	       
+	       
+	       \App\Profession:create([
+	       		'title' => 'Desarrollador Back-end',
+	       ]);
+
+	        DB::table('professions')->insert([
+	            'title' => 'Front-end developer'
+	        ]);
+
+	        DB::table('professions')->insert([
+	            'title' => 'Web Designer'
+	        ]);
+	    }
+
+---
 
 
 
