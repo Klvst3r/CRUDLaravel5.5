@@ -215,27 +215,440 @@ el codigo de los Seeders quedaria de la siquiente manera como ejemplo:
 	    public function run()
 	    {
 
-	        //Ejemplo de funcionalidad con SQL directo en los Seeders
-	        /*  DB::insert('INSERT INTO professions (title) VALUES (:title)', [
-	        'title'=>'Desarrollador Back-end'
-	        ]);
-	        */
-	       
-	       
-	       \App\Profession:create([
-	       		'title' => 'Desarrollador Back-end',
-	       ]);
+	         //Ejemplo de funcionalidad con SQL directo en los Seeders
+            /*  DB::insert('INSERT INTO professions (title) VALUES (:title)', [
+            'title'=>'Desarrollador Back-end'
+            ]);
 
-	        DB::table('professions')->insert([
-	            'title' => 'Front-end developer'
-	        ]);
 
-	        DB::table('professions')->insert([
-	            'title' => 'Web Designer'
-	        ]);
+
+            DB::table('professions')->insert([
+                'title' => 'Back-end developer'
+            ]);
+
+            */
+           
+           
+           \App\Profession::create([
+                'title' => 'Back-end developer',
+           ]);
+
+            DB::table('professions')->insert([
+                'title' => 'Front-end developer'
+            ]);
+
+            DB::table('professions')->insert([
+                'title' => 'Web Designer'
+            ]);
+
 	    }
 
 ---
+
+Se pasa el insert antes y poder ver la diferencia de trabajar con SQL directamente, trabajar con el constructor de consultas directamente o hacerlo en un nivel más alto trabajando con un modelo de Laravel, teniendo en cuenta esto, se va a reejecutar los Seeder en la consola:
+
+	> php artisan db:seed
+	Seeding: ProfessionSeeder
+	Seeding: UserSeeder
+
+
+
+Y ahora revisamos en nuestro adminisrador de Bd revisando la tabla professions, podemos ver que se tiene un resultado similar al de antes, sin embargo Eloquent se encargo de completar la fecha de creación del modelo por uno, como se puede ver y la fecha de actualizción sera la misma
+
+mysql> select * from professions;
++----+---------------------+---------------------+---------------------+
+| id | title               | created_at          | updated_at          |
++----+---------------------+---------------------+---------------------+
+|  1 | Back-end developer  | 2022-06-22 20:25:31 | 2022-06-22 20:25:31 |
+|  2 | Front-end developer | NULL                | NULL                |
+|  3 | Web Designer        | NULL                | NULL                |
++----+---------------------+---------------------+---------------------+
+
+
+Pero si se actualiza posteriormente el modelo, entonces la fecha de actualizacon (updated_at) va a ser mayor y la primer fecha se va a mantener igual. 
+
+Ahora podemos regresar al archivo del ProfessionSeeder.php y podemos crear el resto de las profesiones utilizando Eloquent y el modelo Professión en vez del constructor de consultas de esta forma. 
+
+
+---ProfessionSeeder.php
+	class ProfessionSeeder extends Seeder
+	{
+	    /**
+	     * Run the database seeds.
+	     *
+	     * @return void
+	     */
+	    public function run()
+	    {
+
+	         //Ejemplo de funcionalidad con SQL directo en los Seeders
+            /*  DB::insert('INSERT INTO professions (title) VALUES (:title)', [
+            'title'=>'Desarrollador Back-end'
+            ]);
+
+
+
+            DB::table('professions')->insert([
+                'title' => 'Back-end developer'
+            ]);
+
+            */
+           
+           
+           \App\Profession::create([
+                'title' => 'Back-end developer',
+           ]);
+
+            \App\Profession::create([
+                'title' => 'Front-end developer'
+            ]);
+
+            \App\Profession::create([
+                'title' => 'Web Designer'
+            ]);
+
+	    }
+
+---
+
+
+Y cuando estamos trabajando con una clase sobre todo si necesitamos hacerle referencia al nombre varias veces podemos importar esta clase al principio del archivo, que no es más que colocar la sentencia use con el combre de la clase al principio del archivo en este caso no tiene un nombre de espacio, de tener un nombre de espacio entonces se colocara las sentencias use y luego de definir el nombre de esspacio y de esta manera cada vez que se haga mencion a profession dentro del resto del archivo, PHP va a saber que yo quiero interactuar con la clase "Profession" que esta en el nombre de espacio "app". 
+
+
+---ProfessionSeeder.php
+<?php
+
+
+use App\Profession;
+
+
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;        
+
+class ProfessionSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
+    public function run()
+    {
+
+            Profession::create([
+                'title' => 'Back-end developer',
+                ]);
+
+            Profession::create([
+                'title' => 'Front-end developer'
+                ]);
+
+            Profession::create([
+                'title' => 'Web Designer'
+                ]);
+
+
+    }
+}
+
+---
+
+
+
+Recordemos que los nombres de espacio tambie´n son relativos a la ubicación de los archivos dentro de la carpeta App.
+
+
+Por ello en el modelo "Profession.php"
+
+--- /App/Profession.php
+<?php
+
+namespace App;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Profession extends Model
+{
+    //
+}
+
+
+---
+
+
+Observemos que el modelo Profession que por defecto esta dentro del directorio App, tiene el nombre de espacio (namespace) "App" con la primera letra en mayusculas y luego el nombre de la clase que es Profession. 
+
+Regresando al Seeder de Profesión se podria dar un alias a la clase de Professión por ejemplo llamarla Profesion en español. Y tambien se deberia cambiar en la inserción de valores a la tabla de acuerdo al nombre de espacio manejado
+
+Quedando
+
+---ProfessionSeeder.php
+	<?php
+
+
+	use App\Profession ad Profesion;
+
+
+	use Illuminate\Database\Seeder;
+	use Illuminate\Support\Facades\DB;        
+
+	class ProfessionSeeder extends Seeder
+	{
+	    /**
+	     * Run the database seeds.
+	     *
+	     * @return void
+	     */
+	    public function run()
+	    {
+	    	Profesion::create([
+	                'title' => 'Back-end developer',
+	                ]);
+
+	            Profesion::create([
+	                'title' => 'Front-end developer'
+	                ]);
+
+	            Profesion::create([
+	                'title' => 'Web Designer'
+	                ]);
+
+	    }
+	}
+
+
+---
+
+
+En este caso esto no hace falta, podemos regresar a la consola y ejecutar 
+	> php artisan db:seed
+
+Para comprobar que se esta cargando todas las profesiones el modelo de "Profession"	en vez del constructor de consultas de Laravel directamente, 
+
+
+
+mysql> select * from professions;
++----+---------------------+---------------------+---------------------+
+| id | title               | created_at          | updated_at          |
++----+---------------------+---------------------+---------------------+
+|  1 | Back-end developer  | 2022-06-22 21:52:42 | 2022-06-22 21:52:42 |
+|  2 | Front-end developer | 2022-06-22 21:52:42 | 2022-06-22 21:52:42 |
+|  3 | Web Designer        | 2022-06-22 21:52:42 | 2022-06-22 21:52:42 |
++----+---------------------+---------------------+---------------------+
+
+
+
+Volviendo rapidamente al tema de los nombres de espacio, podemos generar nuestro modelo "Profession" dentro de otra carpeta, nuevamente con el comando 
+	> php artisan make:model Models/Profession
+
+Especificando que se va a generar dentro de Models, quedando la ruta:
+	/App/models/Profession.php	
+
+En Este caso Laravel va a generar el directorio por nosotros, el subdirectorio estara dentro de "App", y tenemos el Modelo "Profession". Notemos que el namespace tambien cambia
+
+---Models/Propfessino.php
+
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Profession extends Model
+{
+    //
+}
+
+---
+
+
+Como ya se habia comentado el namespace hace referencia a la estructura de directorios y por supuesto en ProfessionSeeder.php se puede utilizar el modelo  "Profession" que esta dentro del directorio Models, 
+
+---ProfessionSeeder.php
+<?php
+	use App\Models\Profession;
+---
+
+
+o tambien se podria por ejemplo mover la clase directamente, siempre que se recurde cambiar el nombre de espacio
+
+---Models\Profession.php
+<?php
+
+	namespace App\Models;
+
+	use Illuminate\Database\Eloquent\Model;
+
+	class Profession extends Model
+	{
+	    //
+	}
+
+---
+
+
+
+En este caso en vez de App se va a utilizar "App\Models" y de vuelta en ProfessionSeeder y a todas las clases donde se este utilizando este modelo simplemente se debe recordar que hay que especificar el nuevo nombre de espacio, 
+
+---	ProfessionSeeder.php
+
+<?php
+
+
+//Cuando se Agrega la subcarpeta Models que se movio el Modelo en la subcarpeta
+use App\Models\Profession;
+---
+
+Regresando a la consola se puede verificar que aun funcionan los Seeders.
+	>php artisan db:seed	
+	Seeding: ProfessionSeeder
+	Seeding: UserSeeder
+
+Verificando el Seeder anterior	
+
+mysql> select * from professions;
++----+---------------------+---------------------+---------------------+
+| id | title               | created_at          | updated_at          |
++----+---------------------+---------------------+---------------------+
+|  1 | Back-end developer  | 2022-06-22 22:27:20 | 2022-06-22 22:27:20 |
+|  2 | Front-end developer | 2022-06-22 22:27:20 | 2022-06-22 22:27:20 |
+|  3 | Web Designer        | 2022-06-22 22:27:20 | 2022-06-22 22:27:20 |
++----+---------------------+---------------------+---------------------+
+
+
+En este caso se va a dejar el Modelo "Profession" y el modelo "Users" dentro de la carpeta "App", solo sirvio para explicar que se puede hacer este cambio, podemos seguir practicando.
+
+De ahora en adelante se tendra la carpeta Models para los Modelos dentro de la Carpeta "App" para el presente proyecto.
+
+De regreso a UserSeeder. Se va a crear nuestro usuario utilizando el modelo de Eloquent "User" en vez del constructor de consultas de SQL. Asi que se reemplazara en UserSeeder, simplemente como se especifica a continuación, sistitutendo "DB::table('users')->insert" simplemente por: " User::create"
+
+---UserSeeder.php
+<?php
+
+use App\User;
+...
+
+...
+	 $professionId = DB::table('professions')
+           ->where('title', 'Back-end developer')
+           ->value('id');
+
+            User::create([
+                        'name' => 'Klvst3r',
+                        'email' => 'klvst3r@email.com',
+                        'password' => bcrypt('laravel'),
+                        'profession_id' => $professionId
+                   ]);
+
+...
+---
+Recordando que debemos asegurar de importar el modelo "App\User" al principio del archivo.
+
+
+
+Haciendo lo anterior se puedfe regresar a la consola y reejecutar los seeder para verificar que no se esta cometiendo ningun error.
+
+	> php artisan db:seed
+	Seeding: ProfessionSeeder
+	Seeding: UserSeeder
+
+Revisando nuevamente la tabla de Usuarios y Professiones:
+
+
+
+mysql> select * from professions;
++----+---------------------+---------------------+---------------------+
+| id | title               | created_at          | updated_at          |
++----+---------------------+---------------------+---------------------+
+|  1 | Back-end developer  | 2022-06-22 22:42:18 | 2022-06-22 22:42:18 |
+|  2 | Front-end developer | 2022-06-22 22:42:18 | 2022-06-22 22:42:18 |
+|  3 | Web Designer        | 2022-06-22 22:42:18 | 2022-06-22 22:42:18 |
++----+---------------------+---------------------+---------------------+
+3 rows in set (0.00 sec)
+
+mysql> select * from users;
++----+---------+-------------------+--------------------------------------------------------------+----------------+---------------------+---------------------+---------------+
+| id | name    | email             | password                                                     | remember_token | created_at          | updated_at          | profession_id |
++----+---------+-------------------+--------------------------------------------------------------+----------------+---------------------+---------------------+---------------+
+|  1 | Klvst3r | klvst3r@email.com | $2y$10$t21oAPvk3IqMTPjFvrY7b.vZ.WFS1v8/MSHyHNWCGWLNsWkA0eufG | NULL           | 2022-06-22 22:42:18 | 2022-06-22 22:42:18 |             1 |
++----+---------+-------------------+--------------------------------------------------------------+----------------+---------------------+---------------------+---------------+
+1 row in set (0.00 sec)
+
+
+
+
+Se puede observar que ya se tiene el usuario registrado, y que nuevamente se encarga de registrar las fechas created_at y updated_at por nosotros automaticamente, de vuelta a UserSeeder, tambien podemos utilizar el ORM para hacer consultas a la base de datos
+
+En este caso en vez de utilizar el Phasa DB::table, luego el nombre de la tabla simplemente vamos a especificar el nombre del modelo de "Profession"
+
+
+---UserSeeder.php
+<?php
+use App\User;
+use App\Profession;
+...
+...
+
+  $professionId = \App\Profession::where('title', 'Back-end developer')->value('id');
+
+            User::create([
+                        'name' => 'Klvst3r',
+                        'email' => 'klvst3r@email.com',
+                        'password' => bcrypt('laravel'),
+                        'profession_id' => $professionId
+                   ]);
+
+---
+
+
+Hecho esto podemos regresar a la consolola y reejecutar los seeders, para comprobar que se tiene el mismo resultado de antes.
+
+	> php artisan db:seed
+	Seeding: ProfessionSeeder
+	Seeding: UserSeeder
+
+
+
+Revisando en la consulta hacia las tablas de la BD
+
+
+
+mysql> select * from professions;
++----+---------------------+---------------------+---------------------+
+| id | title               | created_at          | updated_at          |
++----+---------------------+---------------------+---------------------+
+|  1 | Back-end developer  | 2022-06-22 22:51:50 | 2022-06-22 22:51:50 |
+|  2 | Front-end developer | 2022-06-22 22:51:50 | 2022-06-22 22:51:50 |
+|  3 | Web Designer        | 2022-06-22 22:51:50 | 2022-06-22 22:51:50 |
++----+---------------------+---------------------+---------------------+
+3 rows in set (0.00 sec)
+
+
+mysql> select * from users;
++----+---------+-------------------+--------------------------------------------------------------+----------------+---------------------+---------------------+---------------+
+| id | name    | email             | password                                                     | remember_token | created_at          | updated_at          | profession_id |
++----+---------+-------------------+--------------------------------------------------------------+----------------+---------------------+---------------------+---------------+
+|  1 | Klvst3r | klvst3r@email.com | $2y$10$J88kHONW6K4BVq/FjilpEu//RZoXzVTHKYhfAmUPqO2MS.e092yZS | NULL           | 2022-06-22 22:51:51 | 2022-06-22 22:51:51 |             1 |
++----+---------+-------------------+--------------------------------------------------------------+----------------+---------------------+---------------------+---------------+
+1 row in set (0.00 sec)
+
+
+
+Comprobando que se tiene el mismo resultado de antes.
+
+Un detalle interesante cuando se trabaja con eloquent es que se puede interactar directamente con los metodos incluidos en el modelo de Eloquent, pero tambien se puede 
+
+8'15
+
+
+
+
+
+
+
+
+
+
 
 
 

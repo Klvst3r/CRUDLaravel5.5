@@ -1,5 +1,14 @@
 <?php
 
+//Para Tema 30 
+//con alias 
+//use App\Profession as Profesion;
+///use App\Profession;
+///
+//Cuando se Agrega la subcarpeta Models que se movio el Modelo en la subcarpeta
+use App\Models\Profession;
+
+// Hasta tema 29
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;        
 
@@ -54,8 +63,83 @@ class ProfessionSeeder extends Seeder
 
         /*******  Inicio del Tema 30. Eloquent, el ORM de Larael *******/
 
-        
+         //Ejemplo de funcionalidad con SQL directo en los Seeders
+            /*  DB::insert('INSERT INTO professions (title) VALUES (:title)', [
+            'title'=>'Desarrollador Back-end'
+            ]);
 
+
+
+            DB::table('professions')->insert([
+                'title' => 'Back-end developer'
+            ]);
+
+            */
+           
+           // Primera Opcion ejecutada
+           // ---------------------
+           
+         /*  \App\Profession::create([
+                'title' => 'Back-end developer',
+           ]);
+
+            DB::table('professions')->insert([
+                'title' => 'Front-end developer'
+            ]);
+
+            DB::table('professions')->insert([
+                'title' => 'Web Designer'
+            ]);*/
+
+            // ---------------------
+            
+
+            // 2da Opcion ejecutada
+            // ---------------------
+            /*\App\Profession::create([
+                'title' => 'Back-end developer',
+                ]);
+
+            \App\Profession::create([
+                'title' => 'Front-end developer'
+                ]);
+
+            \App\Profession::create([
+                'title' => 'Web Designer'
+                ]);*/
+            // ---------------------
+            // 
+            // 3da Opcion ejecutada: Importar la clase que se repite
+            // ---------------------
+            Profession::create([
+                'title' => 'Back-end developer',
+                ]);
+
+            Profession::create([
+                'title' => 'Front-end developer'
+                ]);
+
+            Profession::create([
+                'title' => 'Web Designer'
+                ]);
+            // ---------------------
+            // 
+                  // 4ta Opcion ejecutada: Alias con la clase
+            // ---------------------
+           /* Profesion::create([
+                'title' => 'Back-end developer',
+                ]);
+
+            Profesion::create([
+                'title' => 'Front-end developer'
+                ]);
+
+            Profesion::create([
+                'title' => 'Web Designer'
+                ]);*/
+            // ---------------------
+
+            // 
 
         /*******  Tema 30. Eloquent, el ORM de Larael *******/
 

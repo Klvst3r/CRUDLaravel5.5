@@ -1,5 +1,10 @@
 <?php
 
+use App\User;
+
+//Para la opcion 17 se agrega el Modelo de Profession al principio
+use App\Profession;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -189,8 +194,9 @@ class UserSeeder extends Seeder
                         
                    ]);
             */
-
+            /*********** Hasta Sección 29*********************/
             // opci[on 15
+            /*
              DB::table('users')->insert([
                         'name' => 'Klvst3r',
                         'email' => 'klvst3r@email.com',
@@ -198,5 +204,34 @@ class UserSeeder extends Seeder
                         'profession_id' => DB::table('professions')->whereTitle('Back-end developer')->value('id')
                         
                    ]);
+            */
+            /*********** Hasta Sección 29*********************/
+
+            /*********** Seccion 30 Eloquent*********************/
+            // Opcion 16 resgitarndo usuarios y Profesiones con el ORM de Eloquent 
+         /*   $professionId = DB::table('professions')
+           ->where('title', 'Back-end developer')
+           ->value('id');
+
+            User::create([
+                        'name' => 'Klvst3r',
+                        'email' => 'klvst3r@email.com',
+                        'password' => bcrypt('laravel'),
+                        'profession_id' => $professionId
+                   ])*/;
+
+
+            // Opcion 17 consultas a la BD
+            $professionId = \App\Profession::where('title', 'Back-end developer')->value('id');
+
+            User::create([
+                        'name' => 'Klvst3r',
+                        'email' => 'klvst3r@email.com',
+                        'password' => bcrypt('laravel'),
+                        'profession_id' => $professionId
+                   ]);
+
+
+            /*********** Seccion 30 Eloquent*********************/
     }
 }
