@@ -636,12 +636,234 @@ mysql> select * from users;
 
 Comprobando que se tiene el mismo resultado de antes.
 
-Un detalle interesante cuando se trabaja con eloquent es que se puede interactar directamente con los metodos incluidos en el modelo de Eloquent, pero tambien se puede 
-
-8'15
+Un detalle interesante cuando se trabaja con eloquent es que se puede interactar directamente con los metodos incluidos en el modelo de Eloquent, pero tambien se puede interactuar con el Constructor de consultas de SQL
 
 
+Para demostrar lo anterior si se inspecciona la Clase Model.php, en este no se podra encontrar el metodo "where()" o su declaración. el metodo no existe dentro del modelo de Laravel, de hecho a pesar de que este modelo incluye algunos trails o funcionalidades adicionales, en ninguno de ellos seremos capaces de encontrar el metodo "where()". Entonces como es poisble que nosotros podamos llamar al metodo "where()" dentro de "Profession", si el metodo no esta definido dentro del modelo de Laravel. Esto es posible por que Eloquent utiliza algo que se llama metodos magigos por lo que en "Model.php"
 
+
+
+
+---Model.php (Revision)
+	public function __construct(array $attributer = [])
+	{
+		$this->bootIfNotBooted();
+ 
+		$this->syncOriginal();
+
+		$this->fill($attributes);
+	}
+
+---
+
+
+Cuando PHP lo encuantre en el llamado a un metodo dentro de la clase se va a llamar al metodo "__call()" Esto se puede demostrar de la siguiente manera, ya que se impriran las variables $metod, como $parameters cuando el metodo que se este intentando ejecutar sea where  
+
+
+
+
+---Model.php
+public function __call($method, $parameters)
+{
+
+	/*
+	Demostracion
+	 */
+	 
+
+	if($method == 'where')	{
+		dd($method, $parameters);
+	}
+
+	if (in_array($method, ['increment', 'decrement'])){
+		return $this->$method(...$parameters);
+	}
+
+	return $this->newQuery()->$method(...$parameters);
+}
+
+---
+
+Regresando a la consula y reejecutamos:
+	> php artisan db:seed
+	Seeding: ProfessionSeeder
+	Seeding: UserSeeder
+	"where"
+	array:2[
+		0 => "title"
+		1 => "Back-end developer"
+	]
+
+Podremos ver que se esta imprimiendo where y luego que se esta utilizando un array con los argumentos que se estan pasando en el llamado a "where", y esto sucede por supuesto en UserSeeder.php en la linea donde se utiliza el where
+	           
+	    $professionId = \App\Profession::where('title', 'Back-end developer')->value('id');
+
+Podemos ver que se esta llamando al metodo "where()", con los argumentos "title" y "Back-end developer", como se tiene en la salida al momento de ejecutar los seeders, entonces cuando se llame a un metodo que no exista dentro del Modelos de Eloquent, Laravel va a delegar esta funcioanlidad al contructor de consultas Laravel va a comenzar o construir una nueva consulta y luego va a llamar al metodo en este caso al metodo "where()" y va a pasar los parametros normalmente como se estaba haciendo anteriormente con 
+	DB:::table('professions')->where ('title', 'Back-end developer');
+
+Aca se va a comenzar construir una consulta mas o menos de la siguiente manera:
+---
+	if($method == 'where')	{
+		dd($method, $parameters);
+	}
+
+	if (in_array($method, ['increment', 'decrement'])){
+		return $this->$method(...$parameters);
+	}
+
+	return $this->newQuery()->$method(...$parameters);
+}
+---
+
+Y esto funciona por que tampoco se esta especificando el nombre de la tabla que se quiere usar, y esto funciona por que Laravel se basa en el principio de convención sobre configuración en este caso Laravel va a utilizar un nombre de tabla basado en el nombre del modelo, y eso se puede demostrar dentro del codigo fuente de Laravel si se inspecciona la declaración del metodo "getTable()"
+
+
+---
+public function getTable()
+{
+	if(! isset($this->table)){
+		return str_replace('\\', '', Str::snake(Str::plural(class_basename($this))));
+	}
+
+	return $this->table;
+}
+
+---
+
+
+Se puiede ver la operación anterior que va a utilizar Laravel, para intentar descubrir el nombre de la tabla, se puede incluso utilizar un "dd()" para envolver todo el codigo y dmostrar, al momento de ejecutar los seeders.
+
+
+---
+public function getTable()
+{
+	if(! isset($this->table)){
+		return dd(str_replace('\\', '', Str::snake(Str::plural(class_basename($this)))));
+	}
+
+	return $this->table;
+}
+
+---
+
+
+La salida de la ejecuación de los Seeders es:
+	> php artisan db:seed
+	Seeding: ProfessionSeeder
+	Seeding: UserSeeder
+	"professions"
+
+
+Se puede ver que Laravel va a utilizar la tabla "professions" para el modelo de profesiones, pero si nosotros creamos nuestra tabla con otro nombre, por ejemplo "my_professions", Se necesitara en la migracion correspondiente "2022_06_09_210550_add_profession_id_to_users.php" se tiene que cambiar la migración para utilizar la tabla 2my-professions
+
+
+---2022_06_09_210550_add_profession_id_to_users.php
+
+	 public function up()
+    {
+        Schema::table('users', function(Blueprint $table){
+
+                $table->unsignedInteger('profession_id')->nullable();
+                
+                $table->foreign('profession_id')->references('id')->on('my_professions');
+
+            });
+    }
+
+---
+
+
+Se tendrian que reejecutar las migraciones
+	> php artisan migrate:fresh
+
+Luego se reejecutarian los Seeders 
+
+	> php artisan db:seeds
+
+En este caso se obtendria un error, donde se indica que la tabla "profesions"  no fue encontrada, esto NO quiere decir que estamos obligados a utlizar Laravel es muy flesible Y permite definir la tabla que uno quiera utiilzar, solo se debe especificar en el modelo, en este caso especifico en el Modelo "Profession.php"
+
+---/App/Profession.php
+<?php
+
+namespace App;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Profession extends Model
+{
+    protected $table = 'my_professions'
+}
+
+---
+
+
+con la propiedad protegida "protected $table" y luego el nombre de la tabla como na cadena mostrada en la parte de arriba, ahora se puede ejecutar los Seeders y  aunque existe un error, 
+
+
+>>>
+SQLSTATE[42S02]: Base table or view not found: 1146 'crudlaravel5_5.professions' doesn't exist (SQL: truncate 'professions')
+
+
+
+
+
+este no es de Eloquen si no de la forma en que se quieren variar las tablas al momento de ejecutar los Seeders, asi que tambien en el Registro de los Seeders, tambien debe cambiarse la especificación:
+
+---databaseSeedes.php
+
+  public function run()
+    {
+
+        $this->truncateTables([
+          'users',
+          'my_professions'
+        ]);
+
+
+---
+
+Utilizando "my_professions" y ahora se puede reejecutar los Seeders y ahora parece fuincionar correctamente los Seeders:
+	> php artisan db:seed
+	Seeding: ProfessionSeeder
+	Seeding: UserSeeder
+	"users"
+
+
+Se esta imprimiendo "users" por que se hizo un cambio dentro del codigo fuente de Laravel, que se debe deshacer.
+
+
+---Model.php
+public function getTable()
+{
+	if(! isset($this->table)){
+		return str_replace('\\', '', Str::snake(Str::plural(class_basename($this))));
+	}
+
+	return $this->table;
+}
+
+---
+
+Se puede insepccionar la estructura de la base de datos y se puede observar que existe una tabla llamada "my_profesions", que incluye las profesiones que sirven como tablas relacionadas para el registro de los usuarios.
+
+Ahora si regresamos al Modelo "Professions.php" y comentamos o eliminamos la linea donde se especifica el nombre de la tabla:
+
+
+---/App/Profession.php
+<?php
+
+namespace App;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Profession extends Model
+{
+    //protected $table = 'my_professions'
+}
+
+---
+
+12'30
 
 
 
