@@ -852,7 +852,7 @@ Ahora si regresamos al Modelo "Professions.php" y comentamos o eliminamos la lin
 ---/App/Profession.php
 <?php
 
-namespace App;
+namespace App ;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -863,12 +863,80 @@ class Profession extends Model
 
 ---
 
-12'30
+Restaurando los siguientes archivos en el orden mencionado camiando de "my_profession" a "professions".
+
+- Modelo 	 	|	profession.php
+- Migración		|	2022_06_06_182413_create_professions_table.php
+- Seeder 		|	DatabaseSeeder.php
 
 
 
+Omisión de las columna created_at y updated_at
+-----------------------------------------------
 
 
+
+Rejecutando tanto las migraciones como los Seeders en la consola de nuevo dentro de la consola se verfica todo este correctamente registrado dentro de la base de datos. Se tiene nuevamente la tabla profession. Con esto queda indentificado como personalizar el nombre de la tabla y otras funcionalidades adicionales por ejemplo. Vamos a suponer que no se quiere los campos de "created_at" y "updated_at" en nuestra tabla. O de pronto estamos trabajando Con una base de datos ya existente que no trae estos campos, entonces vamos a modificar la migración "professions_table" Para crear la tabla de profesiones. Para ello se va a comentar la linea "$table->timestamps()" que es el llamado al metodo "timestamps()"."
+
+--- 2022_06_06_182413_create_professions_table.php
+	public function up()
+	    {
+	        Schema::create('professions', function (Blueprint $table) {
+	            $table->increments('id');
+	            $table->string('title', 100)->unique();
+	            //$table->timestamps();
+	        });
+	    }
+---
+
+Regresando a la consola reejecutamos las migraciones. 
+
+si se tiene un alias puede hacerse como ejemplo de la siguiente manera:
+	> art :mig:fre
+
+Nosotros lo continuaremos realizando de la forma predeterminada y establecida con el Framework de Laravel
+	> php artsian migrate:fresh
+
+Se podra ver que al revisar la estructura de la tabla profesiones que ya no se tienen los  campos de creación y atualizción.
+
+si regresamos a la consola y se reejejcutan los seeders 
+
+Si hay alias pude ser uno de ellos:
+	> art db:seed
+
+En este caso se va a obtener un error:
+
+>>>
+SQLSTATE[42S22]: Column not found: 1054 Unknown column 'updated_at' in 'field list' (SQL: insert into 'professions' ('title', 'updates_at', 'created_at') values (Back-end developer, '2022-06-22 22:51:50', '2022-06-22 22:51:50'))
+
+Lo que indica es que la columna updated_at no fue encontrada Pero puedo regresar al editor e indicar que no se quieren utilizar estos campos y para ello modificamos en el modelos, utilizando la propidad $timestamps y en este caso publica con el valos "falso":
+
+---Profession.php
+<?php
+
+namespace App;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Profession extends Model
+{
+    //
+
+    public $timestapms = false;
+}
+
+---
+
+Regresamos a la consola y reejecutamos los Seeders:
+	> php artisan db:seed
+
+El error habra desaparecido.
+
+
+Laravel no va a intentar cargar estos datos y por lo tanto no se va a producir el error puesto que las culumnas "created_at" y "updated_at" no existen.
+
+
+De manera personal, vamos a dejar estas columnas para poder continuar con el seguimiento de manera precisa, por lo que se deja sin efecto este ultimo cambio del subtema: Omisión de las columna created_at y updated_at.
 
 
 
@@ -958,4 +1026,3 @@ Si bien, se puede resolver bien como se indica ejecutando >>> use App\Profession
 PHP Fatal error: Class 'Profession' not found in eval()'d code on line 1
 
 Luego de actualizar composer, con composer update, ya se puede ejecutar >>> Profession::all();
-
