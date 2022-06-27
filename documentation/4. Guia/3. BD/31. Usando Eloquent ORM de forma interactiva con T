@@ -1,0 +1,210 @@
+31. Usando Eloquent ORM de forma interactiva con Tinker
+-------------------------------------------------------
+
+
+Notas:
+======
+En esta Seccion se aprendera a interactuar desde la terminal con nuestra aplicación utilizando la consola dinámica Tinker. También veremos nuevos métodos de Eloquent para interactuar con nuestros modelos y aprenderemos cómo crear nuestros propios métodos dentro de los modelos.
+
+Vayamos a cada seccion:
+
+
+
+Acceder a Tinker
+----------------
+
+Podemos acceder al entorno con el comando de Artisan «tinker»:
+	> php artisan tinker
+
+Desde el entorno interactivo podemos ejecutar expresiones de PHP y también vamos a tener disponible las clases de nuestro proyecto y del framework.
+
+
+
+
+Retornar todos los registros con el método all()
+------------------------------------------------
+
+Utilizando el «método all()» retornamos todos los registros asociados a un modelo:
+---
+	$professions = Profession::all();
+---
+
+
+
+Los métodos «all()» y «get()» en Eloquent retornan colecciones «(objetos de la clase Illuminate\Database\Eloquent\Collection)» las cuales «envuelven» el array de resultados y nos proveen de funciones y métodos adicionales, por ejemplo:
+
+Podemos obtener el primer resultado utilizando el método «first()» y el último utilizando el método «last()». También podemos obtener un resultado aleatorio utilizando el método «random()»:
+
+---
+	$profession->first(); // Obtenemos el primer resultado
+	$profession->last(); // Obtenemos el último resultado
+	$profession->random(1); // Obtenemos un resultado aleatorio
+---
+
+
+
+Estos métodos de la clase Collection no generan nuevas consultas SQL sino que operan sobre los resultados ya encontrados.
+
+
+
+
+Seleccionar un campo con el método pluck()
+------------------------------------------
+
+Utilizando el método «pluck()» podemos retornar una nueva colección que contenga un listado de un solo campo en vez de un listado de objetos. Por ejemplo, podemos obtener solo el campo title de la siguiente forma:
+
+---
+	$professions->pluck('title');
+---
+
+
+	Devuelve:
+---
+	=> Illuminate\Support\Collection {#736
+	     all: [
+	       "Desarrollador back-end",
+	       "Desarrollador front-end",
+	       "Diseñador web",
+	     ],
+	   }
+---
+
+
+
+Crear una colección de forma manual
+-----------------------------------
+
+Con el helper «collect» podemos crear una colección de forma manual:
+---
+	collect(['Klvst3r', 'crudlaravel', 'Laravel']);
+--
+
+
+Sin embargo éste será un objeto de la clase «Illuminate\Support\Collection» que representa la colección «base» en vez de «Illuminate\Database\Eloquent\Collection».
+
+
+	## Las colecciones de Eloquent extienden de la colección «base» pero proveen algunos métodos extra asociados al ORM ##
+
+
+
+Declarar métodos en el modelo
+=============================
+
+Podemos declarar métodos dentro de un modelo y utilizarlos cuando interactuemos con los objetos de estos modelos:
+
+
+Declarando métodos no estáticos:
+--------------------------------
+
+Asociamos un método para ser utilizado sobre un objeto (que representa un registro de la base de datos):
+---
+	public function isAdmin()
+	{
+	    return $this->email === 'klvst3r@mail.com';
+	}
+---
+
+
+En este caso «isAdmin()» devuelve true si el email del usuario es igual al valor con el que está siendo comparado:
+---
+	$user = User::find(1);
+	$user->isAdmin(); // Devuelve true o false
+---
+
+
+Declarando métodos estáticos:
+-----------------------------
+
+Asociamos un método a la clase del modelo como tal, la cual representa el acceso a una tabla de la base de datos. Estos métodos son usados típicamente para consultas:
+
+---
+public static function findByEmail($email)
+{
+    return static::where('email', $email)->first();
+}
+---
+
+Luego podrás usar «User::findbyEmail('email@aqui.com')» para buscar a un usuario por el campo email y obtener un objeto «User» como resultado (o «null» si no se encuentra ningún registro).
+
+
+
+
+
+Practica:
+=========
+
+
+
+Ejercicios:
+===========
+
+Cuando pongo "Calendar::all()" en Tinker, me sale el siguiente error:
+
+>>>
+	PHP fatal error: Class 'Calendar' not found in Psy Shell code on line 1.
+
+Yo tengo un controlador llamado Calendar, de hecho, he venido haciendo todo el curso con "Calendar" en vez de "Profession"ya que intento hacer un calendario en mi proyecto.
+
+Entonces, para para la sección anterior en vez de crear un controlador Profession, lo hice "Calendar". Todo lo que trabajamos en la sección anterior me funcionó perfectamente, pero en este caso Tinker no me consigue eso.
+
+Leí que puede ser por el namespace del controlador, pero no tiene mucho sentido puesto que "User" también tiene de namespace "App" y Tinker si me lo encuentra.
+
+	Para mí esa característica de Tinker es un poco experimental y está allí por comodidad o como último recurso, si no te funciona simplemente coloca el nombre de espacio completo App\Calendar.
+
+	También podrías intentar con composer dump-autoload.
+
+	++
+
+	Ya lo resolví, tuve que usar "composer dump-autoload" y luego intenté de nuevo y solventó.
+	
+
+- * - * -
+
+Cual es la diferencia de usar «$user->find()» y «User::find()»; 	
+
+	Es lo mismo, lo que pasa es que en $user ya deberia tener el modelo de User.
+	$user = new User();
+	$user->find(1);
+
+- * - * -
+Como es que desde los seeders puedes hacer «Profession::create(['title']=>'Desarrolador'])»; sin haber puesto 'title' en la variable $fillable del modelo ?
+	
+	Es porque en los seeders se invoca al metodo desde Model::unguarded ?
+
+	Esa es la respuesta correcta ;) Model::unguarded() desabilita la protección de asignación masiva para todos los atributos del modelo, aun cuando el modelo tengas $fillable o $guarded definido. Así que usa el método con precaución
+
+- * - * -
+
+	Si se tuvo problemas de asignación en masa a la hora de crear un nuevo usuario desde Tinker, por ejemplo:
+
+	$anotherUser=User::create(['user_profession_id'=>'1', 'user_firstname'=>'Pedrito', 'user_secondname'=>'Picapiedras', 'user_lastname'=>'Roca Dura', 'user_email'=>'picapiedras@gmail.com', 'user_password'=>bcrypt(123456), 'user_phone'=>'1234567890', 'user_gender'=>'Male', 'user_is_active'=>1, 'user_kind'=>'Administrator']);
+
+	Recuerde que primero debe agregar esos campos al array protected $fillable al inicio de la declaración del Model. O sea, ponerlos como "rellenables" o que pueden ser asignados en masa desde Tinker:
+
+	/**
+	* The attributes that are mass assignable.
+	*
+	* @var array
+	*/
+	protected $fillable = [
+	'user_profession_id',
+	'user_firstname',
+	'user_secondname',
+	'user_lastname',
+	'user_email',
+	'user_password',
+	'user_phone',
+	'user_gender',
+	'user_is_active',
+	'user_kind',
+	];
+
+
+- * - * -
+
+Surge este error, que cuando se ejecuta 'findByEmail()' me devuelve siempre y solamente el primer User. Por que puede ser?
+	
+	porque se esta usando ->first() con eso solo devuelve el primer valor que encuentra, y adicionalmente hay un solo usuario con el correo que le esta pasando como parametro.
+
+- * - * -
+
