@@ -133,6 +133,108 @@ Luego podrás usar «User::findbyEmail('email@aqui.com')» para buscar a un usua
 Practica:
 =========
 
+Dentro de los multiples beneficios que trae trabajar con el Framework de Laravel, se encuentra el entorno de programación interactiva llamada «Tinker» se puede acceder a dicho entorno con el comando desde la consola y desde el directorio del proyecto:
+	> php artisan thinker
+
+Al presionar «enter» ya se esta dentro del entorno interactivo. Desde aca se pueden ejecutar expresiones de PHP por ejemplo se quiere imprimir 
+
+	$ php artisan tinker
+	Psy Shell v0.9.12 (PHP 7.3.10 — cli) by Justin Hileman
+	>>> echo "Hello world";
+	Hello world⏎
+	>>>
+
+Observandose el resultado, pero lo más interesante no es que puedan ejecutarse expresioens de PHP, sino que se tienes disponibles las clases del proyecto y del Framework de Laravel. Por ejemplo ahora se puede intyeractuar con el modelo de «profesioens» de Laravel, de la siguiente manera:
+
+
+Este metodo «all()» no se ha visto hasta ahora, pero básicamente permite obtener todos los registros asociados a este modelo, en este caso todos los registros dentro de la tabla Professions, al precionar «enter».
+
+
+*** Problema
+	Al ejecutar la consola de Tinker marca el siguiente error:
+
+	$ php artisan tinker
+	Psy Shell v0.9.12 (PHP 7.3.10 — cli) by Justin Hileman
+	>>> Profession::all()
+	PHP Fatal error:  Class 'Profession' not found in Psy Shell code on line 1
+
+
+esa característica de Tinker es un poco experimental y está allí por comodidad o como último recurso, si no te funciona simplemente coloca el nombre de espacio completo App\Profession.
+
+También podrías intentar con el siguiente comando
+	> composer dump-autoload.
+
+
+Posterior a la generación de aerchivos optimizados se vulve a intentar utilizando exclusivamente la segunda opción.
+
+Volvemos a ejecutar
+
+
+	> php artisan tinker
+	Psy Shell v0.9.12 (PHP 7.3.10 — cli) by Justin Hileman
+	>>> Profession::all();
+	[!] Aliasing 'Profession' to 'App\Models\Profession' for this Tinker session.
+	PHP Deprecated:  The "Doctrine/Common/Inflector/Inflector::pluralize" method is deprecated and will be dropped in doctrine/inflector 2.0. Please update to the n
+	ew Inflector API. in C:/AppServ/www/dev/CRUDLaravel5.5/vendor/doctrine/inflector/lib/Doctrine/Common/Inflector/Inflector.php on line 264
+	PHP Deprecated:  The "Doctrine/Common/Inflector/Inflector::pluralize" method is deprecated and will be dropped in doctrine/inflector 2.0. Please update to the n
+	ew Inflector API. in C:/AppServ/www/dev/CRUDLaravel5.5/vendor/doctrine/inflector/lib/Doctrine/Common/Inflector/Inflector.php on line 264
+	=> Illuminate\Database\Eloquent\Collection {#4121
+	     all: [
+	       App\Models\Profession {#4122
+	         id: 1,
+	         title: "Back-end developer",
+	         created_at: "2022-06-22 22:51:50",
+	         updated_at: "2022-06-22 22:51:50",
+	       },
+	       App\Models\Profession {#4123
+	         id: 2,
+	         title: "Front-end developer",
+	         created_at: "2022-06-22 22:51:50",
+	         updated_at: "2022-06-22 22:51:50",
+	       },
+	       App\Models\Profession {#4124
+	         id: 3,
+	         title: "Web Designer",
+	         created_at: "2022-06-22 22:51:50",
+	         updated_at: "2022-06-22 22:51:50",
+	       },
+	     ],
+	   }
+	>>>
+
+
+
+Debo advertir que en mi caso existen dos modelos en la siguiente rutas
+1. El generado en el ejemplo numero 1 situado en la siguiente ruta:
+	\App\
+
+2. El segundo se genero dentro de una Carpeta lamada "Models"
+	Por lo que esta en \App\Models\Profession
+
+Laravel toma como base el segundo para la sección correspondiente de esta guia.
+
+
+***
+
+Notemos que en este caso
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 Ejercicios:
