@@ -80,3 +80,11 @@ Debo advertir que en mi caso existen dos modelos en la siguiente rutas
 
 Laravel toma como base el segundo para la sección correspondiente de esta guia.
 
+*** Al ejecutar la senetencia de Tinker vemos el resultado como en la sección superior, notemos que en este caso la clase Profession realemente no existe en la aplicación, mi clase se llama "App\Profession"; pero si yo intento trabajar con una clase que no existe con el proyecto «tinker» va a hacer su mejor esfuerzo para tratar de encontrarla por mi, Podemos ver que se creo un alias entre la clase "Profession" y la clase "\App\Profession" que es la clase con el nombre de espacio correcto. En caso de que esto genere un error podemos utilizar 
+
+>>> use App\Profession;
+
+Antes de utilizarla, posterior a ello podemos continuar con:
+
+>>> Profession::all();
+

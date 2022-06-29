@@ -216,10 +216,59 @@ Laravel toma como base el segundo para la sección correspondiente de esta guia.
 
 ***
 
-Notemos que en este caso
+Notemos que en este caso utilizaremos para importar la clase antes de utilizarla 
+ 	use App\Models\Profession;
+---
+Posterior a ello podremos ejecutar el comando requerido sin ninguna compliación
+	>>> Profession::all();
+	
+---
+
+Ejecutamos:
+	> php artisan tinker
+	Psy Shell v0.9.12 (PHP 7.3.10 — cli) by Justin Hileman
+
+	>>> use App\Models\Profession;
+
+	>>> Profession::all();
+	PHP Deprecated:  The "Doctrine/Common/Inflector/Inflector::pluralize" method is deprecated and will be dropped in doctrine/inflector 2.0. Please update to the n
+	ew Inflector API. in C:/AppServ/www/dev/CRUDLaravel5.5/vendor/doctrine/inflector/lib/Doctrine/Common/Inflector/Inflector.php on line 264
+	PHP Deprecated:  The "Doctrine/Common/Inflector/Inflector::pluralize" method is deprecated and will be dropped in doctrine/inflector 2.0. Please update to the n
+	ew Inflector API. in C:/AppServ/www/dev/CRUDLaravel5.5/vendor/doctrine/inflector/lib/Doctrine/Common/Inflector/Inflector.php on line 264
+	=> Illuminate\Database\Eloquent\Collection {#4124
+	     all: [
+	       App\Models\Profession {#4125
+	         id: 1,
+	         title: "Back-end developer",
+	         created_at: "2022-06-22 22:51:50",
+	         updated_at: "2022-06-22 22:51:50",
+	       },
+	       App\Models\Profession {#4126
+	         id: 2,
+	         title: "Front-end developer",
+	         created_at: "2022-06-22 22:51:50",
+	         updated_at: "2022-06-22 22:51:50",
+	       },
+	       App\Models\Profession {#4127
+	         id: 3,
+	         title: "Web Designer",
+	         created_at: "2022-06-22 22:51:50",
+	         updated_at: "2022-06-22 22:51:50",
+	       },
+	     ],
+	   }
+	>>> exit
 
 
+---
 
+Notemos que podemos salir de la consola interactiva con el comando de tinker:
+
+	>>> exit
+
+Para volver a entrar a Tinker
+
+	1'35
 
 
 
