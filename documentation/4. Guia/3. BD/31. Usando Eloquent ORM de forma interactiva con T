@@ -231,10 +231,8 @@ Ejecutamos:
 	>>> use App\Models\Profession;
 
 	>>> Profession::all();
-	PHP Deprecated:  The "Doctrine/Common/Inflector/Inflector::pluralize" method is deprecated and will be dropped in doctrine/inflector 2.0. Please update to the n
-	ew Inflector API. in C:/AppServ/www/dev/CRUDLaravel5.5/vendor/doctrine/inflector/lib/Doctrine/Common/Inflector/Inflector.php on line 264
-	PHP Deprecated:  The "Doctrine/Common/Inflector/Inflector::pluralize" method is deprecated and will be dropped in doctrine/inflector 2.0. Please update to the n
-	ew Inflector API. in C:/AppServ/www/dev/CRUDLaravel5.5/vendor/doctrine/inflector/lib/Doctrine/Common/Inflector/Inflector.php on line 264
+	PHP Deprecated:  The "Doctrine/Common/Inflector/Inflector::pluralize" method is deprecated and will be dropped in doctrine/inflector 2.0. Please update to the new Inflector API. in C:/AppServ/www/dev/CRUDLaravel5.5/vendor/doctrine/inflector/lib/Doctrine/Common/Inflector/Inflector.php on line 264
+	PHP Deprecated:  The "Doctrine/Common/Inflector/Inflector::pluralize" method is deprecated and will be dropped in doctrine/inflector 2.0. Please update to the new Inflector API. in C:/AppServ/www/dev/CRUDLaravel5.5/vendor/doctrine/inflector/lib/Doctrine/Common/Inflector/Inflector.php on line 264
 	=> Illuminate\Database\Eloquent\Collection {#4124
 	     all: [
 	       App\Models\Profession {#4125
@@ -267,16 +265,346 @@ Notemos que podemos salir de la consola interactiva con el comando de tinker:
 	>>> exit
 
 Para volver a entrar a Tinker
+	> php artisan tinker
 
-	1'35
+	>>> use App\Models\Profession;
+
+En este caso importamos con use y luego lo utilizamos
+	$ php artisan tinker
+	Psy Shell v0.9.12 (PHP 7.3.10 — cli) by Justin Hileman
+	>>> use App\Models\Profession;
+	>>> Profession::all();
+	PHP Deprecated:  The "Doctrine/Common/Inflector/Inflector::pluralize" method is deprecated and will be dropped in doctrine/inflector 2.0. Please update to the new Inflector API. in C:/AppServ/www/dev/CRUDLaravel5.5/vendor/doctrine/inflector/lib/Doctrine/Common/Inflector/Inflector.php on line 264
+	PHP Deprecated:  The "Doctrine/Common/Inflector/Inflector::pluralize" method is deprecated and will be dropped in doctrine/inflector 2.0. Please update to the new Inflector API. in C:/AppServ/www/dev/CRUDLaravel5.5/vendor/doctrine/inflector/lib/Doctrine/Common/Inflector/Inflector.php on line 264
+	=> Illuminate\Database\Eloquent\Collection {#4122
+	     all: [
+	       App\Models\Profession {#4123
+	         id: 1,
+	         title: "Back-end developer",
+	         created_at: "2022-06-22 22:51:50",
+	         updated_at: "2022-06-22 22:51:50",
+	       },
+	       App\Models\Profession {#4124
+	         id: 2,
+	         title: "Front-end developer",
+	         created_at: "2022-06-22 22:51:50",
+	         updated_at: "2022-06-22 22:51:50",
+	       },
+	       App\Models\Profession {#4125
+	         id: 3,
+	         title: "Web Designer",
+	         created_at: "2022-06-22 22:51:50",
+	         updated_at: "2022-06-22 22:51:50",
+	       },
+	     ],
+	   }
+	>>> exit;
+
+	
+Ahora si salgo y me vuelvo a conectar a Tinker tambien se puede utilizar el nombre de espacio completo de la siguiente manera;
+
+	>>> App\Models\Profession::all();
+	PHP Deprecated:  The "Doctrine/Common/Inflector/Inflector::pluralize" method is deprecated and will be dropped in doctrine/inflector 2.0. Please update to the new Inflector API. in C:/AppServ/www/dev/CRUDLaravel5.5/vendor/doctrine/inflector/lib/Doctrine/Common/Inflector/Inflector.php on line 264
+	PHP Deprecated:  The "Doctrine/Common/Inflector/Inflector::pluralize" method is deprecated and will be dropped in doctrine/inflector 2.0. Please update to the new Inflector API. in C:/AppServ/www/dev/CRUDLaravel5.5/vendor/doctrine/inflector/lib/Doctrine/Common/Inflector/Inflector.php on line 264
+	=> Illuminate\Database\Eloquent\Collection {#4129
+	     all: [
+	       App\Models\Profession {#4128
+	         id: 1,
+	         title: "Back-end developer",
+	         created_at: "2022-06-22 22:51:50",
+	         updated_at: "2022-06-22 22:51:50",
+	       },
+	       App\Models\Profession {#4127
+	         id: 2,
+	         title: "Front-end developer",
+	         created_at: "2022-06-22 22:51:50",
+	         updated_at: "2022-06-22 22:51:50",
+	       },
+	       App\Models\Profession {#4134
+	         id: 3,
+	         title: "Web Designer",
+	         created_at: "2022-06-22 22:51:50",
+	         updated_at: "2022-06-22 22:51:50",
+	       },
+	     ],
+	   }
+	>>>
+
+
+Por ultimo, si se esta generando error al escribir unicamente Profession, como fue nuestro caso, podemos ejecutar:
+	> composer dump-autoload
+	Generating optimized autoload files
+	Carbon 1 is deprecated, see how to migrate to Carbon 2.
+	https://carbon.nesbot.com/docs/#api-carbon-2
+	    You can run ".\vendor\bin\upgrade-carbon" to get help in updating carbon and other frameworks and libraries that depend on it.
+	> Illuminate\Foundation\ComposerScripts::postAutoloadDump
+	> @php artisan package:discover
+	Discovered Package: fideloper/proxy
+	Discovered Package: laravel/tinker
+	Discovered Package: nesbot/carbon
+	Package manifest generated successfully.
+	Generated optimized autoload files containing 3550 classes
+
+
+Y luego conectar con tiknker y volver a intentarlo:
+	> php artisan tinker
+	Psy Shell v0.9.12 (PHP 7.3.10 — cli) by Justin Hileman
+	>>> Profession::all();
+	[!] Aliasing 'Profession' to 'App\Models\Profession' for this Tinker session.
+	PHP Deprecated:  The "Doctrine/Common/Inflector/Inflector::pluralize" method is deprecated and will be dropped in doctrine/inflector 2.0. Please update to the new Inflector API. in C:/AppServ/www/dev/CRUDLaravel5.5/vendor/doctrine/inflector/lib/Doctrine/Common/Inflector/Inflector.php on line 264
+	PHP Deprecated:  The "Doctrine/Common/Inflector/Inflector::pluralize" method is deprecated and will be dropped in doctrine/inflector 2.0. Please update to the new Inflector API. in C:/AppServ/www/dev/CRUDLaravel5.5/vendor/doctrine/inflector/lib/Doctrine/Common/Inflector/Inflector.php on line 264
+	=> Illuminate\Database\Eloquent\Collection {#4121
+	     all: [
+	       App\Models\Profession {#4122
+	         id: 1,
+	         title: "Back-end developer",
+	         created_at: "2022-06-22 22:51:50",
+	         updated_at: "2022-06-22 22:51:50",
+	       },
+	       App\Models\Profession {#4123
+	         id: 2,
+	         title: "Front-end developer",
+	         created_at: "2022-06-22 22:51:50",
+	         updated_at: "2022-06-22 22:51:50",
+	       },
+	       App\Models\Profession {#4124
+	         id: 3,
+	         title: "Web Designer",
+	         created_at: "2022-06-22 22:51:50",
+	         updated_at: "2022-06-22 22:51:50",
+	       },
+	     ],
+	   }
+	>>>
+
+
+Con este componente vamos a poder hacer nuestras pruebas directamente desde la consola sin necesidad de escribir Seeders, sin reejecutarlos o de hacer pruebas en el navegador; sino que se podran ver los resultados inmediatamante.
+
+Es conveniente por que se van a explicar algunos puntos que es mas facil visualizarlos en la consola, en este caso cuando llamemos al metodo «all()» o incluso al metodo «get()».
+
+Ejecutamos:
+	 >>> Profession::get();
+	 [!] Aliasing 'Profession' to 'App\Models\Profession' for this Tinker session.
+	PHP Deprecated:  The "Doctrine/Common/Inflector/Inflector::pluralize" method is deprecated and will be dropped in doctrine/inflector 2.0. Please update to the new Inflector API. in C:/AppServ/www/dev/CRUDLaravel5.5/vendor/doctrine/inflector/lib/Doctrine/Common/Inflector/Inflector.php on line 264
+	PHP Deprecated:  The "Doctrine/Common/Inflector/Inflector::pluralize" method is deprecated and will be dropped in doctrine/inflector 2.0. Please update to the new Inflector API. in C:/AppServ/www/dev/CRUDLaravel5.5/vendor/doctrine/inflector/lib/Doctrine/Common/Inflector/Inflector.php on line 264
+	=> Illuminate\Database\Eloquent\Collection {#4121
+	     all: [
+	       App\Models\Profession {#4122
+	         id: 1,
+	         title: "Back-end developer",
+	         created_at: "2022-06-22 22:51:50",
+	         updated_at: "2022-06-22 22:51:50",
+	       },
+	       App\Models\Profession {#4123
+	         id: 2,
+	         title: "Front-end developer",
+	         created_at: "2022-06-22 22:51:50",
+	         updated_at: "2022-06-22 22:51:50",
+	       },
+	       App\Models\Profession {#4124
+	         id: 3,
+	         title: "Web Designer",
+	         created_at: "2022-06-22 22:51:50",
+	         updated_at: "2022-06-22 22:51:50",
+	       },
+	     ],
+	   }
+	>>>
+
+Para obtener las profesiones sin importar si nosostros estamos utlizando un codicional u otro parametro para ejecutar las consultas. Nosotros vamos a recibir como resultado un objeto de la clase "Collection" como se aprecio de la extracción del comando anterior:
+
+---
+	=> Illuminate\Database\Eloquent\Collection {#4121
+
+
+Podemos ver erl nombre de espacio completo, como explicamos anteriormente una colección permite	devolver un array de datos, en este caso es un array que contienen objetos de la clase "Profession" eso se explicara en breve, la idea es trabajar con una interfaz orientada o objetos y tener funcionalidades adicionales que no estan inlcuidas en los array por defecto que trae PHP por ejemplo:
+
+Se declara una variable que va a ser igual al resultado de llamar al metodo all() en el modelo Profession.
+
+
+	>>> $professions = Profession::all();
+	[!] Aliasing 'Profession' to 'App\Models\Profession' for this Tinker session.
+	PHP Deprecated:  The "Doctrine/Common/Inflector/Inflector::pluralize" method is deprecated and will be dropped in doctrine/inflector 2.0. Please update to the new Inflector API. in C:/AppServ/www/dev/CRUDLaravel5.5/vendor/doctrine/inflector/lib/Doctrine/Common/Inflector/Inflector.php on line 264
+	PHP Deprecated:  The "Doctrine/Common/Inflector/Inflector::pluralize" method is deprecated and will be dropped in doctrine/inflector 2.0. Please update to the new Inflector API. in C:/AppServ/www/dev/CRUDLaravel5.5/vendor/doctrine/inflector/lib/Doctrine/Common/Inflector/Inflector.php on line 264
+	=> Illuminate\Database\Eloquent\Collection {#4121
+	     all: [
+	       App\Models\Profession {#4122
+	         id: 1,
+	         title: "Back-end developer",
+	         created_at: "2022-06-22 22:51:50",
+	         updated_at: "2022-06-22 22:51:50",
+	       },
+	       App\Models\Profession {#4123
+	         id: 2,
+	         title: "Front-end developer",
+	         created_at: "2022-06-22 22:51:50",
+	         updated_at: "2022-06-22 22:51:50",
+	       },
+	       App\Models\Profession {#4124
+	         id: 3,
+	         title: "Web Designer",
+	         created_at: "2022-06-22 22:51:50",
+	         updated_at: "2022-06-22 22:51:50",
+	       },
+	     ],
+	   }
+	>>>
+
+
+Ahora se puede limpiar la consola ahora se puede obtener la primera profesion de la siguiente manera:
+
+	>>> $professoins->first();
+	PHP Notice:  Undefined variable: professoins in C:/AppServ/www/dev/CRUDLaravel5.5eval()'d code on line 1
+	>>> $professions->first();
+	=> App\Models\Profession {#4122
+	     id: 1,
+	     title: "Back-end developer",
+	     created_at: "2022-06-22 22:51:50",
+	     updated_at: "2022-06-22 22:51:50",
+	   }
+
+ 
+Utilizando el metodo «first()». Notemos que la primera profession tiene el id:1 y el titulo: "Back-end developer", Pero como podemos imaginar tambien podemos obtener la ultima profesión en esta caso llamando al metodo «last()»
+
+	>>> $professions->last();
+	=> App\Models\Profession {#4125
+	     id: 3,
+	     title: "Web Designer",
+	     created_at: "2022-06-22 22:51:50",
+	     updated_at: "2022-06-22 22:51:50",
+	   }
+
+
+Podemos ver que la ultima profesion que se creo tiene el id: 3 y el titulo: "Web Designer"
+
+Tambien podemos obtener una profesion de forma aleatoria de la siguiente manera:
+
+  		>>> $professions->random(1);
+		=> App\Models\Profession {#4124
+		     id: 3,
+		     title: "Web Designer",
+		     created_at: "2022-06-22 22:51:50",
+		     updated_at: "2022-06-22 22:51:50",
+		   }
+
+
+En este caso obtenemos una colección aleatoria con una profesion aleatoria, y podemos omitir el argumento (1) y en este caso este metodo va a retornar un solo objeto de la clase Profession
+
+
+	>>> $professions->random(1);
+	=> Illuminate\Database\Eloquent\Collection {#3191
+	     all: [
+	       App\Models\Profession {#4122
+	         id: 1,
+	         title: "Back-end developer",
+	         created_at: "2022-06-22 22:51:50",
+	         updated_at: "2022-06-22 22:51:50",
+	       },
+	     ],
+	   }
+	>>> 
+
+
+Hay muchs operaciones que podemos hacer cuando trabajamos con colecciones; por ejemplo, vamos a suponer que nos interesa obtener unicamente el campo "title".
+
+
+En este caso podemos utilizar el metodo «pluck()». 
+
+	>>> $professions->pluck('title');
+	=> Illuminate\Support\Collection {#3185
+	     all: [
+	       "Back-end developer",
+	       "Front-end developer",
+	       "Web Designer",
+	     ],
+	   }
+	>>>
+
+
+Aca nuevamente obtenemos una colecion como resultado pero notemos que el array de datos ya no contiene objetos de la clase Profession, sino que contiene cadenas de texto, y cada titulo es una cadena. Esto se logra con el metodo «pluck()». 
+
+
+Las coleciones de Laravel tambien son inmutables, es decir que por ejemplo para llamar a este metodo no va a modificar mi coleccion original, 
+
+
+	>>> $professions
+	=> Illuminate\Database\Eloquent\Collection {#4121
+	     all: [
+	       App\Models\Profession {#4122
+	         id: 1,
+	         title: "Back-end developer",
+	         created_at: "2022-06-22 22:51:50",
+	         updated_at: "2022-06-22 22:51:50",
+	       },
+	       App\Models\Profession {#4123
+	         id: 2,
+	         title: "Front-end developer",
+	         created_at: "2022-06-22 22:51:50",
+	         updated_at: "2022-06-22 22:51:50",
+	       },
+	       App\Models\Profession {#4124
+	         id: 3,
+	         title: "Web Designer",
+	         created_at: "2022-06-22 22:51:50",
+	         updated_at: "2022-06-22 22:51:50",
+	       },
+	     ],
+	   }
+	>>>
+
+
+Vamos a probar nuevamante.
+
+Vamos a declarar otra veiable llamada $titles para almacenar la coleccion con los titulos de las profesiones, ahora podemos ver el objeto que tengo almacenado en la variable $titles, Pero podemos fijarnos que el objeto que se tiene almacenado en la variable "$professions" no cambia.
+
+
+	>>> $professions;
+	=> Illuminate\Database\Eloquent\Collection {#4122
+	     all: [
+	       App\Models\Profession {#4123
+	         id: 1,
+	         title: "Back-end developer",
+	         created_at: "2022-06-22 22:51:50",
+	         updated_at: "2022-06-22 22:51:50",
+	       },
+	       App\Models\Profession {#4124
+	         id: 2,
+	         title: "Front-end developer",
+	         created_at: "2022-06-22 22:51:50",
+	         updated_at: "2022-06-22 22:51:50",
+	       },
+	       App\Models\Profession {#4125
+	         id: 3,
+	         title: "Web Designer",
+	         created_at: "2022-06-22 22:51:50",
+	         updated_at: "2022-06-22 22:51:50",
+	       },
+	     ],
+	   }
+	>>> $titles = $professions->pluck('title');
+	=> Illuminate\Support\Collection {#3193
+	     all: [
+	       "Back-end developer",
+	       "Front-end developer",
+	       "Web Designer",
+	     ],
+	   }
+	>>> $titles
+	=> Illuminate\Support\Collection {#3193
+	     all: [
+	       "Back-end developer",
+	       "Front-end developer",
+	       "Web Designer",
+	     ],
+	   }
+	>>>
 
 
 
+De igual forma si 
 
 
-
-
-
+5'19
 
 
 
