@@ -30,7 +30,8 @@ class User extends Authenticatable
 
     //Declaración de nuevos metodos. Seccion 31.
     
-        public static function findByEmail($email)
+
+    public static function findByEmail($email)
     {
         return static::where(compact('email'))->first();
     }

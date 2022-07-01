@@ -601,10 +601,437 @@ Vamos a declarar otra veiable llamada $titles para almacenar la coleccion con lo
 
 
 
-De igual forma si 
+De igual forma si yo utilizo "$random()", opara obtener dos profesiones aleatorias de la siguiente manera. como en mi caso que he hecho un pasusa desde un dia anterior, tendria que ejecutar la siguiente secuela en este orden:
+
+	> php artisan tinker
+
+	>>> $professions = Profession::all();
+
+	>>> $professions->random(1);
+
+Y la linea a ejecutar finalemnte seria:
 
 
-5'19
+	>>> $randomProfessions = $professions->random(2);
+	=> Illuminate\Database\Eloquent\Collection {#3197
+	     all: [
+	       App\Models\Profession {#4126
+	         id: 2,
+	         title: "Front-end developer",
+	         created_at: "2022-06-22 22:51:50",
+	         updated_at: "2022-06-22 22:51:50",
+	       },
+	       App\Models\Profession {#4127
+	         id: 3,
+	         title: "Web Designer",
+	         created_at: "2022-06-22 22:51:50",
+	         updated_at: "2022-06-22 22:51:50",
+	       },
+	     ],
+	   }
+	>>>
+
+Nuevamente la colección original es y no ha cambiado como podemos observar:
+
+	>>> $professions
+	=> Illuminate\Database\Eloquent\Collection {#4122
+	     all: [
+	       App\Models\Profession {#4123
+	         id: 1,
+	         title: "Back-end developer",
+	         created_at: "2022-06-22 22:51:50",
+	         updated_at: "2022-06-22 22:51:50",
+	       },
+	       App\Models\Profession {#4124
+	         id: 2,
+	         title: "Front-end developer",
+	         created_at: "2022-06-22 22:51:50",
+	         updated_at: "2022-06-22 22:51:50",
+	       },
+	       App\Models\Profession {#4125
+	         id: 3,
+	         title: "Web Designer",
+	         created_at: "2022-06-22 22:51:50",
+	         updated_at: "2022-06-22 22:51:50",
+	       },
+	     ],
+	   }
+
+
+
+si necesitamos saber más sobre los metodos disponibles que tenemos para trabajar con colecciones podemos revisar la documentación siguiente de Laravel, en ella se tiene una larga lista de metodos que estan disponibles cuando trabajamos con colecciones :
+
+	https://laravel.com/docs/5.5/eloquent-collections
+
+La mayoria de ellos son bien utiles y es importanmte señalar que Laravel tiene dos colecciones.
+
+- Una colección de eloquent que es lo que obtenemos cuando hacemos una bsqueda utilizando Eloquent y 
+- La segunda colección base, este caso de la colección base, estan en la colección de eloquent.
+
+En la documentación podemos ver la documentación de las colecciones base, tambien Laravel nos enseña como nosotros podemos crear nuestras propias colecciones, por ejemplo al regresar a la consola, y utilizar el helper "collect()" para crear una colección.
+
+	>>>collect(['Klvst3r', 'CRUD', 'Laravel']);
+	=> Illuminate\Support\Collection {#3198
+	     all: [
+	       "Klvst3r",
+	       "CRUD",
+	       "Laravel",
+	     ],
+	   }
+	>>>
+
+		
+
+
+notemos que el resultado obtenido es un objeto de la clase collecion, pero la clase varia ya no es Eloquent ahora es:
+	=> Illuminate\Support\Collection {#3198
+
+Si invocamos a nuestra colección anterior:
+
+
+	>>> $professions
+	=> Illuminate\Database\Eloquent\Collection {#4121
+	     all: [
+	       App\Models\Profession {#4122
+	         id: 1,
+	         title: "Back-end developer",
+	         created_at: "2022-06-22 22:51:50",
+	         updated_at: "2022-06-22 22:51:50",
+	       },
+	       App\Models\Profession {#4123
+	         id: 2,
+	         title: "Front-end developer",
+	         created_at: "2022-06-22 22:51:50",
+	         updated_at: "2022-06-22 22:51:50",
+	       },
+	       App\Models\Profession {#4124
+	         id: 3,
+	         title: "Web Designer",
+	         created_at: "2022-06-22 22:51:50",
+	         updated_at: "2022-06-22 22:51:50",
+	       },
+	     ],
+	   }
+
+
+
+Y podemos ver la diferencia con esta colección que señala la ruta.
+
+	=> Illuminate\Database\Eloquent\Collection {#4121
+
+
+La clase Eloquent\Collection extiende de la clase base \Colection sin embargo, no todos los metodos de Eloquent retornan colecciones, vamos a suponer que yo quiero encontrar la profesions "Back-end developer", en ese caso yo pudo nuevamente utilizar el modelo "Profession" y puedo realizar una busqueda utilizando el metodo "where()", de la siguiente manera que ya hemos aprendido.
+
+
+	>>> $backendDeveloper = Profession::where('title', 'Back-end developer')->first();
+	PHP Deprecated:  The "Doctrine/Common/Inflector/Inflector::pluralize" method is deprecated and will be dropped in doctrine/inflector 2.0. Please update to the new Inflector API. in C:/AppServ/www/dev/CRUDLaravel5.5/vendor/doctrine/inflector/lib/Doctrine/Common/Inflector/Inflector.php on line 264
+	PHP Deprecated:  The "Doctrine/Common/Inflector/Inflector::pluralize" method is deprecated and will be dropped in doctrine/inflector 2.0. Please update to the new Inflector API. in C:/AppServ/www/dev/CRUDLaravel5.5/vendor/doctrine/inflector/lib/Doctrine/Common/Inflector/Inflector.php on line 264
+	=> App\Models\Profession {#3191
+	     id: 1,
+	     title: "Back-end developer",
+	     created_at: "2022-06-22 22:51:50",
+	     updated_at: "2022-06-22 22:51:50",
+	   }
+	>>>
+
+
+
+En este caso si yo llamo al metodo "get()" voy a obtener una colección de resultados, asi esta colección tenga un solo resultado, incluso ningun resultado voy a obtener un objeto de la clase "Eloquent" Colecction. Pero si aa llamamos al metodo "first()" en este caso vamos a obtener un solo objeto. y puesto que estamos utilizando Eloquent este va a ser un objeto del modelo en cuestion, en este caso un objeto de la clase "App\Models\Profession".
+
+	=> App\Models\Profession {#3191
+
+
+
+Notemos que con el constructor de consultas y hacemos lo siguiente:
+
+	>>>DB::table('professions')->where('title', 'Back-end developer')->first();
+	=> {#3911
+	     +"id": 1,
+	     +"title": "Back-end developer",
+	     +"created_at": "2022-06-22 22:51:50",
+	     +"updated_at": "2022-06-22 22:51:50",
+	   }
+	>>>
+
+
+Que es practicamente la misma consulta pero no 	se esta utilizando Eloquent.
+
+En este caso, el resultado es un objeto, un objeto de la clase estandar de PHP, no un modelo de Eloquent. Y esta es una diferencia muy importante. Para demostrar el por que, trabajaremos rapidamente con el modelo de usuario. En este caso obtendremos el primer usuario que se tiene en la base de datos.
+
+
+	>>> $user = User::first();
+	[!] Aliasing 'User' to 'App\User' for this Tinker session.
+	PHP Deprecated:  The "Doctrine/Common/Inflector/Inflector::pluralize" method is deprecated and will be dropped in doctrine/inflector 2.0. Please update to the new Inflector API. in C:/AppServ/www/dev/CRUDLaravel5.5/vendor/doctrine/inflector/lib/Doctrine/Common/Inflector/Inflector.php on line 264
+	PHP Deprecated:  The "Doctrine/Common/Inflector/Inflector::pluralize" method is deprecated and will be dropped in doctrine/inflector 2.0. Please update to the new Inflector API. in C:/AppServ/www/dev/CRUDLaravel5.5/vendor/doctrine/inflector/lib/Doctrine/Common/Inflector/Inflector.php on line 264
+	=> App\User {#4127
+	     id: 1,
+	     name: "Klvst3r",
+	     email: "klvst3r@email.com",
+	     created_at: "2022-06-22 22:51:51",
+	     updated_at: "2022-06-22 22:51:51",
+	     profession_id: 1,
+	   }
+	>>>
+
+
+O como en este caso se que el primer usuario tiene el id:1, voy a obtenerlo de la siguiente manera. Utilizando el metodo "find()" en lugar del metodo "first()". 
+
+	>>> $user = User::find(1);
+	PHP Deprecated:  The "Doctrine/Common/Inflector/Inflector::pluralize" method is deprecated and will be dropped in doctrine/inflector 2.0. Please update to the new Inflector API. in C:/AppServ/www/dev/CRUDLaravel5.5/vendor/doctrine/inflector/lib/Doctrine/Common/Inflector/Inflector.php on line 264
+	PHP Deprecated:  The "Doctrine/Common/Inflector/Inflector::pluralize" method is deprecated and will be dropped in doctrine/inflector 2.0. Please update to the new Inflector API. in C:/AppServ/www/dev/CRUDLaravel5.5/vendor/doctrine/inflector/lib/Doctrine/Common/Inflector/Inflector.php on line 264
+	PHP Deprecated:  The "Doctrine/Common/Inflector/Inflector::pluralize" method is deprecated and will be dropped in doctrine/inflector 2.0. Please update to the n
+	ew Inflector API. in C:/AppServ/www/dev/CRUDLaravel5.5/vendor/doctrine/inflector/lib/Doctrine/Common/Inflector/Inflector.php on line 264
+	=> App\User {#3911
+	     id: 1,
+	     name: "Klvst3r",
+	     email: "klvst3r@email.com",
+	     created_at: "2022-06-22 22:51:51",
+	     updated_at: "2022-06-22 22:51:51",
+	     profession_id: 1,
+	   }
+	>>>
+
+
+
+Este metodo va a detectar como argumento, el id: en este caso el id que se quiere buscar, en este caso al ide primario de la tabla en esta caso Users o asociada al modelo "User".
+	
+	\App\User.php
+
+
+Se obtiene el mismo resultado de antes un objeto de la clase User ahora como este es un objeto de esta clase nada impide regresar al editor y declarar metodos dentro de la Clase user para luego poder utilizarlos. Por ejemplo en el modelo "User.php" se va adeclarar a un nuevo metodo llamado «isAdmin()» va a ser un metodo publico y va retornar el resultado de comparar el email del usario con el 'klvst3r@email.com'
+
+---\App\User.php
+...
+public function isAdmin(){
+        return $this->email === 'klvst3r@email.com';
+    }
+    
+...    
+---
+
+Quiere decir que este usuario es un administrador, regresando a la consola:
+
+Se llama al metodo "isAdmin()":
+
+	
+	
+En este caso se espera un error
+
+	>>> $user->isAdmin();
+	PHP Deprecated:  The "Doctrine/Common/Inflector/Inflector::pluralize" method is deprecated and will be dropped in doctrine/inflector 2.0. Please update to the new Inflector API. in C:/AppServ/www/dev/CRUDLaravel5.5/vendor/doctrine/inflector/lib/Doctrine/Common/Inflector/Inflector.php on line 264
+	BadMethodCallException with message 'Call to undefined method Illuminate/Database/Query/Builder::isAdmin()'
+
+
+Indica que el metodo no esta definido.Para que este metodo este definido, necesitamos salirnos de Tinker por un momento y volver a ejecutar 
+	> php artisan tinker
+
+Ahora tal como antes vamos a obtener el primer usuario registrado, que por ahora es el unico usuario que esta registrado en este momento, 	 
+
+	>>> $user = User::find(1);
+	[!] Aliasing 'User' to 'App\User' for this Tinker session.
+	PHP Deprecated:  The "Doctrine/Common/Inflector/Inflector::pluralize" method is deprecated and will be dropped in doctrine/inflector 2.0. Please update to the new Inflector API. in C:/AppServ/www/dev/CRUDLaravel5.5/vendor/doctrine/inflector/lib/Doctrine/Common/Inflector/Inflector.php on line 264
+	PHP Deprecated:  The "Doctrine/Common/Inflector/Inflector::pluralize" method is deprecated and will be dropped in doctrine/inflector 2.0. Please update to the new Inflector API. in C:/AppServ/www/dev/CRUDLaravel5.5/vendor/doctrine/inflector/lib/Doctrine/Common/Inflector/Inflector.php on line 264
+	PHP Deprecated:  The "Doctrine/Common/Inflector/Inflector::pluralize" method is deprecated and will be dropped in doctrine/inflector 2.0. Please update to the new Inflector API. in C:/AppServ/www/dev/CRUDLaravel5.5/vendor/doctrine/inflector/lib/Doctrine/Common/Inflector/Inflector.php on line 264
+	=> App\User {#3514
+	     id: 1,
+	     name: "Klvst3r",
+	     email: "klvst3r@email.com",
+	     created_at: "2022-06-22 22:51:51",
+	     updated_at: "2022-06-22 22:51:51",
+	     profession_id: 1,
+	   }
+	>>>
+
+Y posterior a ello vamos a llamar al metodo "isAdmin()"
+
+
+En este caso me esta marcando un error por que la declaración se realizo en el modelo User de la siguiente ruta "\App\User.php", pero la ruta que estamos utilizando es: "\App\Models\User.php" que se inicializo al comenzo de esta sección. Pr ello vamos a copiar el Modelo "User.php" dentro del directorio "\App\Models".
+
+Salimos y volvemos a entrara a tinker como se indica la siguiente secuela:
+
+	$ php artisan tinker
+	Psy Shell v0.9.12 (PHP 7.3.10 — cli) by Justin Hileman
+	>>> $user = User::find(1);
+	[!] Aliasing 'User' to 'App\User' for this Tinker session.
+	PHP Deprecated:  The "Doctrine/Common/Inflector/Inflector::pluralize" method is deprecated and will be dropped in doctrine/inflector 2.0. Please update to the new Inflector API. in C:/AppServ/www/dev/CRUDLaravel5.5/vendor/doctrine/inflector/lib/Doctrine/Common/Inflector/Inflector.php on line 264
+	PHP Deprecated:  The "Doctrine/Common/Inflector/Inflector::pluralize" method is deprecated and will be dropped in doctrine/inflector 2.0. Please update to the new Inflector API. in C:/AppServ/www/dev/CRUDLaravel5.5/vendor/doctrine/inflector/lib/Doctrine/Common/Inflector/Inflector.php on line 264
+	PHP Deprecated:  The "Doctrine/Common/Inflector/Inflector::pluralize" method is deprecated and will be dropped in doctrine/inflector 2.0. Please update to the new Inflector API. in C:/AppServ/www/dev/CRUDLaravel5.5/vendor/doctrine/inflector/lib/Doctrine/Common/Inflector/Inflector.php on line 264
+	=> App\User {#3514
+	     id: 1,
+	     name: "Klvst3r",
+	     email: "klvst3r@email.com",
+	     created_at: "2022-06-22 22:51:51",
+	     updated_at: "2022-06-22 22:51:51",
+	     profession_id: 1,
+	   }
+	>>> $user->isAdmin();
+	=> true
+
+
+Notemos que devuelove verdadero ya que tanto hemos colocado la ruta correcta, pero si creamos otro Usuario rapidamente que se va a almacenar en una variable llamada "$anotherUser" Vamos a colocarle el nombre "Another user", el email va a ser "another@user.com"    y como password es '123' y no vamos a agregar ninguna profesión:
+
+	>>> $anotherUser = User::create(['name' => 'Another user', 'email' => 'another@user.com', 'password' => bcrypt(123)]);
+	PHP Deprecated:  The "Doctrine/Common/Inflector/Inflector::pluralize" method is deprecated and will be dropped in doctrine/inflector 2.0. Please update to the new Inflector API. in C:/AppServ/www/dev/CRUDLaravel5.5/vendor/doctrine/inflector/lib/Doctrine/Common/Inflector/Inflector.php on line 264
+	PHP Deprecated:  The "Doctrine/Common/Inflector/Inflector::pluralize" method is deprecated and will be dropped in doctrine/inflector 2.0. Please update to the new Inflector API. in C:/AppServ/www/dev/CRUDLaravel5.5/vendor/doctrine/inflector/lib/Doctrine/Common/Inflector/Inflector.php on line 264
+	=> App\User {#4129
+	     name: "Another user",
+	     email: "another@user.com",
+	     updated_at: "2022-07-01 19:00:32",
+	     created_at: "2022-07-01 19:00:32",
+	     id: 2,
+	   }
+	>>>
+
+Si hacemos esto entonces tenemos ahora un nuevo usuario en la base de datos, podemos demostrarlo rapidamente:
+
+	>>> User::all();
+
+
+	>>> User::all();
+	PHP Deprecated:  The "Doctrine/Common/Inflector/Inflector::pluralize" method is deprecated and will be dropped in doctrine/inflector 2.0. Please update to the new Inflector API. in C:/AppServ/www/dev/CRUDLaravel5.5/vendor/doctrine/inflector/lib/Doctrine/Common/Inflector/Inflector.php on line 264
+	PHP Deprecated:  The "Doctrine/Common/Inflector/Inflector::pluralize" method is deprecated and will be dropped in doctrine/inflector 2.0. Please update to the new Inflector API. in C:/AppServ/www/dev/CRUDLaravel5.5/vendor/doctrine/inflector/lib/Doctrine/Common/Inflector/Inflector.php on line 264
+	=> Illuminate\Database\Eloquent\Collection {#4127
+	     all: [
+	       App\User {#3913
+	         id: 1,
+	         name: "Klvst3r",
+	         email: "klvst3r@email.com",
+	         created_at: "2022-06-22 22:51:51",
+	         updated_at: "2022-06-22 22:51:51",
+	         profession_id: 1,
+	       },
+	       App\User {#3189
+	         id: 2,
+	         name: "Another user",
+	         email: "another@user.com",
+	         created_at: "2022-07-01 19:00:32",
+	         updated_at: "2022-07-01 19:00:32",
+	         profession_id: null,
+	       },
+	     ],
+	   }
+	>>>
+
+
+
+Podemos ver que ahora tenemos dos usuarios el segundo usuario tiene el id:2, lo que quiere decir que pudo obtener este usuario utilizando:
+	
+	 >>> $user2 = User::find(2);
+
+
+
+Entonces 2 como argumento, pero como se creo este usuario con eloquent y lo almacene en una variable llamada "$anotherUser" y se esta asignando la variable "$anotherUser" a resultado en la linea con el metodo «create()»:
+	
+
+	>>> $anotherUser = User::create(['name' => 'Another user', 'email' => 'another@user.com', 'password' => bcrypt(123)]);
+
+quiere decir que ya tengo este usuario en la variable "$anotherUser", viasualizamos en consola de la siguiente manera:
+
+	>>> $anotherUser
+	=> App\User {#4129
+	     name: "Another user",
+	     email: "another@user.com",
+	     updated_at: "2022-07-01 19:00:32",
+	     created_at: "2022-07-01 19:00:32",
+	     id: 2,
+	   }
+	>>>
+
+Y podemos comenzar a trabajar con el directamente.
+
+	>>> $anotherUser->isAdmin();
+	=> false
+	>>>
+
+
+Notaramos que ahora al llamar al metodo "isadmin()" devuelve falso, nosotros tambien podemos declarar metodos estaticos dentro de nuesto modelo. 
+
+Si regresamos al Modelo "User.php" podemos declarar un nuevo metodo estativo, de la siguiente manera llamada «findByEmail()».
+
+
+Por supuesto el nombre es arbitrario al gial que el nombre del parametro, y se pueden crear los metodos que se quieran y con el nombre que se quiera, a menos que exista una limitación por ejemplo en el cao de que el siguiente metodo ya este registrado como parte del ORM de Eloquent y entonces aca podemos retornar el resultado de hacer una bsqueda donde el email del usuario sea iguial al email que reciba este metodo:
+
+
+
+---User.php
+...
+	  public static function findByEmail($email)
+    {
+        return static::where(compact('email'))->first();
+    }
+
+...
+---
+
+Aca por ejemplo queremos retornar un solo resultado, por cierto aca estamos utilizando "static" en este caso es equivalente a escribirlo  utilizando "User" por eejmplo de la siguiente manera:
+
+
+---User.php
+...
+	  public static function findByEmail($email)
+    {
+        return User::where(compact('email'))->first();
+    }
+
+...
+---
+
+Por que aca estoy dentro de la clase "User".
+
+Con esto regresamos a la consola vamos a presionar CTRL + C para cerrar tinker y luego lo vamos a abrir nuevamente, u ahora entonces podemos buscar utilizando el metodo "findByEmail"
+
+	> php artisan tinker
+
+	 >>> $user = User::all();
+
+	 >>> $user = User::find(1);
+
+	 >>> User::findByEmail('klvst3r@email.com');
+		=> App\User {#3874
+		     id: 1,
+		     name: "Klvst3r",
+		     email: "klvst3r@email.com",
+		     created_at: "2022-06-22 22:51:51",
+		     updated_at: "2022-06-22 22:51:51",
+		     profession_id: 1,
+		   }
+		>>>
+
+
+
+Como podemos ver entonces este metodo retorno el usuario, ahora si pasamos un usuario que no este registrado, en el sistema, en este caso el metodo devuelve "null"
+
+
+	 >>> User::findByEmail('another@email.com');
+	=> null
+
+
+
+Por que el metodo first() va a devolver null, asi que se debe tener cuidado con esto.
+
+Tambien es importante destacar que los metodo staticos:
+
+Ej.
+	return static::where(compact('email'))->first();
+
+
+O que se utilicen con una interfaz estatica como por ejemplo cuando utilizamos «User::create()» en este caso corresponden a la clase "User::create()" y la clase mas o menos va a corresponder a la tabla de la base de datos, mientras que los metodos no estaticos como por ejemplo:
+	isAdmin()
+
+O cuanto trabjemos con un objeto como por ejemplo
+
+	$anotherUser
+
+		o 
+	User::all()
+
+Por ejemplo cuando ejecutamos.
+
+	>>>$anotherUser->isAdmin();
+
+ Estos objetos se van a referir mas o menos a los tregistros o filas de la base de datos dentro de la tabla de usuarios. 
+
+ Asi, que una manera en que podemos visualizar este modelo o que cada clase, corresponde a una tabla y cada objeto de dicho modelo de dicha clase, va a corresponder entonces a una fila o registro dentro de dicha tabla.
 
 
 
@@ -612,6 +1039,8 @@ De igual forma si
 
 
 
+
+ 
 
 
 Ejercicios:
