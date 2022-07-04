@@ -1,0 +1,88 @@
+32.1.    Asignación masiva (documentación de Laravel)
+
+
+
+Referencia
+
+documentación Oficial.
+
+	https://laravel.com/docs/5.5/eloquent#mass-assignment
+
+
+Notas:
+
+Asignación masiva
+
+También puede usar el createmétodo para guardar un nuevo modelo en una sola línea. La instancia del modelo insertado le será devuelta desde el método. Sin embargo, antes de hacerlo, deberá especificar un atributo fillableo guardeden el modelo, ya que todos los modelos de Eloquent protegen contra la asignación masiva de forma predeterminada.
+
+Una vulnerabilidad de asignación masiva ocurre cuando un usuario pasa un parámetro HTTP inesperado a través de una solicitud y ese parámetro cambia una columna en su base de datos que no esperaba. Por ejemplo, un usuario malintencionado podría enviar un is_adminparámetro a través de una solicitud HTTP, que luego se pasa al createmétodo de su modelo, lo que permite que el usuario se escale a un administrador.
+
+Entonces, para comenzar, debe definir qué atributos del modelo desea que sean asignables en masa. Puede hacer esto usando la $fillablepropiedad en el modelo. Por ejemplo, hagamos que el nameatributo de nuestro Flightmodelo sea asignable en masa:	
+
+---
+	<?php
+	 
+	namespace App;
+	 
+	use Illuminate\Database\Eloquent\Model;
+	 
+	class Flight extends Model
+	{
+	    /**
+	     * The attributes that are mass assignable.
+	     *
+	     * @var array
+	     */
+	    protected $fillable = ['name'];
+	}
+
+---
+
+Una vez que hemos hecho que los atributos sean asignables en masa, podemos usar el createmétodo para insertar un nuevo registro en la base de datos. El createmétodo devuelve la instancia del modelo guardado:
+
+---
+	$flight = App\Flight::create(['name' => 'Flight 10']);
+---
+
+Si ya tiene una instancia de modelo, puede usar el fillmétodo para llenarlo con una matriz de atributos:
+
+---
+	$flight->fill(['name' => 'Flight 22']);
+---
+
+Custodia de atributos
+
+Si bien $fillablesirve como una "lista blanca" de atributos que deben poder asignarse en masa, también puede optar por utilizar $guarded. La $guardedpropiedad debe contener una matriz de atributos que no desea que se puedan asignar en masa. Todos los demás atributos que no estén en la matriz serán asignables en masa. Entonces, $guardedfunciona como una "lista negra". Por supuesto, debe usar cualquiera $fillableo $guarded, no ambos. En el siguiente ejemplo, todos los atributos exceptoprice serán asignables en masa:
+
+---
+	<?php
+ 
+	namespace App;
+	 
+	use Illuminate\Database\Eloquent\Model;
+	 
+	class Flight extends Model
+	{
+	    /**
+	     * The attributes that aren't mass assignable.
+	     *
+	     * @var array
+	     */
+	    protected $guarded = ['price'];
+	}
+
+---
+
+Si desea que todos los atributos sean asignables en masa, puede definir la $guardedpropiedad como una matriz vacía:
+
+
+
+---
+	/**
+	 * The attributes that aren't mass assignable.
+	 *
+	 * @var array
+	 */
+	protected $guarded = [];
+
+---
