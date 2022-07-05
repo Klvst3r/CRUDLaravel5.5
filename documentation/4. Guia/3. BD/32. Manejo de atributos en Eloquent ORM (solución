@@ -97,14 +97,8 @@ En este caso convertimos la propiedad «is_admin» a boolean.
 
 Material relacionado
 --------------------
-    Curso de programación orientada a objetos con PHP
-    	https://styde.net/curso-de-programacion-orientada-a-objetos-con-php/
-
         
-    Asignación masiva (documentación de Laravel)
-    	https://laravel.com/docs/5.5/eloquent#mass-assignment
-
-
+    \referencias\32.1. Asignación masiva (documentación de Laravel)
 
 
 
