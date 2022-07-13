@@ -453,7 +453,7 @@ Se declara una variable que va a ser igual al resultado de llamar al metodo all(
 
 Ahora se puede limpiar la consola ahora se puede obtener la primera profesion de la siguiente manera:
 
-	>>> $professoins->first();
+	>>> $professions->first();
 	PHP Notice:  Undefined variable: professoins in C:/AppServ/www/dev/CRUDLaravel5.5eval()'d code on line 1
 	>>> $professions->first();
 	=> App\Models\Profession {#4122

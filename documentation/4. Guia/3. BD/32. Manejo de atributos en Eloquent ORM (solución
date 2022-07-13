@@ -104,6 +104,72 @@ Material relacionado
 Practica:
 =========
 
-Antes e continuar con esta sección
+Antes e continuar con esta sección, hay un error que me gustaria mostrar, pasamos a la consola, si ejecutramos:
+	> php artisan tinker
+
+De la siguiente manera como se han creado unos usuarios.
+
+	$ php artisan tinker
+	Psy Shell v0.9.12 (PHP 7.3.10 — cli) by Justin Hileman
+	>>> Profession::create(['title' => 'Profesor']);
+	Illuminate/Database/Eloquent/MassAssignmentException with message 'title'
 
 
+Se va a recibir un error, de asignación pasiva, como se puede leer en el mensaje de error.
+
+Esta es en realidad una manera en el que el ORM de Eloquent nos esta protegiendo, puesto que estos datos que nosotros estamos pasando aca en el metodo "create"
+	>>> Profession::create(['title' => 'Profesor']);
+
+Pueden proveenir o van a porvenir por lo general de un usuario, por ejemplo pueden ser los datos que vamos a recibir de una petición HTTP, estos datos los podemos obtenerlos al utilizar por ejemplo el Phasa "Request".
+
+	>>>$data = Request::all();
+
+Sin embargo esto lo vamos a ver más adelante, por ahora vamos a imaginar que estos son datos dinamicos que provienen del usuario. Entonces el problema es que nuestro formulario nosotros podemos tener un campo titulo, pero nada le va a impedir al usuario modificar o alterar la peticion HTTP para enviar cualquier otro campo, por ejemplo, el campo ID.
+
+Ej.
+	>>> $data = ['title' => 'Profesor', 'id' => 10]; 
+
+Si nosotros ejecutamos:
+
+	$ php artisan tinker
+	Psy Shell v0.9.12 (PHP 7.3.10 — cli) by Justin Hileman
+	>>> $data = ['title' => 'Profesor', 'id' => 10];
+	=> [
+	     "title" => "Profesor",
+	     "id" => 10,
+	   ]
+
+
+Si nosotros	obtenemos todos los datos provenientes de la petición de usuario y los asignamos de la siguiente manera:
+
+	>>> Profession::create($data);
+	Illuminate/Database/Eloquent/MassAssignmentException with message 'title'
+
+
+Nos exponemos a que el usuario pueda cambiar cualquier campo dentro de nuestro registro, y es por esto que Laravel intenta protegernos, con este error o asignación masiva. 
+
+	Illuminate/Database/Eloquent/MassAssignmentException with message 'title'
+
+Solucionar este probelma es en realidad muy sencillo solamente debemos ir al modelo en cuestion. En este caso al modelo de Profesiones
+
+
+---\app\Models\Profession.php
+
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Profession extends Model
+{
+    //
+
+    protected $fillable = ['title']; 
+}
+
+---
+
+Y entonces agregar la propiedad "fillable" cuyo valor va a ser un array, con las propiedades o atributos que nosotros queremos permitir que sean cargados de forma masiva, es decir de una array asociativo con el metodo Create en tre otros metodos. Si hacemos esto y regresamos a la consola nuevamente a la consola y volvemos a ejecutar:
+
+	>>> Profession::create($data);
