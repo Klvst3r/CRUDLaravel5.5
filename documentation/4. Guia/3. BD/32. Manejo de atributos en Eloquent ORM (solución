@@ -173,3 +173,261 @@ class Profession extends Model
 Y entonces agregar la propiedad "fillable" cuyo valor va a ser un array, con las propiedades o atributos que nosotros queremos permitir que sean cargados de forma masiva, es decir de una array asociativo con el metodo Create en tre otros metodos. Si hacemos esto y regresamos a la consola nuevamente a la consola y volvemos a ejecutar:
 
 	>>> Profession::create($data);
+
+Pasando este array de datos:
+
+En este caso:
+
+	>>> Profession::create($data);
+	[!] Aliasing 'Profession' to 'App\Models\Profession' for this Tinker session.
+	PHP Notice:  Undefined variable: data in C:/AppServ/www/dev/CRUDLaravel5.5eval()'d code on line 1
+	>>>
+
+En este caso se tine nuevamente un error por que el aray no existe pero se va a declarar y a ejecutar nuevamente.
+
+Para ello en consola:
+
+	>>> $data = ['title' => 'Profesor', 'id' => 10];
+	=> [
+	     "title" => "Profesor",
+	     "id" => 10,
+	   ]
+	>>>
+
+Y ahora si se ejecuta el metodo create:
+
+Y ahora podemos ver la salida correspondiente:
+
+
+	>>> Profession::create($data);
+	=> App\Profession {#741
+		title: "Profesor",
+		updated_at: "2022-07-13 02:51:11",
+		created_at: "2022-07-13 02:51:11",
+		id: 4,
+	}
+	>>>
+
+
+Revusando la Base de datos
+
+
+
+Se agrego una profesion exitosamente, puesto que no se esta permitiendo que el ID se cargue masivamente y nos estaremos preguntando por que cuando nosotros creamos un usuario en la clase anterior, utilizando el metodo "create" no obtuvimos ningun error.
+
+La respuesta en este caso esta dentro del modelo de "usuarios" si noosotros lo inspeccionamos en:
+
+
+---\app\Models\User.php
+...
+
+  protected $fillable = [
+        'name', 'email', 'password',
+    ];
+
+...    
+
+
+
+
+
+Podemos ver que este modelo que ya venia inlcuido en nuestro proyecto, no se agrego sino que ya viene incluido en el proyectro base, ya trae la propiedad "fillable" definida dentro del modelo "User" y aca tenemos los siguientes campos:
+
+Nombre, Email y Password
+
+y de nuevo esto es extremadamente util, por que vamos siponer que nuestra tablade usuarios nosotros tenemos un campo de tipo boolean  para saber si un usuario es adminisrador o no.
+
+---datablase\migrations\2014_10_12_100000_create_users_table.php
+
+	public function up()
+	    {
+	        Schema::create('users', function (Blueprint $table) {
+	            $table->increments('id'); //Integer unsigned - Autoincrement
+
+	            $table->string('name'); //varchar
+	            $table->string('email')->unique(); //varchar - Unique
+	            $table->string('password'); 
+	            $table->rememberToken();
+	            $table->timestamps();
+	        });
+	    }
+---
+
+
+Vamos a colocar si valor por defecto en falso:
+
+
+---
+
+   public function up()
+    {
+        Schema::create('users', function (Blueprint $table) {
+            $table->increments('id'); //Integer unsigned - Autoincrement
+
+            $table->string('name'); //varchar
+            $table->string('email')->unique(); //varchar - Unique
+            $table->string('password'); 
+            $table->boolean('is_admin')->default(false);
+            $table->rememberToken();
+            $table->timestamps();
+        });
+    }
+
+---
+
+Por que no queremos que los nuevos usuarios que se registren en nuestra aplicación sean administradores de buenas a primeras. No queremos esto asi que regresamos a la consola y saliendo de tinker.
+	>>>Exit;
+
+
+Reejecutamos las migraciones:
+
+	> php artisan migrate
+
+volvemos a entrar a tinker y creamos u nuevo usuario.
+
+	> php artisan tinker
+
+Que pasa si nosotros intentamos pasar las propiedades "is_admin" como verdadero, de pronto el usuario no conoce los campos que estan disponibles en la tabla de usuarios, asi que, el usuario intenta hacer varias pruebas.
+
+	>>>User::create(['name' => 'un usuario', 'email' => 'un@usuario.com', 'password' => bcrypt('123'), 'is_admin' => true, 'admin' => 'true', 'administrador' => true, 'role' => 'admin']);
+
+	=> App\User {#4124
+     name: "un usuario",
+     email: "un@usuario.com",
+     updated_at: "2022-08-08 02:50:34",
+     created_at: "2022-08-08 02:50:34",
+     id: 2,
+	   }
+	>>>
+
+
+En la Base de datos tenemos;
+
+mysql> select * from professions;
++----+---------------------+---------------------+---------------------+
+| id | title               | created_at          | updated_at          |
++----+---------------------+---------------------+---------------------+
+|  1 | Back-end developer  | 2022-08-08 02:46:52 | 2022-08-08 02:46:52 |
+|  2 | Front-end developer | 2022-08-08 02:46:52 | 2022-08-08 02:46:52 |
+|  3 | Web Designer        | 2022-08-08 02:46:52 | 2022-08-08 02:46:52 |
+|  4 | Profesor            | 2022-08-08 02:48:29 | 2022-08-08 02:48:29 |
++----+---------------------+---------------------+---------------------+
+
+
+Todo ello va a ser ignorado por Laravel, puesto que nosotros nuevamente estamos definidiendo la propiedad "fillable" en el Modelo de Usuarios
+
+---User
+  protected $fillable = [
+        'name', 'email', 'password',
+    ];
+---
+
+Si hacemos la consulta desde tnker quedaria asi;
+
+	>>>User::all();
+	=> Illuminate\Database\Eloquent\Collection {#3874
+     all: [
+       App\User {#4121
+         id: 1,
+         name: "Klvst3r",
+         email: "klvst3r@email.com",
+         is_admin: 0,
+         created_at: "2022-08-08 02:46:52",
+         updated_at: "2022-08-08 02:46:52",
+         profession_id: 1,
+       },
+       App\User {#4122
+         id: 2,
+         name: "un usuario",
+         email: "un@usuario.com",
+         is_admin: 0,
+         created_at: "2022-08-08 02:50:34",
+         updated_at: "2022-08-08 02:50:34",
+         profession_id: null,
+       },
+     ],
+   }
+
+
+
+No podemos dar cuenta que no es un administrador, aqui el valor del atributo "is_admin" va a aprecer 0 por que Laravel va a crear esta columna de tipo "tinyint" en vez de boolean, pero se puede coprregir esto rapidamente en nuestro modelo si utilizamos la propiedad "cases".
+
+La cual puedo declarar aca como una propiedad de tipo protected y luego enotnces vamos a asignar un array asociativo donde las llaves van a ser los nombres de los campos y aca los valores van  ser entonces el tipo de campo o el tipo de valor que quiero que Laravel convierta en este caso que convietra el atributo "is_admin" de entero a booleano de la siguiente manera.
+
+ 
+Para ello.
+
+---app/User.php
+
+ protected $casts = [
+        'is_admin' => 'boolean' 
+    ];
+
+---
+
+
+Si hacemos esto y reiniciamos tinker 
+
+ > php artisan tinker
+
+ >>> User::all();
+ => Illuminate\Database\Eloquent\Collection {#3874
+     all: [
+       App\User {#4121
+         id: 1,
+         name: "Klvst3r",
+         email: "klvst3r@email.com",
+         is_admin: 0,
+         created_at: "2022-08-08 02:46:52",
+         updated_at: "2022-08-08 02:46:52",
+         profession_id: 1,
+       },
+       App\User {#4122
+         id: 2,
+         name: "un usuario",
+         email: "un@usuario.com",
+         is_admin: 0,
+         created_at: "2022-08-08 02:50:34",
+         updated_at: "2022-08-08 02:50:34",
+         profession_id: null,
+       },
+     ],
+   }
+>>>
+
+
+Aca se puede ver que todavia el atributo contiene el valos de cero. Si yo obtengo todos los usuarios de la siguiente manera;
+
+>>> $users = User::all();
+
+Y se almacenan en la variable $users, y luego obtengo el primer usuario de la siguiente forma para interactura con los atributos
+
+
+
+>>> $user = $users->first();
+=> App\User {#4131
+     id: 1,
+     name: "Klvst3r",
+     email: "klvst3r@email.com",
+     is_admin: 0,
+     created_at: "2022-08-08 02:46:52",
+     updated_at: "2022-08-08 02:46:52",
+     profession_id: 1,
+   }
+
+
+Y ahora interactuo con los atributos de este usuario.
+
+De la siguiente forma:
+
+>>> $user->is_admin;
+=> 0
+>>>
+
+
+Podemos ver que el valor de este atributo es falso, y esto no se ha visto, pero podemos acceder a todos los atributos de nuestro modelo como si se tratasen de unas propiedades definidas dentro del modelo de usuarios, pero de nuevo Laravel 
+
+>>> $user->name;
+=> "Klvst3r"
+
+5'50
