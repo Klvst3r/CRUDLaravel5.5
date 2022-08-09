@@ -425,9 +425,167 @@ De la siguiente forma:
 >>>
 
 
-Podemos ver que el valor de este atributo es falso, y esto no se ha visto, pero podemos acceder a todos los atributos de nuestro modelo como si se tratasen de unas propiedades definidas dentro del modelo de usuarios, pero de nuevo Laravel 
+Podemos ver que el valor de este atributo es falso, y esto no se ha visto, pero podemos acceder a todos los atributos de nuestro modelo como si se tratasen de unas propiedades definidas dentro del modelo de usuarios, pero de nuevo Laravel aca va a utilizar propiedades magicas por lo cual no se van a ver definidas estas propiedades en el modelo en cuestion, lo cual no slleva al siguiente punto.
 
 >>> $user->name;
 => "Klvst3r"
 
-5'50
+Que sucede si yo ahora quiero crear un usuario administrador, desde la consola utilizando tinker. en este caso yo puedo crear un ususario de este manera y pasar algunas propiedades, com por ejemplo, el nombre, el correo electronico, la contraseña, la cual se que puedo asignar de forma masiva y por cierto aca no podemosver la constraseña por que si vamos al modelo User podemos ver que este atributo esta definido como oculto o "hiden". 
+
+
+>>> $user = new User(['name' => 'patron', 'email' => 'patroncito@shulo.com', 'password' => bcrypt('123')]);
+=> App\User {#4134
+     name: "patron",
+     email: "patroncito@shulo.com",
+
+
+Como podemos ver de la siguiente manera.
+
+
+--- app/User.php
+...
+  protected $hidden = [
+        'password', 'remember_token',
+    ];
+ ...
+---
+
+Este es otro de los features de Eloquent que es muy util sobre todo para el desarrollo de API's. 
+
+De regreso a tinker yo puedo asignar el atributo "Admion" de la siguiente manera, nostese que aca no se esta asignando. de forma masiva, es decir de un array asociativo.
+
+	>>> $user->is_admin = true;
+
+Si no de forma individual.
+
+Por supuesto cualquier programador podria hacer lo siguiente.
+
+	>>> $user->is_admin = $request->get('is_admin'); [Esta linea no es viable de ejecutarse solo es de muestra para el ejerciciom no ejecutar]
+
+Pero entonces es muy obvio darse cuenta que aqui hay algo mal, por que uno no quiere que un usuario desde una peticion pueda asignarse un rol de administrador. De pronto podria tener una parte en el sistema donde un administrador pueda asignar, otro usuario como administrador, de esta manera Eloquen esta opbligando a hacerlo de forma explicita y no de forma implicita lo cual podria traer un problema de seguridad muy grave en la aplicación.
+
+Eloquent esta diseñado de esta manera para protegernos.
+
+Entonces lo correcto es ejecutar finalmente:
+
+	>>>$user->is_admin = true;
+	=> true
+
+Entonces se asigna el atributo "is_admin" con el valor verdadero, si ahora imprimimos ahora lo que tenemos la variable $user veremos que es un usuario que tiene estos tres atributos.
+
+	>>> $user;
+	=> App\User {#4134
+	     name: "patron",
+	     email: "patroncito@shulo.com",
+	     is_admin: true,
+	   }
+
+
+Ahora podemos ver que el atributo, is_admin tiene el valor de verdadero.
+
+
+Ahora para guardar este usuario puedo utilizar elmetodo, "save" que no se ha visto hasta ahora. 
+
+	>>>$user->save();
+
+Notese que este metodo, save se llama directamente en el objeto de usuarios, y no en la clase User, recordando que se explico, en la leccion anterior a que la clase se refiere aproximadamente a la tabla y cada objeto a un registro.
+
+En este caso llamamos al metetdo "save" en un objeto que sea un modelo de Eqloquet.Con ello queremos indicarle a Eloquent que queremos guardar este usuario particularmente en la Base de vez de todos los usuarios.
+
+	>>>  $user->save();
+	PHP Deprecated:  The "Doctrine/Common/Inflector/Inflector::pluralize" method is deprecated and will be dropped in doctri
+	ne/inflector 2.0. Please update to the new Inflector API. in C:/AppServ/www/dev/CRUDLaravel5.5/vendor/doctrine/inflector
+	/lib/Doctrine/Common/Inflector/Inflector.php on line 264
+	=> true
+
+
+Recivimos un "true"	 como respuesta, lo que quiere decir que la operación fue hecha con exito y por lo tanto podemos inspeccionar nuestro administrador de la base de datos.
+
+Al examinar nuevamente los usuarios, que tenemos en la base de datos podemos ver que tenemos un nuevo usuario, con los datos y este es de tipo administrador.
+
+mysql> select * from users;
++----+------------+----------------------+--------------------------------------------------------------+----------+----------------+---------------------+---------------------+---------------+
+| id | name       | email                | password                                                     | is_admin | remember_token | created_at          | updated_at          | profession_id |
++----+------------+----------------------+--------------------------------------------------------------+----------+----------------+---------------------+---------------------+---------------+
+|  1 | Klvst3r    | klvst3r@email.com    | $2y$10$niwX0EKA6LcZR2IZTSdxueqwCwYmA/xIRXBdnvc2K4jhCFxMi0RKm |        0 | NULL           | 2022-08-08 02:46:52 | 2022-08-08 02:46:52 |             1 |
+|  2 | un usuario | un@usuario.com       | $2y$10$PzyzcQ3WjXgU9rUvt3BYlOM2u2flDbIa/M1oWvLul1aQdg2RS8Lj6 |        0 | NULL           | 2022-08-08 02:50:34 | 2022-08-08 02:50:34 |          NULL |
+|  3 | patron     | patroncito@shulo.com | $2y$10$A3Pxo1/tYy.QMKrpic/ak.pd2MTp1torqspIeBjiTkeyEKfWdE5By |        1 | NULL           | 2022-08-09 05:27:04 | 2022-08-09 05:27:04 |          NULL |
++----+------------+----------------------+--------------------------------------------------------------+----------+----------------+---------------------+---------------------+---------------+
+
+
+Queremos hacer notar que Eloquen es lo sificientemente, inteligente cuando tiene que crear un registro o cuando tiene que actualizarlo. 
+
+Vamos a hacer una prueba de esto.
+
+Vamos a cambiar el nombre de "patron" a "patroncito". 
+
+De vuelta en la consola con tinker:
+
+	>>> $user->'patroncito';
+
+	>>> $user->name ='patroncito';
+	=> "patroncito"
+
+
+
+Regresando al administrador de la base de datos y volvemos a mostrar los usuarios, podemo ver que no a cambiado el registro:
+
+mysql> select * from users;
++----+------------+----------------------+--------------------------------------------------------------+----------+----------------+---------------------+---------------------+---------------+
+| id | name       | email                | password                                                     | is_admin | remember_token | created_at          | updated_at          | profession_id |
++----+------------+----------------------+--------------------------------------------------------------+----------+----------------+---------------------+---------------------+---------------+
+|  1 | Klvst3r    | klvst3r@email.com    | $2y$10$niwX0EKA6LcZR2IZTSdxueqwCwYmA/xIRXBdnvc2K4jhCFxMi0RKm |        0 | NULL           | 2022-08-08 02:46:52 | 2022-08-08 02:46:52 |             1 |
+|  2 | un usuario | un@usuario.com       | $2y$10$PzyzcQ3WjXgU9rUvt3BYlOM2u2flDbIa/M1oWvLul1aQdg2RS8Lj6 |        0 | NULL           | 2022-08-08 02:50:34 | 2022-08-08 02:50:34 |          NULL |
+|  3 | patron     | patroncito@shulo.com | $2y$10$A3Pxo1/tYy.QMKrpic/ak.pd2MTp1torqspIeBjiTkeyEKfWdE5By |        1 | NULL           | 2022-08-09 05:27:04 | 2022-08-09 05:27:04 |          NULL |
++----+------------+----------------------+--------------------------------------------------------------+----------+----------------+---------------------+---------------------+---------------+
+
+
+Lo que necesitamos hacer para actualizar en la base de datos es llamar al metodo "save". Una vez hecho esto veremos reflejado el cambio ahora si.
+
+
+>>>$user->save();
+
+Una vez hecho esto podemos regresar actualizar los datos y ahora podemos ver que el usuario tiene el la modificaciónj realizada.
+
+mysql> select * from users;
++----+------------+----------------------+--------------------------------------------------------------+----------+----------------+---------------------+---------------------+---------------+
+| id | name       | email                | password                                                     | is_admin | remember_token | created_at          | updated_at          | profession_id |
++----+------------+----------------------+--------------------------------------------------------------+----------+----------------+---------------------+---------------------+---------------+
+|  1 | Klvst3r    | klvst3r@email.com    | $2y$10$niwX0EKA6LcZR2IZTSdxueqwCwYmA/xIRXBdnvc2K4jhCFxMi0RKm |        0 | NULL           | 2022-08-08 02:46:52 | 2022-08-08 02:46:52 |             1 |
+|  2 | un usuario | un@usuario.com       | $2y$10$PzyzcQ3WjXgU9rUvt3BYlOM2u2flDbIa/M1oWvLul1aQdg2RS8Lj6 |        0 | NULL           | 2022-08-08 02:50:34 | 2022-08-08 02:50:34 |          NULL |
+|  3 | patroncito | patroncito@shulo.com | $2y$10$A3Pxo1/tYy.QMKrpic/ak.pd2MTp1torqspIeBjiTkeyEKfWdE5By |        1 | NULL           | 2022-08-09 05:27:04 | 2022-08-09 05:27:04 |          NULL |
++----+------------+----------------------+--------------------------------------------------------------+----------+----------------+---------------------+---------------------+---------------+
+
+
+En Eloquen hay una propiedad llamada, "exist" que va a devolver verdadero si el usuariuo exite, y falso si el usuario no existe. Entonces Eloquent es lo suficientemente liosto para saber cuando tiene que crear o actualizar un registro. 
+
+Por cietto tambien podemos eliminar el regsitro de la siguiente manera.
+
+
+>>> $user->delete();
+
+Ahora si exploramos el anterior registro ha desaparecido.
+
+>>> $users = User::all();
+
+>>> $user = $users->last();
+
+
+>>> $user->delete();
+=> true
+
+mysql> select * from users;
++----+------------+-------------------+--------------------------------------------------------------+----------+----------------+---------------------+---------------------+---------------+
+| id | name       | email             | password                                                     | is_admin | remember_token | created_at          | updated_at          | profession_id |
++----+------------+-------------------+--------------------------------------------------------------+----------+----------------+---------------------+---------------------+---------------+
+|  1 | Klvst3r    | klvst3r@email.com | $2y$10$niwX0EKA6LcZR2IZTSdxueqwCwYmA/xIRXBdnvc2K4jhCFxMi0RKm |        0 | NULL           | 2022-08-08 02:46:52 | 2022-08-08 02:46:52 |             1 |
+|  2 | un usuario | un@usuario.com    | $2y$10$PzyzcQ3WjXgU9rUvt3BYlOM2u2flDbIa/M1oWvLul1aQdg2RS8Lj6 |        0 | NULL           | 2022-08-08 02:50:34 | 2022-08-08 02:50:34 |          NULL |
++----+------------+-------------------+--------------------------------------------------------------+----------+----------------+---------------------+---------------------+---------------+
+
+Como podemos ver se ha eliminado el ultimo usuario que se tenie dentro de la varieble "$user".
+
+
+De nuevo no se quiere cubrir todas las operaciones de Eloquent, pero si de momento las mas importantes y las mas comunes.
+
+Con esto ya tenemos un poco mas de dominio del ORM de Eloquent. Ya se tienen mas recursos para poder practicar. Si pide que se practique hasta poder conseguir y lograr nuevas metas segun nuestras necesitades con nuestro propio sistema en mente.
+
