@@ -3,6 +3,52 @@
 Notas:
 ======
 
+Las tablas de una base de datos a menudo están relacionadas unas con otras. Por ejemplo, un usuario puede estar asociado a una profesión y una profesión puede tener muchos usuarios asociados. Utilizando el ORM Eloquent podemos hacer que este proceso sea mucho más fácil, trabajando con las relaciones directamente dentro de nuestros modelos (usando Programación Orientada a Objetos) y creando métodos personalizados que nos evitarán tener que construir consultas de forma manual.
+
+
+Relaciones «Pertenece a»
+
+El método belongsTo nos permite trabajar con relaciones donde un registro pertenece a otro registro. Este método acepta como primer argumento el nombre de la clase que queremos vincular. Eloquent determina el nombre de la llave foránea a partir del nombre del método (en este caso profession) y agregando el sufijo _id a este:
+public function profession()
+{
+    return $this->belongsTo(Profession::class);
+}
+
+Si en tu base de datos el nombre de la llave foránea no sigue esta convención puedes pasar el nombre de la columna como segundo argumento:
+public function profession()
+{
+    return $this->belongsTo(Profession::class, 'id_profession');
+}
+
+Por otro lado, si el modelo padre no usa una columna id como su llave primaria o quieres relacionar el modelo a una columna diferente, puedes pasar un tercer argumento especificando el nombre de la columna que actuaría como llave del modelo padre:
+public function profession()
+{
+    return $this->belongsTo(Profession::class, 'profession_name', 'name');
+}
+
+En este caso Eloquent buscará la relación entre la columna profession_name del modelo Users y la columna name del modelo Profession.
+
+Hecho esto, utilizando cualquiera de las formas anteriores, podemos obtener la profesión del usuario:
+$user = User::first();
+$user->profession;
+Relaciones uno a muchos con hasMany
+
+Una relación uno a muchos es utilizada cuando un modelo puede tener muchos otros modelos relacionados. Por ejemplo, una profesión puede tener un número indeterminado de usuarios asociados a ésta. Dentro del modelo Profession podemos decir que una profesión tiene muchos usuarios:
+public function users()
+{
+    return $this->hasMany(User::class);
+}
+
+Ahora podemos obtener todos los usuarios de una profesión:
+$profession = Profession:first();
+$profession->users;
+
+Los métodos que nos permiten relacionar un modelo con muchos otros siempre van a retornar una colección, así esté vacía y los métodos que nos permiten relacionar un modelo con otro van a retornar el modelo o null.
+Construir consultas
+
+Podemos construir una consulta llamando al método de una relación. Por ejemplo, encadenando el método where() a users() podemos obtener todos los usuarios asociados a una profesión pero que tengan la columna is_admin como true:
+$profession->users()->where('is_admin', true)->get();
+
 
 Practica:
 =========
@@ -10,3 +56,57 @@ Practica:
 
 Ejercicios:
 ===========
+
+Primero enttre equipos de computo para cargar tabla de datos
+
+php artisan migrate:fresh
+
+php artisan migrate:refresh
+
+php artisan db:seed
+
+composer dump-autoload
+
+php artisan tinker
+
+$professions = Profession::all();
+
+$professions // alias del comando anterior
+
+$professions->first(); // Obtenemos el primer resultado
+
+$professions->last(); // Obtenemos el último resultado
+
+$professions->random(1); // Obtenemos un resultado aleatorio
+
+$professions->pluck('title'); //Devuelve un listado de los titulos de los profesionales
+
+collect(['Klvst3r', 'crudlaravel', 'Laravel']); //Crea una coleccion manual
+
+$user = User::find(1); //Devuelve los datos del usuario cuando el id = 1
+
+$user->isAdmin(); // Devuelve true o false en este caso como es administytador devuelve "true"
+
+Profession::all(); // Devuelve la información contenida de las profesiones titulo creada y actualizada
+
+$professions; // Devuelve las profesiones dentro del alias declarado
+
+$titles = $professions->pluck('title'); // crea y muestra las profesiones dentro del alias titles
+
+$titles // CReado el alias puede funcionar como el comando anterior a este que se esta ejecutando
+
+$backendDeveloper = Profession::where('title', 'Back-end developer')->first(); // Se crea el alias backendDeveloper y devuelve el primer registro de profesiones donde el titulo sea "Back-end developer"
+
+DB::table('professions')->where('title', 'Back-end developer')->first(); // Misca consulta con el constructor de consultas ORM Eloquent
+
+ $user = User::first(); // obtendremos el primer usuario que se tiene en la base de datos con Eloquent
+
+$user = User::find(1); //primer usuario tiene el id:1
+
+$user->isAdmin();
+
+User::all(); // misca consulta
+
+
+
+
