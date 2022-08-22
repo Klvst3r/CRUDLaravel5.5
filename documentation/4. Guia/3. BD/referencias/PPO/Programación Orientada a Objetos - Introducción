@@ -1,0 +1,9 @@
+Programación Orientada a Objetos
+
+PHP es generalmente conocido por ser un lenguaje de código abierto que nos permite generar páginas web dinámicas en HTML A partir de la versión 5, PHP adquirió una tras otra todas las características de un lenguaje de programación orientada a objetos
+
+PHP soporta la creación de clases, objetos, herencia, interfaces, clases abstractas, y muchos otros conceptos que quizás te resulten abrumadores o complicados en este momento que pasarán a ser conceptos familiares que se podrán usar cada vez que se programa con PHP y sobretodo si se esta trabajando con un framework como Laravel. Puesto que Symfony, Laravel y todos los principales frameworks de PHP hacen uso extenso de todas estas características de la programación orientada a objetos.
+
+Así que dominando estos conceptos de OOP no solo será mucho más productivo y escribirá un código más eficiente, fácil de mantener y re-usar, sino que además  ganará mucha confianza mientras programa, puesto que entenderá de una mejor forma las bases sobre las cuáles se desarrolla en Laravel y otros frameworks y componentes modernos.
+
+Para entender la programación orientada a objetos desde cero, requerira de: conocimientos básicos de PHP, un servidor (preferiblemente local) donde pueda ejecutar el código PHP y por supuesto muchos ánimos de aprender.

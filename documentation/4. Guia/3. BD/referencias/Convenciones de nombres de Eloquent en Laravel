@@ -1,0 +1,139 @@
+
+Convenciones de nombres de Eloquent en Laravel
+----------------------------------------------
+
+
+
+Laravel es un framework que usa el paradigma de programación “Convención por encima de Configuración” (Convention over Configuration), el cual consiste en que el framework toma decisiones triviales y el desarrollador sólo necesita especificar los aspectos no convencionales de la aplicación. La principal ventaja de conocer y usar las convenciones establecidas por el framework es que te permite desarrollar una aplicación de una forma más fácil y rápida. Así que veamos a continuación cuáles son algunas de las convenciones en Eloquent y de qué manera podemos trabajar con ellas.
+
+Supongamos que deseamos desarrollar una aplicación de notas, para ello necesitamos crear un modelo y su respectiva migración, ejecutando:
+
+php artisan make:model Note -m
+
+Se usa la opción -m para que se cree el archivo de migración relacionado al modelo.
+
+Ahora con estos dos archivos generados: app/Note.php y /database/migrations/2017_02_26_164054_create_notes_table.php veremos cuáles decisiones toma Laravel.
+Convenciones en Modelos y Base de datos
+
+Laravel asume las siguientes convenciones:
+
+    El nombre del modelo está en formato CamelCase: Note
+    La tabla de base de datos asociada al modelo es el nombre del modelo en plural en formato snake_case: notes. Por ejemplo si tuvieras un modelo con un nombre como ProductType el nombre de la tabla de base de datos sería: product_types.
+    La clave primaria es: id y será de tipo entero positivo y auto-incremental.
+    Además, añade a la tabla de la base de datos los campos created_at y updated_at automáticamente con $this->timestamps();
+
+Modificando las convenciones
+
+Aunque es ventajoso, no toda aplicación y su base de datos tienen que ser desarrolladas usando estas convenciones pues no es una obligación seguirlas y quizás la aplicación requiera un diseño diferente, por ello Laravel es flexible y nos proporciona la posibilidad de sobreescribir las convenciones desde la clase de los modelos. Lo importante es conocer lo que espera Laravel por defecto y así especificar lo que no sigue las reglas. Por ejemplo:
+
+Si trabajamos con un modelo con nombre en español como Autor, Laravel asumiría que la tabla asociada es autors, pero en realidad la tabla debería llamarse autores. Para hacerlo tenemos que, además de cambiar el nombre de la tabla en el archivo de migración, también especificarlo en el modelo, añadiendo el siguiente atributo:
+
+protected $table = “autores”;
+
+Si el nombre de la clave primaria es diferente de id puedes cambiarlo con el atributo:
+
+protected $primary_key = 'autor_id';
+
+Si la clave primaria no es auto-incremental lo cambiaríamos agregando:
+
+public $incrementing = false;
+
+Para indicar que la tabla del modelo no usará los campos created_at y updated_at
+
+public $timestamps = false;
+
+Pero si lo que quieres es personalizar los nombre de los campos añade las siguientes constantes asignándole el nuevo nombre que tienen en la tabla de la base de datos:
+
+const CREATED_AT = 'fecha_creado';
+const UPDATED_AT = 'fecha_actualizado';
+
+Si un modelo usa una conexión de base de datos diferente puedes especificarla con:
+
+protected $connection = 'nombre-conexion';
+
+El nombre de la conexión es el valor asignado en la clave connections para la base de datos dentro del archivo config/database.php
+Convenciones en las relaciones de Eloquent y las claves foráneas
+
+Por otro lado cuando trabajas con relaciones y claves foráneas, Laravel también espera que se cumpla con algunas convenciones que son importantes conocer para definir de una manera correcta las relaciones entre modelos de nuestra aplicación:
+Para relaciones uno a uno con hasOne y uno a muchos con hasMany
+
+Tomando como ejemplo que un usuario (User) tiene un perfil (UserProfile) la relación se define de la siguiente manera, en el modelo User:
+<?php
+namespace App;
+use Illuminate\Database\Eloquent\Model;
+class User extends Model
+{
+    public function profile()
+    {
+        return $this->hasOne('App\UserProfile');
+    }
+}
+
+Eloquent asume que el nombre de la llave foránea de la relación se basa en el nombre del modelo en snake_case más el sufijo _id, es decir, [nombre_modelo]_id entonces para nuestro ejemplo se espera que el modelo UserProfile tenga un atributo como clave foránea llamado user_id.
+
+En caso que no sea de esa manera tienes que modificar la convención para que Eloquent en vez de buscar user_id busque la clave foránea por su nombre correcto, debes agregarlo como segundo parámetro al método de la relación:
+
+return $this->hasOne('App\UserProfile', 'userID');
+
+Pero además, Eloquent asume que la llave foránea va a coincidir con un valor del campo id (o lo que hayas colocado en $primaryKey, si lo personalizaste) de la tabla relacionada.
+
+Es decir, Eloquent buscará el valor del campo id del registro User en el campo user_id del registro UserProfile. En caso de no seguir esta convención debes especificar como tercer argumento el nombre del campo que en realidad estás usando:
+
+return $this->hasOne('App\UserProfile', 'userID', 'local_key');
+
+Por otro lado, en la definición de la relación inversa: un perfil (UserProfile) pertenece a un usuario (User) expresada en el modelo UserProfile:
+<?php
+namespace App;
+use Illuminate\Database\Eloquent\Model;
+class UserProfile extends Model
+{
+    public function user()
+    {
+        return $this->belongsTo('App\User');
+    }
+}
+
+También Eloquent seguirá algunas convenciones: asumirá que el nombre de la clave foránea de UserProfile es user_id ya que lo determina agregando el sufijo _id al nombre del método de la relación: [nombre_metodo]_id. Puedes cambiar la convención añadiendo como segundo parámetro al método belongsTo el nombre que le has puesto a la llave foránea:
+
+return $this->belongsTo('App\User', 'userID');
+
+Adicionalmente, si el modelo relacionado, en este caso User, no usa el campo id como llave primaria o quieres tener la relación con un campo diferente a id, puedes pasar como tercer argumento al método belongsTo el nombre del campo de la tabla a la que quieres asociar la llave foránea:
+
+return $this->belongsTo('App\User', 'foreign_key', 'other_key');
+
+Estas convenciones descritas arriba se aplican de igual forma a las relaciones Uno a Muchos (hasMany) y su relación inversa.
+Para relaciones Muchos a Muchos con belongsToMany
+
+Suponiendo que queremos definir una relación muchos a muchos donde un usuario (User) puede tener muchos roles (Role) y un rol puede pertenecer a muchos usuarios se necesitan de tres tablas en la base datos: users, roles y role_user. Esta última tabla llamada pivote está definida, por defecto, bajo la convención: nombres de los modelos en singular y orden alfabético separados por un guión bajo: role_user y debe contener los campos user_id y role_id por el nombre singular de cada modelo con el sufijo _id
+
+Así al escribir la definición de la relación de los modelos como por ejemplo para User:
+<?php
+namespace App;
+use Illuminate\Database\Eloquent\Model;
+class User extends Model
+{
+    public function roles()
+    {
+        return $this->belongsToMany('App\Role');
+    }
+}
+
+Si no mantenemos la convención del nombre de la tabla pivote role_user debemos agregar como segundo argumento al método belongsToMany el nombre de la tabla que tenemos en la base de datos para tal fin:
+
+return $this->belongsToMany('App\Role', 'nombre_tabla_pivote');
+
+Además, si has cambiado el nombre de los campos de la tabla pivote también debes sobreescribir la convención pasando como argumentos al método belongsToMany los nombres que usas, de esta manera:
+
+El tercer argumento es el nombre de la llave foránea del modelo donde estás definiendo la relación y el cuarto argumento es el nombre de la llave foránea del modelo con el que estás relacionando, como por ejemplo:
+
+Para el modelo User
+public function roles()
+{
+    return $this->belongsToMany('App\Role', 'role_user', 'userId', 'roleId');
+}
+
+Para el modelo Role
+public function users()
+{
+    return $this->belongsToMany('App\Role', 'role_user', 'roleId', 'userId');
+}

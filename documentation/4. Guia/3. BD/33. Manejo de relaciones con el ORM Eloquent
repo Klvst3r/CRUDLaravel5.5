@@ -6,49 +6,73 @@ Notas:
 Las tablas de una base de datos a menudo están relacionadas unas con otras. Por ejemplo, un usuario puede estar asociado a una profesión y una profesión puede tener muchos usuarios asociados. Utilizando el ORM Eloquent podemos hacer que este proceso sea mucho más fácil, trabajando con las relaciones directamente dentro de nuestros modelos (usando Programación Orientada a Objetos) y creando métodos personalizados que nos evitarán tener que construir consultas de forma manual.
 
 
+
+
+
 Relaciones «Pertenece a»
+------------------------
 
-El método belongsTo nos permite trabajar con relaciones donde un registro pertenece a otro registro. Este método acepta como primer argumento el nombre de la clase que queremos vincular. Eloquent determina el nombre de la llave foránea a partir del nombre del método (en este caso profession) y agregando el sufijo _id a este:
-public function profession()
-{
-    return $this->belongsTo(Profession::class);
-}
+El método «belongsTo» nos permite trabajar con relaciones donde un registro pertenece a otro registro. Este método acepta como primer argumento el nombre de la clase que queremos vincular. Eloquent determina el nombre de la llave foránea a partir del nombre del método (en este caso profession) y agregando el sufijo _id a este:
 
+---
+    public function profession()
+    {
+        return $this->belongsTo(Profession::class);
+    }
+---
 Si en tu base de datos el nombre de la llave foránea no sigue esta convención puedes pasar el nombre de la columna como segundo argumento:
-public function profession()
-{
-    return $this->belongsTo(Profession::class, 'id_profession');
-}
+---
+    public function profession()
+    {
+        return $this->belongsTo(Profession::class, 'id_profession');
+    }
+---
 
 Por otro lado, si el modelo padre no usa una columna id como su llave primaria o quieres relacionar el modelo a una columna diferente, puedes pasar un tercer argumento especificando el nombre de la columna que actuaría como llave del modelo padre:
-public function profession()
-{
-    return $this->belongsTo(Profession::class, 'profession_name', 'name');
-}
+---
+    public function profession()
+    {
+        return $this->belongsTo(Profession::class, 'profession_name', 'name');
+    }
+---
 
-En este caso Eloquent buscará la relación entre la columna profession_name del modelo Users y la columna name del modelo Profession.
+En este caso Eloquent buscará la relación entre la columna "profession_name" del modelo Users y la columna "name" del modelo Profession.
 
 Hecho esto, utilizando cualquiera de las formas anteriores, podemos obtener la profesión del usuario:
-$user = User::first();
-$user->profession;
-Relaciones uno a muchos con hasMany
+---
+    $user = User::first();
+    $user->profession;
+---
 
-Una relación uno a muchos es utilizada cuando un modelo puede tener muchos otros modelos relacionados. Por ejemplo, una profesión puede tener un número indeterminado de usuarios asociados a ésta. Dentro del modelo Profession podemos decir que una profesión tiene muchos usuarios:
-public function users()
-{
-    return $this->hasMany(User::class);
-}
+
+Relaciones uno a muchos con hasMany
+-----------------------------------
+
+Una relación uno a muchos es utilizada cuando un modelo puede tener muchos otros modelos relacionados. Por ejemplo, una profesión puede tener un número indeterminado de usuarios asociados a ésta. Dentro del modelo "Profession" podemos decir que una profesión tiene muchos usuarios:
+---
+    public function users()
+    {
+        return $this->hasMany(User::class);
+    }
+---
 
 Ahora podemos obtener todos los usuarios de una profesión:
-$profession = Profession:first();
-$profession->users;
+---
+    $profession = Profession:first();
+    $profession->users;
+---
 
-Los métodos que nos permiten relacionar un modelo con muchos otros siempre van a retornar una colección, así esté vacía y los métodos que nos permiten relacionar un modelo con otro van a retornar el modelo o null.
+Los métodos que nos permiten relacionar un modelo con muchos otros siempre van a retornar una colección, así esté vacía y los métodos que nos permiten relacionar un modelo con otro van a retornar el modelo o "null".
+
+
+
 Construir consultas
-
+-------------------
 Podemos construir una consulta llamando al método de una relación. Por ejemplo, encadenando el método where() a users() podemos obtener todos los usuarios asociados a una profesión pero que tengan la columna is_admin como true:
-$profession->users()->where('is_admin', true)->get();
 
+---
+    $profession->users()->where('is_admin', true)->get();
+---
 
 Practica:
 =========
@@ -110,3 +134,126 @@ User::all(); // misca consulta
 
 
 
+Preguntas
+=========
+
+1. Se puede tener una clave foránea que tengan referencia a la clave primaria de la misma tabla?
+
+"Self-Referential Integrity Constraints"
+
+
+
+2. Para los que estan iniciando con la vercion actual la forma de hacer el belongsTo es return $this->belongsTo('App\Profession'); el cual pueden ver en este link
+
+https://laravel.com/docs/5.8/eloquent-relationships
+
+
+3. Me pasa algo que no puedo comprender, al hacer lo siguiente en tinder $user = User::first(); todo ok, pero al hacer $profession = Profession::first(); sale el siguiente mensaje de error:
+
+[!] Aliasing 'Profession' to 'App\Models\Profession' for this Tinker session.
+ErrorException with message 'include(/home/claudio/Datos/www/curso-styde/vendor/composer/../../app/Models/Profession.php): failed to open stream: No such file or directory'
+
+Hola! confirma que tu modelo Profession está ubicado en el directorio app/Models y tiene el namespace App\Models\Profession
+
+
+
+4. Me sucede lo siguiente, para que funcione bien debo tener 2 Profession.php, 1 en App y otro en App/Models/, si solo lo tengo en App/Models , esto no funciona $user->profession
+
+>>> $user->profession
+PHP Warning: include(/home/claudio/Datos/www/curso-styde/vendor/composer/../../app/Profession.php): failed to open stream: No such file or directory in /home/claudio/Datos/www/curso-styde/vendor/composer/ClassLoader.php on line 444
+
+y al tenerlo también en App
+
+>> $user->profession
+=> App\Profession {#2856
+id: 1,
+title: "Desarrolador back-end",
+created_at: "2019-04-08 15:47:43",
+updated_at: "2019-04-08 15:47:43",
+}
+
+
+si esto no funciona $user->profession es porque tienes mal definida la relación en el modelo User. Si estas usando el directorio Models para almacenar todos tus modelos debes asegurarte que todos tengan el namespace correcto y en todas partes que lo llames importes la clase correcta Lo ideal es que estén en un solo sitio
+
+
+5. Sigo con el inconveniente, he hecho lo siguiente:
+Tengo los 2 modelos en App con namespace App;
+En Profession.php tengo:
+protected $fillable = ['title'];
+
+public function users()
+{
+return $this->hasMany(User::class);
+}
+
+en User.php
+
+public function profession()
+{
+return $this->belongsTo(Profession::class);
+}
+
+
+ejecuta composer dump-autoload para que se carguen las clases que realmente existe. Otra cosa puede ser que al trabajar con Tinker y haces un cambio en el código debes salir de la sesión de Tinker y volver a entrar para que se tomen los cambios que has hecho
+
+OK, Gracias, ahi se solucionó
+
+Ya lo solucioné, al parecer el titulo de la profesión no estaba escrito de la misma forma en la base de datos que en UserSeeder, copie el de la base de datos y lo peque en el archivo y eso se solucionó.
+
+Muchas Gracias por toda tu ayuda, ya está funcionando todo ok.
+
+
+
+6. Buenas alguien podria ayudarme con un caso de base de datos, quiero generar un pdf con la librería DomPDF pero al cargar una gran cantidad de datos se me pega el programa con un mensaje de error de Time Out, hay algunas forma de cargar pocos datos al pdf y luego ir cargando lo demás pero poco a poco?
+
+Puedes probar ajustando el valor de set_time_limit a uno mayor o generando el documento por parte. Otro detalle que debes tener en cuenta es si el error es generado por DomPDF como tal o porque el computador donde te encuentras no tiene la capacidad suficiente para procesarlo.
+
+
+7. Tengo el mismo problema al generar pdf con DomPDF, incrementé memoria con el set_time_limit, cuando pasa a la vista en el uso de relaciones tarda mucho en completar la vista, verifique el tiempo de la consulta y no demora, pero cuando pasa a generar el pdf que es donde uso varias relaciones es donde tarda demasiado, no se de que manera se puede optimizar, estaba pensando en extraer todos los datos en la consulta y ya no usar relaciones ya que en este caso no es muy eficaz, alguna recomendación?
+
+Amigo ayer probé el generador de pdf SNNAPY y funcionó muy bien, me cargos más de 2000 artículos en segundos, el problema está en que no se como instalarlo al servidor para hacerlo generalizado para todos.
+
+
+8. existe alguna pagina donde estén las reglas para nombrar los nombres de las tablas, las variables, los controladores y los modelos, el standard que se usa, creo que tiene un nombre esas reglas.
+
+Se llaman convenciones
+
+https://styde.net/convenciones-de-nombres-de-eloquent-en-laravel/
+
+
+9. tengo entendido que los modelos son en singular en inglés y las migraciones se crean en plural.
+
+En relación a este tema, decir que el plural en ingles es siempre añadiendo una s pero en castellano a veces se añade "es". Ejemplo Autor, Autores. Así que es una razón más para utilizar nombres en ingles. Pero me resisto un poco ya que el inglés se me resiste a mí. Cuando se tienen unos cuantos años como es mi caso y no se ha aprendido, se hace duro... ¿Es mucho problema usar nombres de tablas y campos en castellano?
+
+el problema reside mas en la lectura, por ejemplo una tabla llamada "birthdays" como seria en español "cumpleaños" o "cumpleanos"? el primero tiene ñ cosa que no debe tener como nombre una tabla el segundo no leo bien o si? lo mismo aplica para los atributos, pero al final es cosa de cada programador como nombrar las tablas, modelos, atributos, etc!
+
+
+10. la forma de proceder frente a los id es que en cada tabla el campo id solo se llame "id" y cuando tenga un campo relacionado sea "nombre_del_campo_relacionado_id" ?
+
+Exactamente así es
+
+
+
+11. si establezco relaciones entre clases su archivo del modelo correspondiente, ¿para que estas funcionen deben existir previamente, en el archivo de migración, las llaves foráneas entre dichas clases en cuestión?
+
+me parece que es lo recomendable pero no es obligatorio.
+
+En realidad no es obligatorio, pero sí es muy recomendable hacerlo, para optimizar las consultas, como explicamos en nuestro libro de SQL
+
+https://leanpub.com/aprende-mysql/
+
+
+12. En que casos es recomendable usar el metodo "with"
+
+
+Solución al problema de N+1 con Eager Loading en Laravel
+
+
+
+Cuando trabajamos con ORMs -como Eloquent- obtenemos la ventaja de hacer consultas de modelos relacionados fácilmente pero con la desventaja que no sabemos a simple vista cómo se están haciendo dichas consultas.
+
+ Laravel por defecto, realiza «lazy loading» o una carga de los datos de modelos relacionados solo cuando accedes a ellos. 
+
+ Esto produce que se hagan N consultas extra por la cantidad de registros que se relacionan con el otro modelo. 
+
+ Son consultas adicionales que se hacen a la base de datos y no importan mucho cuando estamos desarrollando pero cuando tenemos la aplicación en producción podría afectar el desempeño. 
