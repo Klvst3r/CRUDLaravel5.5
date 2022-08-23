@@ -6,9 +6,6 @@ Notas:
 Las tablas de una base de datos a menudo están relacionadas unas con otras. Por ejemplo, un usuario puede estar asociado a una profesión y una profesión puede tener muchos usuarios asociados. Utilizando el ORM Eloquent podemos hacer que este proceso sea mucho más fácil, trabajando con las relaciones directamente dentro de nuestros modelos (usando Programación Orientada a Objetos) y creando métodos personalizados que nos evitarán tener que construir consultas de forma manual.
 
 
-
-
-
 Relaciones «Pertenece a»
 ------------------------
 
@@ -78,10 +75,243 @@ Practica:
 =========
 
 
+
+Una de las ventajas de trabajar con un ORM como Eloquent es que nos permite crear relaciones entre un modelo y otro. Asi como en nuestro base de datos por ejemplo nosotros relacionamos una tabla de usuarios con un aprofesion, es decir, cada unsuario va a tener asignado una profesión, aunque esto es opcional y nosotros podriamos crear la relación inversa. 
+
+Si nosotros conocemos el id de la profesión podriamos obtener todos los usuarios relacionados o asignados a dicha profesión de nuevo por que la tabla "Users" tenemos la llave foranea "profesion_id". Entonces nosotros podriamos escribir una sentencia SQL como la siguiente:
+
+SELECT * FROM 'users' WHERE profession_id = 1;
+
+
+Vamos a seleccionar todos los usuarios donde la profesion sea la profesion uno, que en este caso es "Desarrollador Back-end", asi como podemos hacer esta consulta en el modelo entidad - relación que nos brinda la base de datos, nosotros también vamos a poder relacionar objetos con el ORM de Eloquent y esto es muy sencillo y es lo que vamos a aprender en esta sección.
+
+Nuevamente vamos a trabajar con Tinker puesto que es muy practico para colocar estos ejemplos y vamos a obtener el usuario, en este caso el primer usuario que estaguardado en la base de datos. 
+
+>>>
+
+> php artisan thinker
+
+>>> $user = User::first();
+
+ => App\User {#3874
+     id: 1,
+     name: "Klvst3r",
+     email: "klvst3r@email.com",
+     is_admin: 0,
+     created_at: "2022-08-21 02:01:20",
+     updated_at: "2022-08-21 02:01:20",
+     profession_id: 1,
+   }
+
+Ahora si yo quisiera obtener la profesión de este usuario, en este caso:
+
+>>>  $user->profession
+=> null
+
+
+Utilizando la propiedad o el atributo "profession" va a devolver null. Peo puedo obtener el id de esta profesión.
+
+>>> $user->profession_id
+=> 1
+
+Utilizando este id, yo podria obtener la profesión de esta manera 
+
+>>> Profession::where('id', $user->profession_id)->first()
+[!] Aliasing 'Profession' to 'App\Models\Profession' for this Tinker session.
+
+
+O Como hemos aprendido utilizando el metodo find:
+
+>>> Profession::find($user->profession_id)
+
+Pero primero ejecutar:
+
+ >>> $user = User::first();
+
+ Despues:
+
+ >>> Profession::find($user->profession_id)
+
+
+Sin embargo esto es algo engorroso.
+
+Que tal si yo pudiera obtener la profesion del usuario de la siguiente manera:
+
+>>> $user->profession
+
+Seria mucho más sencillo.
+
+Resulta que logar esto en Eloquent es muy facil, Simplemente nos vamos a ir al modelo en cuestion en este caso. :
+
+app/User.php
+
+Al modelo de usuario y se declara un nuevo metodo llamado profession:
+
+
+---app/User.php
+...
+    
+        public static function findByEmail($email)
+    {
+        return static::where(compact('email'))->first();
+    }
+
+
+    public function profession()
+    {
+        return $this->belongsTo(Profession::class);
+    }
+
+     public function isAdmin(){
+        return $this->email === 'klvst3r@email.com';
+    }
+
+...
+---
+
+
+Este metodo va retornar el llamado al metodo "belongsTo", el cual va a aceptar como primer argumento el nombre de la clase que yo quiero vincular o enlazar o relacionar con este modelo de usuario de esta manera yo estoy indicando que un usuario pertenece a una profesion y si yo regreso a la consola, cierro tinker, se vuelve a abrir nuevamente, se encuentra el primer usuario en la base de datos que yo se que esta asociado a la profesion 1 
+
+Se guarda el achivo y se vuelve a ejecular lo siguiente:
+
+> php artisan tinker
+
+>>> $user = User::first();
+
+=> App\User {#3874
+     id: 1,
+     name: "Klvst3r",
+     email: "klvst3r@email.com",
+     is_admin: 0,
+     created_at: "2022-08-21 02:01:20",
+     updated_at: "2022-08-21 02:01:20",
+     profession_id: 1,
+   }
+
+
+
+y ahora nuevamente intento accesar a la profesion de esta manera:
+
+>>> $user->profession
+=> App\Profession {#4122
+     id: 1,
+     title: "Back-end developer",
+     created_at: "2022-08-21 02:01:20",
+     updated_at: "2022-08-21 02:01:20",
+   }
+
+
+En este caso observamos que se devuelve un objeto que es un modelo de la clase "Profession" y esta es la profesion la cual asignamos al usuario.
+
+Eloquent en este caso va a utilizar el nombre de la relación profession y va a buscar una columna llamada "profession_id" es decir el nombre de la relación + el subfijo (_id) -> profesion_id
+
+Para hacer la busqueda utilizando el modelo o clase Profession
+
+Ahora si en la base de datos la llave foranea no cumple con esta convencion por ejemplo en vez de profession_id se llamara id_profession, en este caso se puede pasar como segundo argumento de la siguiente manera
+
+ ---app/User.php
+...
+    public function profession()
+    {
+        return $this->belongsTo(Profession::class, 'id_profession');
+    }
+...
+---
+
+
+Todo esto se va a dejar en las notas que anteceden a los ejercios de esta sección, en realidad es muy sencillo y muy flexible trabajar con Eloquent, este de hecho el ORM para PHP más flexible que he visto hasta ahora, lo que quiere decir que es conveniente mas no obligatorio utilizar las convensiones que propone Eloquent, en este caso definimos la relación que un usuario pertenece a una professión, pero nosotros tambien podemos especificar la relación contraria en el modelo Profession podemos decir que una profesion tiene muchos usuarios y esto lo vamos a lograr con el metodo "hasMany()".
+
+---app/Profession.php
+
+public function users()
+    {
+        return $this->hasMany(User::class);
+    }
+
+
+---
+
+Que nuevamente va a aceptar como primer argumento el nombre de la clase que queremos relacionar, en este caso el modelo de usuario.
+
+Notemos que se esta declarando el metodo users() en plural por que voy a decir que una profesion tiene muchos usuarios mientras que en el  modelo de User entonces como un un usuari puede tener una sola profesión o pertenecer a una sola profesión en ste caso estoy declarando el metodo en singular, estos pequeños detalles 
+
+
+
+---app/User.php
+public function profession()
+{
+    return $this->belongsTo(Profession::class);
+}
+---
+
+Si se toman en cuenta a la larga pueden mejorar muchisimo la legibilidad del codigo o si no los tienes en cuenta y se ignoran completamente pueden entonces traer el efecto contrario y hacer que el codigo sea dificil de leer y de entender.
+
+Recapitulando, en nuestro modelo de usuarios hemos definido una relación para indicar que un usuario pertenece a una profesion y en nuestro modelo Profession se ha definido otra relación 
+
+---app/User.php
+public function profession()
+{
+    return $this->belongsTo(Profession::class); 
+}
+---
+
+
+---app/Profession.php
+public function users()
+{
+    return $this->hasMany(User::class);
+}
+---
+
+Para indicar que una profesión tiene muchos usuarios, entonces yo puedo regresar a la consola y volver a acceder a tinker y por ejemplo obtener la primera Professión registrada en la base de datos
+
+
+> php artisan tinker
+
+$user = User::first();
+
+>>> $profession = Profession::first();
+=> App\Models\Profession {#3874
+     id: 1,
+     title: "Back-end developer",
+     created_at: "2022-08-21 02:01:20",
+     updated_at: "2022-08-21 02:01:20",
+   }
+
+
+
+A continuación puedo obtener todos los usuarios asociados a esta professión de la siguiente manera.
+
+
+>>> $profession->users;
+
+
+min 5.17
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 Ejercicios:
 ===========
 
-Primero enttre equipos de computo para cargar tabla de datos
+Primero enpttre equipos de computo para cargar tabla de datos
 
 php artisan migrate:fresh
 

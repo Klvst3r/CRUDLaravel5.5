@@ -9,5 +9,8 @@ class Profession extends Model
     //
     
     protected $fillable = ['title']; 
+
+
+    
     
 }

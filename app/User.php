@@ -34,6 +34,15 @@ class User extends Authenticatable
     {
         return static::where(compact('email'))->first();
     }
+
+
+    //Declaración del metodo para obtener la profesion
+
+    public function profession()
+    {
+        return $this->belongsTo(Profession::class);
+    }
+
     
     public function isAdmin(){
         return $this->email === 'klvst3r@email.com';
