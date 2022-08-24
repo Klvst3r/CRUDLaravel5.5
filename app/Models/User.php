@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -34,6 +34,15 @@ class User extends Authenticatable
     public static function findByEmail($email)
     {
         return static::where(compact('email'))->first();
+    }
+
+   
+
+    public function profession() // profesion + _id para hacer la busqueda con profession_id
+    {
+       return $this->belongsTo(Profession::class);
+
+        //return $this->loadelongsTo(Profession::class, 'id_profesion') //Si no cumple con la convención
     }
     
     public function isAdmin(){

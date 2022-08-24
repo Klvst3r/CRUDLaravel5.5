@@ -265,7 +265,7 @@ public function users()
 
 Para indicar que una profesión tiene muchos usuarios, entonces yo puedo regresar a la consola y volver a acceder a tinker y por ejemplo obtener la primera Professión registrada en la base de datos
 
-
+***___________________Inicia Parentesis____________________________***
 > php artisan tinker
 
 $user = User::first();
@@ -279,16 +279,128 @@ $user = User::first();
    }
 
 
+Despues de haber creado el modelo de Usuario con el metodo llamado profession podemos hacer los siguiente:
+
+> php artisan tinker
+------------------
+
+>>> $user = User::first();
+=> App\User {#3874
+     id: 1,
+     name: "Klvst3r",
+     email: "klvst3r@email.com",
+     is_admin: 0,
+     created_at: "2022-08-21 02:01:20",
+     updated_at: "2022-08-21 02:01:20",
+     profession_id: 1,
+   }
+
+----------------
+
+>>> $user->profession;
+=> App\Profession {#4122
+     id: 1,
+     title: "Back-end developer",
+     created_at: "2022-08-21 02:01:20",
+     updated_at: "2022-08-21 02:01:20",
+   }
+
+-----------------
+>>> $user->profession
+=> App\Profession {#4122
+     id: 1,
+     title: "Back-end developer",
+     created_at: "2022-08-21 02:01:20",
+     updated_at: "2022-08-21 02:01:20",
+   }
+-----------------
+>>> $user->profession_id;
+=> 1
+
+----------------
+>>>  Profession::where('id', $user->profession_id)->first()
+=> App\Models\Profession {#4130
+     id: 1,
+     title: "Back-end developer",
+     created_at: "2022-08-21 02:01:20",
+     updated_at: "2022-08-21 02:01:20",
+   }
+
+---------------
+>>> Profession::find($user->profession_id)
+=> App\Models\Profession {#3193
+     id: 1,
+     title: "Back-end developer",
+     created_at: "2022-08-21 02:01:20",
+     updated_at: "2022-08-21 02:01:20",
+   }
+---------------
+>>>  $user->profession
+=> App\Profession {#4122
+     id: 1,
+     title: "Back-end developer",
+     created_at: "2022-08-21 02:01:20",
+     updated_at: "2022-08-21 02:01:20",
+   }
+>>>
+---------------- 
+
+
+***__________________Concluye Parentesis____________________________***
+
+
+
+> php artisan tinker
+
+>>> $profession = Profession::first();
+
+=> App\Models\Profession {#4130
+     id: 1,
+     title: "Back-end developer",
+     created_at: "2022-08-21 02:01:20",
+     updated_at: "2022-08-21 02:01:20",
+   }
+>>>
+
 
 A continuación puedo obtener todos los usuarios asociados a esta professión de la siguiente manera.
 
 
+
 >>> $profession->users;
+=> Illuminate\Database\Eloquent\Collection {#4126
+     all: [
+       App\Models\User {#4123
+         id: 1,
+         name: "Klvst3r",
+         email: "klvst3r@email.com",
+         is_admin: 0,
+         created_at: "2022-08-21 02:01:20",
+         updated_at: "2022-08-21 02:01:20",
+         profession_id: 1,
+       },
+     ],
+   }
+>>>
+
+Trabajand desde ahora solamente con los Modelos 
+
+app/Models/Profession.php
+y
+app/Models/User.php
 
 
-min 5.17
+El Error se corrige cuando corrijo en el Modelo Profession el namespace ya que solo apuntaba a 
+    
+---app/Models/Profession.php
+    namespace App;
+---
 
+Se corrige por 
 
+---app/Models/Profession.php
+    namespace App\Models;
+---
 
 
 
