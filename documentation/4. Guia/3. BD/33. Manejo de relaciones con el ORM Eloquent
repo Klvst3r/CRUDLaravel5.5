@@ -403,15 +403,457 @@ Se corrige por
 ---
 
 
+----------------------
+
+Notemos que en el caso anterior se obtiene un objeto de la clase Collection
+
+
+
+>>> $profession->users;
+=> Illuminate\Database\Eloquent\Collection {#4126
+...
+
+
+Cuando utilizamos la relación hasMany, mientras que si yo obtengo el primer usuario o cualquier usuario en el sistema:
+
+>>> $user = User::first();
+=> App\User {#3874
+     id: 1,
+     name: "Klvst3r",
+     email: "klvst3r@email.com",
+     is_admin: 0,
+     created_at: "2022-08-21 02:01:20",
+     updated_at: "2022-08-21 02:01:20",
+     profession_id: 1,
+   }
+>>>
+
+
+Y luego quiero obtener su profesion :
+
+>>> $user->profession;
+=> App\Profession {#4122
+     id: 1,
+     title: "Back-end developer",
+     created_at: "2022-08-21 02:01:20",
+     updated_at: "2022-08-21 02:01:20",
+   }
+>>>
+
+
+Como estamos utilizando el metodo belongsTo para indicar que un usuario pertenece a una unica profesion, en este caso obtenemos como resultado un modelo de Eloquent
+
+    "=> App\Profession"
+
+Y esta es una de tantas cuestiones que mas confunde a las personas que estan aprndiendo Laravel. Esperando que esto no suceda esperando que se vea la diferencia. 
+
+A continuación puedo obtener todos los usuarios asociados a esta professión de las siguiente manera:
+
+>>>$profession->users;
+=> Illuminate\Database\Eloquent\Collection {#4121
+     all: [
+       App\Models\User {#4122
+         id: 1,
+         name: "Klvst3r",
+         email: "klvst3r@email.com",
+         is_admin: 0,
+         created_at: "2022-08-21 02:01:20",
+         updated_at: "2022-08-21 02:01:20",
+         profession_id: 1,
+       },
+     ],
+   }
+>>>
+
+Notemos que en este caso que tenemos un objeto de la clase collelation
+
+    "=> Illuminate\Database\Eloquent\Collection {#4121"
+
+Cuanod utilizamos la relación hasMany, mientras que si yo obtengo el primer usuario o cualquier usuario del sistema:
+
+>>> $user = User::first();
 
 
 
 
+Y luego quiero obtener su profesion 
+
+>>> $user->profession;
+=> App\Profession {#4141
+     id: 1,
+     title: "Back-end developer",
+     created_at: "2022-08-21 02:01:20",
+     updated_at: "2022-08-21 02:01:20",
 
 
 
+ Como estamos utilizando el metodo belongsTo para indicar que un usuario pertenece a una unica profession en este caso obtenemos directamente como resultado un modelo de Eloquent 
+
+    "=> App\Profession {#4141"
+
+Y esta es una de las cuestiones que mas confunde a las personas que estan apendiendo Laravel, esperando que esto no suceda esperando se pueda ver la diferencia:
+
+>>> $profession->users;
+=> Illuminate\Database\Eloquent\Collection {#4121
+     all: [
+       App\Models\User {#4122
+         id: 1,
+         name: "Klvst3r",
+         email: "klvst3r@email.com",
+         is_admin: 0,
+         created_at: "2022-08-21 02:01:20",
+         updated_at: "2022-08-21 02:01:20",
+         profession_id: 1,
+       },
+     ],
+   }
 
 
+Utilizando la relación hasMany, en este caso para indicar que una professión puede tener muchos usuarios obtenemos una colección:
+
+    "=> Illuminate\Database\Eloquent\Collection {#4121"
+
+Incluso aunque a esta profesión no este asociada a ningun usuario 
+vamos a obtener una coleccion. Cuando trabajamos con la la relación belongsTo, entonces obtenemos un modelo y si este usuario no esta relacionado con ninguna profesión, entonces vamos a obtener "null" vamos a ver esto rapidamente:
+
+Vamos a modificar el usuario, para indicar que la professión va a ser null:
+
+    >>>  $user->profession_id = null;
+    => null
+
+Y luego vamos a guardar este usuario en la base de datos:
+
+    >>>  $user->save();
+    => true
+
+Si ahora regresamos a la base de datos y hacemos una selección de los usuarios:
+
+
+mysql> SELECT * FROM users;
++----+---------+-------------------+--------------------------------------------------------------+----------+----------------+---------------------+---------------------+---------------+
+| id | name    | email             | password                                                     | is_admin | remember_token | created_at          | updated_at          | profession_id |
++----+---------+-------------------+--------------------------------------------------------------+----------+----------------+---------------------+---------------------+---------------+
+|  1 | Klvst3r | klvst3r@email.com | $2y$10$e4FI03iSqrlrXBb87gjDXeTdQAgWSiyqIL.7GwMhKr5ZqL57xCrJa |        0 | NULL           | 2022-08-21 02:01:20 | 2022-08-25 01:43:53 |          NULL |
++----+---------+-------------------+--------------------------------------------------------------+----------+----------------+---------------------+---------------------+---------------+
+
+
+Podemos ver que este usuario ya no esta asociado a ninguna professión si ahora regresamos a tinker y tulizamos:
+
+>>> $user->profession
+=> App\Profession {#4141
+     id: 1,
+     title: "Back-end developer",
+     created_at: "2022-08-21 02:01:20",
+     updated_at: "2022-08-21 02:01:20",
+   }
+
+Veremos que volvemos a obtener la professión. Esto es por que Laravel va a almacenar esta profesión en cache, aunque yo puedo por ejemplo utilizar el metodo refresh 
+
+para recargar este modelo con atributos frescos:
+
+>>> $user->refresh();
+=> App\User {#3193
+     id: 1,
+     name: "Klvst3r",
+     email: "klvst3r@email.com",
+     is_admin: 0,
+     created_at: "2022-08-21 02:01:20",
+     updated_at: "2022-08-25 01:43:53",
+     profession_id: null,
+     profession: null,
+   }
+>>>
+
+
+Provenientes de la base de datos y ahora entonces vamos a llamar a user->profession:
+
+>>> $user->profession
+=> null
+
+Ahora se esta devolviendo null, mientras que si llamamos al metodo refresh, en el modelo profession:
+
+>>> $profession->refresh();
+=> App\Models\Profession {#4124
+     id: 1,
+     title: "Back-end developer",
+     created_at: "2022-08-21 02:01:20",
+     updated_at: "2022-08-21 02:01:20",
+     users: Illuminate\Database\Eloquent\Collection {#4139
+       all: [],
+     },
+   }
+>>>
+
+
+Para recargar sus atributos y relaciones. Y ahora utilizo:
+
+>>> $profession->users;
+=> Illuminate\Database\Eloquent\Collection {#4139
+     all: [],
+   }
+
+
+
+En este caso se esta devolviendo una colección a pesar de que la coleción esta vacia. Observando esto, los metodos que permiten relacionar un  modelo con muchos otros modelos como ejemplo hasMany, y belongsToMany, en este caso siempre van a retornar una coleción, asi la colección este vacia: Mientrs que los metodos que nos permiten relacionar un modelo con otro como por ejemplo "hasOne" o "belongsTo" en este caso van a retornar dicho modelo o null.
+
+Hay otra diferencia importante que tambien se debe observar. Nuevamente se tiene un usuario en la variable user
+
+>>> $user
+=> App\User {#3193
+     id: 1,
+     name: "Klvst3r",
+     email: "klvst3r@email.com",
+     is_admin: 0,
+     created_at: "2022-08-21 02:01:20",
+     updated_at: "2022-08-25 01:43:53",
+     profession_id: null,
+
+
+Ahora si intentamos acceder a la pofesión:
+
+>>> $user->profession
+=> null
+>>>
+
+
+En este caso obtenemos null por que no tenemos una professión asociada. Pero notemos que aca hay no se esta utilizando el metodo profession, si no que se esta accediendo a profession como si se tratara de una propiedad dentro de la clase. Nuevamente Eloquent va a utilizar metodos magicos para que esto funcione. Pero cual es la diferencia entre acceder a profesion como si se tratase de una propiedad dentro de la clase.
+
+Nuevamente Eloquent va a utilizar metodos magicos para que esto funcione. Pero cual es la diferencia entre acceder a profesion como si se tratase de una propiedad versus acceder al metodo profession. Si nosotros llamamos al metodo profession vamos a obtener una instancia de la relación en este caso:
+
+    >>> $user->profession();
+    => Illuminate\Database\Eloquent\Relations\BelongsTo {#3874}
+
+Del objeto belongsTo, y lo mismo sucede en este caso con nuestro objeto "profession":
+
+    >>> $profession
+    => App\Models\Profession {#4124
+         id: 1,
+         title: "Back-end developer",
+         created_at: "2022-08-21 02:01:20",
+         updated_at: "2022-08-21 02:01:20",
+         users: Illuminate\Database\Eloquent\Collection {#4139
+           all: [],
+         },
+       }
+    >>>
+
+
+Si yo utilizo:
+
+   >>> $profession->users
+    => Illuminate\Database\Eloquent\Collection {#4139
+         all: [],
+       }
+    >>>
+
+
+Si salimos de tinker, recarhamos los valoes a los objetos con:
+
+>>> $user = User::first();
+
+>>> $profession = Profession::first();
+
+
+Ahora si continuamos con:
+
+    >>> $profession->users
+    => Illuminate\Database\Eloquent\Collection {#4123
+         all: [],
+       }
+    >>>
+
+
+Como si se tratara de una propiedad voy a obtener la colección vacia o con usuarios.
+
+Pero si yo llamo al metodo users:
+
+    >>> $profession->users()
+    => Illuminate\Database\Eloquent\Relations\HasMany {#3913}
+    >>>
+
+    
+Voy a obtener un objeto de la relación en cuestion que en este caso es: HasMany
+
+    "=> Illuminate\Database\Eloquent\Relations\HasMany"
+
+Y esto tiene una ventaja.
+
+Vamos a demostrar como funciona. Pero para ello vamos a necesitar agegar otros usuarios a la base de datos:
+
+Asi que hacemos:
+
+Desde el editor y vamos a modificar UserSedder, para agregar al menos dos usuarios mas:
+
+
+/database/seeds/UserSeeder.php
+---
+        User::create([
+            'name' => 'Klvst3r',
+            'email' => 'klvst3r@email.com',
+            'password' => bcrypt('laravel'),
+            'profession_id' => $professionId,
+            'is_admin' => true,
+       ]);
+            
+      User::create([
+                'name' => 'Alizeth Sofia',
+                'email' => 'alizh@email.com',
+                'password' => bcrypt('laravel'),
+                'profession_id' => $professionId
+           ]);
+
+       User::create([
+                'name' => 'Josue Rodrigo',
+                'email' => 'josh@email.com',
+                'password' => bcrypt('laravel'),
+                'profession_id' => null
+           ]);
+      
+
+---
+
+Con nombres de usuario diferentes y correos electronicos unico, el ultimo registro tendra profesion_id null y el primer registro sera administrador.
+
+Por cierto de vuelta al modelo de usuario, anteriormente deciamos que un usuario era administrador si el email de dicho usuario era 'klvst3r@gmail.com'. 
+
+Esto en:
+
+app/User.php
+
+ public function isAdmin(){
+        return $this->email === 'klvst3r@email.com';
+    }
+    
+Pero en este caso ya tenemos una propiedad para ello por ello actualizamos con la siguiente propiedad:
+
+Se cambia a:
+
+  public function isAdmin(){
+        return $this->is_admin;
+    }
+
+De regreso fuera de tinker vamos a ejecutar:
+
+    >  php artisan db:seed
+    Seeding: ProfessionSeeder
+    Seeding: UserSeeder
+
+
+Regresamos a tinker:
+
+    > php artisan tinker
+
+Y en este caso yo puedo obtener una profesion de la siguiente manera:
+
+    >>> $profession = Profession::first();
+    => App\Models\Profession {#3874
+         id: 1,
+         title: "Back-end developer",
+         created_at: "2022-08-25 02:26:33",
+         updated_at: "2022-08-25 02:26:33",
+       }
+    >>>
+
+En este caso es la profesion de desarrollador back-end con el id = 1, y puedo obtener todos los usuarios a dicha profession de la siguiente forma:
+
+    >>> $profession->users
+    => Illuminate\Database\Eloquent\Collection {#4123
+         all: [
+           App\Models\User {#4122
+             id: 1,
+             name: "Klvst3r",
+             email: "klvst3r@email.com",
+             is_admin: 1,
+             created_at: "2022-08-25 02:26:33",
+             updated_at: "2022-08-25 02:26:33",
+             profession_id: 1,
+           },
+           App\Models\User {#4127
+             id: 2,
+             name: "Alizeth Sofia",
+             email: "alizh@email.com",
+             is_admin: 0,
+             created_at: "2022-08-25 02:26:33",
+             updated_at: "2022-08-25 02:26:33",
+             profession_id: 1,
+           },
+         ],
+       }
+    >>>
+
+
+Se puede ver que se tienen a dos usuarios inclueyendo al administrador y que ambos tienen la profesion 1 en el campo: profession_id: 1,
+
+Pero notese que no se obtubo el tercer usuario por que este tercer usuario no esta relacionado con dicha profesion al tener profession_id: null.
+
+Ahora la ventaja en este caso de poder llamar al metodo:
+
+>>> $profession->users();
+=> Illuminate\Database\Eloquent\Relations\HasMany {#3194}
+
+Es que aca no se esta ejecutando una consulta, si no que uno puede comenzar a construir una, en este caso yo puedo por ejemplo encadenar al metodo where y luego llamar al metodo get:
+
+    >>> $profession->users()->where('is_admin')->get();
+    => Illuminate\Database\Eloquent\Collection {#4121
+         all: [],
+       }
+
+Cuando se ejecute el metodo get entonces si se va a ejecutar la consulta SQL, pero se esta alterando la relación. En la consulta anterior se le esta pidiendo a Eloquent que me traiga todos los usuarios asociados a esta profesión pero que tengan la columna "is_admin" con el vaor verdadero:
+
+    >>> $profession->users()->where('is_admin', true)->get();
+
+
+De esta manera vamos a poder obntener todos los desarrolladores back-end que ademas sean administradores en el sistema:
+
+
+    >>> $profession->users()->where('is_admin', true)->get();
+    => Illuminate\Database\Eloquent\Collection {#3194
+         all: [
+           App\Models\User {#4124
+             id: 1,
+             name: "Klvst3r",
+             email: "klvst3r@email.com",
+             is_admin: 1,
+             created_at: "2022-08-25 02:26:33",
+             updated_at: "2022-08-25 02:26:33",
+             profession_id: 1,
+           },
+         ],
+       }
+    >>>
+
+
+Como se puede ver en la ejecuación anterior, donde se esta obteniendo un solo resultado en lugar de dos como se obtuvo anteriormente. Por que este usuario es tanto Back-Developer, como administrador:
+
+
+...
+   is_admin: 1,
+   ...
+   profession_id: 1,
+...
+
+
+La consulta que se ejecuto utilizando la relación es similar a hacerlo de la siguiente manera:
+
+
+
+    >>>  User::where(['profession_id' => 1, 'is_admin' => true])->get();
+    => Illuminate\Database\Eloquent\Collection {#3514
+         all: [
+           App\User {#4125
+             id: 1,
+             name: "Klvst3r",
+             email: "klvst3r@email.com",
+             is_admin: 1,
+             created_at: "2022-08-25 02:26:33",
+             updated_at: "2022-08-25 02:26:33",
+             profession_id: 1,
+           },
+         ],
+       }
+    >>>
+
+Notese que es el mismo resultado, pero lo importante aca es que cada vez nos alejamos mas de SQL e interactuamos mas con la interfaz orientada a objetos del ORM Eloquent.
 
 
 

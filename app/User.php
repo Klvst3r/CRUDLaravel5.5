@@ -44,8 +44,16 @@ class User extends Authenticatable
     }
 
     
+    /*
+    // Anteriormente si se tenia el correo de klvst3r@gmail.com, el usuario era adminisrador 
     public function isAdmin(){
         return $this->email === 'klvst3r@email.com';
+    }
+    
+    */
+
+      public function isAdmin(){
+        return $this->is_admin;
     }
     
 }
