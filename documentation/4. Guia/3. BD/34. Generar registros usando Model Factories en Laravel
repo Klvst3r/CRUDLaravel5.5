@@ -1,0 +1,399 @@
+34. Generar registros usando Model Factories en Laravel
+------------------
+
+
+Los Model Factories nos permiten crear registros de prueba, ya sea para cargar nuestra base de datos con «información falsa» o «información de prueba» o para crear las condiciones necesarias para ejecutar pruebas automatizadas. En esta lección practicaremos con la creación de modelos desde Tinker y desde nuestros seeders utilizando Model Factories. Además te enseñaré cómo generar tus Model Factories personalizados, adaptarlos al modelo correspondiente y también veremos una pequeña introducción al uso del componente Faker.
+
+
+Notas
+=====
+
+Generar un Model Factory
+------------------------
+
+Para poder utilizar un Model Factory necesitamos generarlo primero con el comando « make:factory ». El Model Factory será generado en el directorio « database/factories ».
+
+---	
+	php artisan make:factory ProfessionFactory
+---
+
+
+Dentro de nuestro Model Factory especificamos el atributo o los atributos que queremos generar de forma aleatoria:
+---
+	$factory->define(\App\Profession::class, function (Faker $faker) {
+	    return [
+	        'title' => $faker->sentence
+	    ];
+	});
+---
+
+Además es importante que indiquemos el nombre del modelo que queremos enlazar a dicho Model Factory (en este caso « \App\Profession::class) ».
+
+Para no tener que agregar el nombre del modelo de forma manual podemos pasar la opción « --model »  al comando « make:factory »:
+
+---
+	php artisan make:factory ProfessionFactory --model=Profession
+---
+
+
+Al generar un modelo con el comando « make:model » también podemos generar un Model Factory y/o una migración pasando las opciones «  -f  »  y/o « -m » por ejemplo:
+
+---
+	php artisan make:model Skill -mf
+---
+
+Utilizando el componente de PHP « Faker » indicamos que el valor de title será una oración aleatoria:
+
+---
+	$factory->define(\App\Profession::class, function (Faker $faker) {
+	    return [
+	        'title' => $faker->sentence
+	    ];
+	});
+---
+
+«  »
+
+Pasando un número como primer argumento a "sentence" podemos indicar el número de palabras que queremos que contenga la oración: "$faker->sentence(3)". Esto devolverá oraciones con 2, 3 o 4 palabras, o si queremos estrictamente que sean 3 palabras podemos llamar al método de esta forma: "$faker->sentence(3, false)".
+
+
+
+Componente Faker
+----------------
+
+El componente Faker es una librería de PHP que genera datos de prueba por nosotros. Por ejemplo, podemos generar un nombre:
+
+---
+	$faker->name;
+	// 'Jazmyne Romaguera'
+---
+
+O un texto aleatorio:
+---
+	$faker->text;
+	// Dolores sit sint laboriosam dolorem culpa et autem. Beatae nam sunt fugit
+	// et sit et mollitia sed.
+
+
+---
+
+Incluso números de teléfono:
+---
+	$faker->cellphone;
+	// 9432-5656
+---
+
+
+
+Utilizar un Model Factory
+-------------------------
+
+Para utilizar un Model Factory debemos llamar al helper "factory", especificando el nombre del modelo como argumento y finalmente encadenando el llamado al método "create".
+
+---
+	factory(User::class())->create();
+---
+
+
+Esto va a crear un usuario en la base de datos y va a retornar el modelo en cuestión, en este caso un objeto de la clase "User":
+
+---
+	App\User {
+	    name: "Jazmyne Romaguera",
+	    email: "ciara.willms@example.com",
+	    updated_at: "2017-11-24 15:55:32",
+	    created_at: "2017-11-24 15:55:32",
+	    id: 4,
+	}
+---
+
+Cada vez que ejecutamos el método "create()" creamos un nuevo registro aleatorio. Si pasamos un array asociativo al método "create()" podemos sobrescribir o asignar propiedades extras:
+
+---
+	factory(User::class)->create([
+	    'profession_id' => $professionId
+	]);
+---
+
+
+Para cargar un determinado número de registros pasamos como segundo argumento la cantidad que queremos crear:
+---
+	factory(User::class, 48)->create();
+---
+
+También podemos lograrlo utilizando el método times():
+---
+	factory(User::class)->times(48)->create();
+---
+
+
+Material relacionado
+====================
+
+Documentación del componente Faker - Github:
+	
+	https://github.com/fzaninotto/Faker
+
+
+Practica
+========
+
+Ejercicios
+==========
+
+
+Recursos
+========
+
+Si queremos crear datos aleatorios en castellano, podemos definir el locale de faker en /config/app.php así:
+---
+	'faker_locale' => 'es_ES',
+---
+Hay muchos más locales para elegir, los tenemos todos en /vendor/fzaninotto/faker/src/Faker/Provider
+
+
+***
+
+Si desean crear usuarios con profesiones aleatorias, dentro del Seeder de Usuario colocan lo siguiente
+
+---
+	factory(Profession::class,3)->create()->each(function($profession){
+	$profession->users()->create(
+	factory(User::class)->raw());
+	});
+---
+
+***
+
+O sencillamente defines el UserFactory de esta forma:
+
+---
+	$factory->define(App\Profession::class, function (Faker $faker) {
+
+	return [
+	'name' => $faker->jobTitle
+	];
+
+	});
+---
+
+Luego en ProfessionTableSeeder creas varias profesiones aleatorias (por ejemplo 100):
+
+---
+	factory(Profession::class, 100)->create();
+---
+
+Más tarde en UserFactory puedes hacer esto:
+---
+	$factory->define(BuenasNuevas\User::class, function (Faker $faker) {
+
+	$kinds = ['administrator', 'operator', 'guest'];
+	$gender = $faker->randomElements(['male', 'female'])[0];
+	$professions_amount = Profession::count();
+
+	return [
+	'profession_id' => rand(1, $professions_amount),
+	'first_name' => $faker->firstName($gender),
+	'second_name' => $faker->name,
+	'last_name' => $faker->lastName,
+
+	'email' => $faker->unique()->safeEmail,
+	'password' => bcrypt('123456'),
+
+	'remember_token' => str_random(10),
+	'phone' => $faker->phoneNumber,
+	'gender' => $gender,
+	'kind' => $kinds[rand(0, sizeof($kinds) - 1)],
+	];
+
+	});
+
+---
+
+* Así cada vez que crees un user con datos ficticos pero creibles, ya saldrá con un empleo aleatorio y creible.
+
+Y finalmente en UserTableSeeder puedes poner:
+
+---
+
+	$professions_amount = Profession::count();
+
+	User::create([
+
+	'profession_id' => rand(1, $professions_amount),
+
+	'first_name' => 'Nombre del user',
+	'second_name' => 'Segundo nombre',
+	'last_name' => 'Fulanito Menganito',
+
+	'email' => 'email@gmail.com',
+	'password' => bcrypt('123456'),
+
+	'phone' => '1111111111',
+	'gender' => 'male',
+	'kind' => 'administrator'
+	]);
+---
+
+Esto último para cuando deses ejecutar los seeds con datos propios para el user, pero con empleos aleatorios y creibles.
+
+
+***
+
+
+Ttu factory de User se puede mejorar así:
+
+---
+
+	 $factory->define(BuenasNuevas\User::class, function (Faker $faker) {
+	    return [
+	        'profession_id' => Profession::inRandomOrder()->value('id'),
+	        'gender' => $faker->randomElement(['male', 'female']),
+	        'first_name' => function (array $user) {
+	            return $faker->firstName($user['gender']);
+	        },
+	        'second_name' => function (array $user) {
+	            return $faker->firstName($user['gender']);
+	        }
+	        'last_name' => $faker->lastName,
+	        'email' => $faker->unique()->safeEmail,
+	        'password' => bcrypt('123456'),
+
+	        'remember_token' => str_random(10),
+	        'phone' => $faker->phoneNumber,
+	        'kind' => $faker->randomElement(['administrator', 'operator', 'guest']),
+	    ];
+	});
+---
+
+Con Profession::inRandomOrder()->value('id') ya traes directamente un id aleatorio del modelo.
+
+Faker tiene 2 métodos randomElements y randomElement, este ultimo te devuelve un solo valor aleatorio.
+
+Puedas usar Closure para usar alguno de los atributos de la instancia que se esté creando.
+
+Por otro lado en el seeder no es necesario usar "User::create()" para crear usuarios con datos específicos sino el factory que has definido pasando solo los atributos específicos en un array y los demás los completará el factory:
+
+---
+	factory(User::class)->create([
+	        'first_name' => 'Nombre del user',
+	        'second_name' => 'Segundo nombre',
+	   ]);
+---
+
+
+***
+
+
+El Factory de usuario se puede mejorar si usas Tinker para ejecutar bcrypt('123456') en la consola y luego copias y pegas la cadena generada con un comentario //12356 al lado, de esa manera se ejecutarán más rápido 👍
+
+Quizá también valga la pena agregar algo como:
+
+---
+	'profession_id' => Profession::inRandomOrder()->value('id') ?: factory(Profession::class)
+---
+
+En caso de que no se encuentre ninguna profesión.
+
+
+Preguntas y Respuestas
+======================
+
+Tengo el siguiente problema, ¿Por qué ocurre?.
+
+---
+	>>> use App\Model\RegisteredUser;
+	>>> factory(RegisteredUser::class)->create();
+	InvalidArgumentException with message 'Unable to locate factory with name [default] [App/Model/RegisteredUser.'
+	>>>
+---
+
+
+    Debes ir al archivo Factory de tu modelo que se encuentra en database/factory y revisar que el nombre del espacio sea el correcto
+
+
+   - probablemente no has colocado tu modelo como el primer parametro del método define en los models factories, dale una mirada nuevamente y cuéntame como te fue.
+
+   - oooops tengo instalada la 5.4 y yo pensaba que estaba trabajando con la 5.6, tremendo detalle jajaja. 
+
+
+***
+
+
+Model Factory brinda la posibilidad de generar job titles, o sea nombres de empleos que son reales. Se debe usar para ello: jobTitle
+También se puede impedir que se repitan agregando el método unique(). De esta forma los datos de relleno serían mucho más creibles. El código del Factory del Model Profession quedaría de esta forma:
+
+---
+	$factory->define(Cinema\Profession::class, function (Faker $faker) {
+
+	return [
+	'profession_name' => $faker->unique()->jobTitle,
+	];
+
+	});
+
+---
+Aunque no serían empleos exclusivamente del campo de la programación e informática, de todas formas son empleos reales y los users no necesariamente tienen que trabajar solo en el campo de la informática.
+
+
+***
+
+
+¿Que debo hacer en un Model Factory en el cual la tabla tiene foreign keys? Porque si dejo que sean valores aleatorios tiraria error. ¿Debo escribir las foreign key manualmente?
+
+- Puedes utilizar un factory dentro de otro:
+
+---
+	'user_id' => factory(App\User::class)
+---
+
+Esto ya lo hemos visto en varios cursos de Styde como por ejemplo: https://styde.net/curso-cre...
+
+Sigue viendo el contenido y descubrirás las dudas a ésta y muchísimas otras dudas :)
+
+
+***
+
+
+Aca un problema me da error en el factori usuarios, (estoy practicando con un pag similar pero un poco diferente a la que estas haciendo en mi caso mi usuario tiene una Rfit y una carrera asociado como llave foranea) puedo crear usuarios y rfits cuantos yo quiera con el factori pero me da error al crear con el factoria mas usuarios y no entiendo como solucionarlo gracias
+me sale un error de ( Array to string conversion )
+-------------------------------------------------------------------------------------------------------------
+	mi factori es el siguiente
+	$factory->define(App\Usuario::class, function (Faker $faker) {
+	static $password;
+
+	return [
+	'nombres' => $faker->sentence(),
+	'apellidos' => $faker->sentences(),
+	'email' => $faker->unique()->safeEmail,
+	'contrasena' => $password ?: $password = bcrypt('secret'),
+	];
+-------------------------------------------------------------------------------------------------------------
+	mi migracion es la siguiente
+	public function up()
+	{
+	Schema::create('usuarios', function (Blueprint $table) {
+	$table->increments('id');
+	$table->string('nombres');
+	$table->string('apellidos');
+	$table->string('email','100')->unique();
+	$table->string('contrasena');
+	$table->unsignedInteger('carrera_id')->nullable();
+	$table->foreign('carrera_id')->references('id')->on('carreras');
+	$table->unsignedInteger('rfit_id')->nullable();
+	$table->foreign('rfit_id')->references('id')->on('rfits');
+
+	$table->timestamps();
+	});
+	}
+
+-  Hay algunos métodos de faker usados en los model factories que devuelven arrays en vez de cadenas y suelen causar estos errores. Por ejemplo:
+
+---
+	sentence($nbWords = 6, $variableNbWords = true) // 'Sit vitae voluptas sint non voluptates.'
+
+	sentences($nb = 3, $asText = false) // array('Optio quos qui illo error.', 'Laborum vero a officia id corporis.', 'Saepe provident esse hic eligendi.')
+
+---
+La diferencia es que sentence devuelve cadena, sentences devuelve array. Puedes leer más aquí: https://github.com/fzaninotto/Faker
+
