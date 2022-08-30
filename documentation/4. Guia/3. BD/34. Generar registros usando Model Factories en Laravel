@@ -135,11 +135,349 @@ Documentación del componente Faker - Github:
 	https://github.com/fzaninotto/Faker
 
 
+
+
 Practica
 ========
 
-Ejercicios
-==========
+Hay un ultimo componente del cual es importante hablar para cerrar esta parte de la sección, se trata de los model factories.
+
+La idea de los model factories es bien sencilla, los model factories permiten crear registros de pruebas, ya sea para cargar registros de la base de datos de prueba o ya sea para ejecutar nuestras pruebas unitarias, es muy util esta herramienta para crear registros sin necesidad de especificar todas sus propiedades y para utilizar un model factory se va a llamar al helper " factory ", luego debemos especificar el modelo atado a este model factory, y acontinuación podemos llamar al metodo "create":
+
+---
+	>>> factory(User::class)->create();
+---
+
+El llamado create en este caso esta encadenado al llamado helper factory, hecho esto en consola se puede ejecutar en consola.
+
+> php artisan tinker
+
+Psy Shell v0.9.12 (PHP 7.3.10 — cli) by Justin Hil useeman
+>>> factory(User::class)->create();
+InvalidArgumentException with message 'Unable to locate factory with name [default] [User].'
+>>>
+
+
+---
+
+Aca sin embargo se esta deteniendo el error anterior que no puede localizar el model factory, con el nombre User, de pronto esto se trata por que no se importo la clase asi que se va a imporat la clase y se va a proceder a ejecutar lo siguiente:
+
+>>>	use App\User;
+
+>>> factory(User::class)->create();
+=> App\User {#3225
+     name: "Dr. Lawson Corwin",
+     email: "nolan.autumn@example.org",
+     updated_at: "2022-08-29 21:41:02",
+     created_at: "2022-08-29 21:41:02",
+     id: 4,
+   }
+>>>
+
+
+Se puede ver que en este caso este metodo create va a retornar un objeto de la clase User, es decir que el modelo de usuario
+
+App\User {#3225
+
+
+ y se tiene una serie de atributos:
+
+  name: "Dr. Lawson Corwin",
+     email: "nolan.autumn@example.org",
+     updated_at: "2022-08-29 21:41:02",
+     created_at: "2022-08-29 21:41:02",
+     id: 4,
+
+
+que contienen datos aleatorios, nombre, email, updated_at, created_at, id, si se vuelve a ejecutar el metodo create nuevamente se va a crear un segundo usuario aleatorio y asi sucesivamente:
+
+>>> factory(User::class)->create();
+=> App\User {#3220
+     name: "Donna Brekke",
+     email: "emorar@example.com",
+     updated_at: "2022-08-29 21:46:10",
+     created_at: "2022-08-29 21:46:10",
+     id: 5,
+   }
+
+>>> factory(User::class)->create();
+=> App\User {#3222
+     name: "Mr. Adolf Frami PhD",
+     email: "elmore.walter@example.com",
+     updated_at: "2022-08-29 21:47:00",
+     created_at: "2022-08-29 21:47:00",
+     id: 6,
+   }
+
+
+Por supuesto ahora se puede regresar a la base de datos y ver estos registros dentro de la tabla de usuarios, y eso es bien util:
+
+
+mysql> select * from users;
++----+---------------------+---------------------------+--------------------------------------------------------------+----------+----------------+---------------------+---------------------+---------------+
+| id | name                | email                     | password                                                     | is_admin | remember_token | created_at          | updated_at          | profession_id |
++----+---------------------+---------------------------+--------------------------------------------------------------+----------+----------------+---------------------+---------------------+---------------+
+|  1 | Klvst3r             | klvst3r@email.com         | $2y$10$C7Ca.PyiPUsb757kUbaLQunYAqKd0bsccptRabIAph8dL26Al7ehS |        1 | NULL           | 2022-08-25 02:26:33 | 2022-08-25 02:26:33 |             1 |
+|  2 | Alizeth Sofia       | alizh@email.com           | $2y$10$aUY3u31Ox2eM0qV6e38z5.LOR7lWhrIpv9q7aXk0fgXkrmgTOV69G |        0 | NULL           | 2022-08-25 02:26:33 | 2022-08-25 02:26:33 |             1 |
+|  3 | Josue Rodrigo       | josh@email.com            | $2y$10$xf2Ppho5C5I1JrFfLjI2r.yZQ7bDWAVla86IWkl27HfGCqaUAlW86 |        0 | NULL           | 2022-08-25 02:26:33 | 2022-08-25 02:26:33 |          NULL |
+|  4 | Dr. Lawson Corwin   | nolan.autumn@example.org  | $2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm |        0 | ugSX32xdaA     | 2022-08-29 21:41:02 | 2022-08-29 21:41:02 |          NULL |
+|  5 | Donna Brekke        | emorar@example.com        | $2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm |        0 | ozfbThlg0i     | 2022-08-29 21:46:10 | 2022-08-29 21:46:10 |          NULL |
+|  6 | Mr. Adolf Frami PhD | elmore.walter@example.com | $2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm |        0 | 3AjfD77K35     | 2022-08-29 21:47:00 | 2022-08-29 21:47:00 |          NULL |
++----+---------------------+---------------------------+--------------------------------------------------------------+----------+----------------+---------------------+---------------------+---------------+
+6 rows in set (0.00 sec)
+
+
+ UserSeeder
+Ya que por ejemplo, en la sección anterior, cuando necesitabamos generar dos usuarios de prueba se pudo haber hecho de esta manera en el seeder UserSeeder.php utilizando el model factory.
+
+--- database/seeds/UserSeeder.php
+
+
+ $professionId = \App\Profession::where('title', 'Back-end developer')->value('id');
+
+            User::create([
+                        'name' => 'Klvst3r',
+                        'email' => 'klvst3r@email.com',
+                        'password' => bcrypt('laravel'),
+                        'profession_id' => $professionId,
+                        'is_admin' => true,
+                   ]);
+
+   factory(User::class)->create();
+---
+
+
+Ahora lo que se quiere es que este primer model factory este relacionado con la professión que se cargo con la propiedad $professionId, en este caso se puede lograr si se pasa al metodo create un array asociativo con las propiedades que se quieren sobreescribir:
+
+
+---UserSeeder.php
+
+factory(User::class)->create([
+	'profession_id' => $professionId
+]);
+
+---
+
+
+De esta manera Laravel va a un nuevo usuario con un nombre y un correo electronico aleatorios, pero con la professión que uno indico en la lineas anteriores del Seeder UserSeeder.php
+
+Ahora para el segundo usuario se quiere crear simplemente de forma aleatoria y sin ninguna profesión:
+
+
+---UserSeeder.php
+
+ factory(User::class)->create();
+
+---
+
+Luego de hacer esto se puede entonces eliminar los dos usuarios que se tenian para registros en la base de datos y regresar y eliminar estos dos usuarios
+
+
+regresar a la a consola, salir de tinker y reejecutar el comando:
+
+$ php artisan db:seed
+Seeding: ProfessionSeeder
+Seeding: UserSeeder
+
+
+Si regresamos a la base de datos y recargamos la tabla de usuarios, podremos observar que:
+
+mysql> select * from users;
++----+----------------------+---------------------------+--------------------------------------------------------------+----------+----------------+---------------------+---------------------+---------------+
+| id | name                 | email                     | password                                                     | is_admin | remember_token | created_at          | updated_at          | profession_id |
++----+----------------------+---------------------------+--------------------------------------------------------------+----------+----------------+---------------------+---------------------+---------------+
+|  1 | Klvst3r              | klvst3r@email.com         | $2y$10$.ngnywWIxvxuakWtcMTkT.xPvNhXG8qQqI9Pria2TkH8KgP8FGVoa |        1 | NULL           | 2022-08-29 22:25:38 | 2022-08-29 22:25:38 |             1 |
+|  2 | Mrs. Haylee Koepp I  | torrance.king@example.org | $2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm |        0 | vZvhD4IR83     | 2022-08-29 22:25:38 | 2022-08-29 22:25:38 |             1 |
+|  3 | Dr. Jarrod Legros MD | betty32@example.net       | $2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm |        0 | TfLjLQ41CW     | 2022-08-29 22:25:38 | 2022-08-29 22:25:38 |          NULL |
++----+----------------------+---------------------------+--------------------------------------------------------------+----------+----------------+---------------------+---------------------+---------------+
+3 rows in set (0.00 sec)
+
+
+Se tiene el usuario inicial y a continuación dos usuarios aleatorios.
+
+
+Sin embargo el prtoriosmero de estos dos usuarios aleatorios estan relacionados con la profession numero uno.
+
+Por supuesto uno puede regresar al seede de usuario y crear un usuario tambien utilizando un model factory. En este caso el resultado va a ser similar. Puesto que yo aca quiero sobreescribir la mayoria de estos atributos. Si hacemos esto y regresamos a la consola y reejecutamos los seeders, podemos ver el resultado en la base de datos:
+
+---UserSeeder.php
+
+            factory(User::class)->create([
+                        'name' => 'Klvst3r',
+                        'email' => 'klvst3r@email.com',
+                        'password' => bcrypt('laravel'),
+                        'profession_id' => $professionId,
+                        'is_admin' => true,
+                   ]);
+
+            factory(User::class)->create([
+                'profession_id' => $professionId
+            ]);
+
+
+            factory(User::class)->create();
+
+
+---
+
+Ahora regresamos a la consola y se reejecutan los seeders, para poder verificar en la base de datos el resultado.
+
+mysql> select * from users;
++----+---------------------------+-----------------------+--------------------------------------------------------------+----------+----------------+---------------------+---------------------+---------------+
+| id | name                      | email                 | password                                                     | is_admin | remember_token | created_at          | updated_at          | profession_id |
++----+---------------------------+-----------------------+--------------------------------------------------------------+----------+----------------+---------------------+---------------------+---------------+
+|  1 | Klvst3r                   | klvst3r@email.com     | $2y$10$.eYY3p9ooipPCQRNUKwlZ.ABaj/14UOTbul5XMDQWjNWvg1mm1C8y |        1 | 8k1gDVcsup     | 2022-08-30 03:49:39 | 2022-08-30 03:49:39 |             1 |
+|  2 | Mrs. Carolyne Reinger PhD | grenner@example.com   | $2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm |        0 | xqhxQUoUeO     | 2022-08-30 03:49:39 | 2022-08-30 03:49:39 |             1 |
+|  3 | Alisha Dach MD            | deontae53@example.net | $2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm |        0 | vx8qJJNPIU     | 2022-08-30 03:49:39 | 2022-08-30 03:49:39 |          NULL |
++----+---------------------------+-----------------------+--------------------------------------------------------------+----------+----------------+---------------------+---------------------+---------------+
+3 rows in set (0.01 sec)
+
+
+
+Si a mi no me importa el nombre del usuario puedo entonces omitir este atributo "name".
+
+---UserSeeder.php
+
+            factory(User::class)->create([
+                        'email' => 'klvst3r@email.com',
+                        'password' => bcrypt('laravel'),
+                        'profession_id' => $professionId,
+                        'is_admin' => true,
+                   ]);
+
+            factory(User::class)->create([
+                'profession_id' => $professionId
+            ]);
+
+
+            factory(User::class)->create();
+
+
+---
+
+
+Y al reejecutar los seeder tendremos 
+
+
+mysql> select * from users;
++----+-----------------+---------------------------+--------------------------------------------------------------+----------+----------------+---------------------+---------------------+---------------+
+| id | name            | email                     | password                                                     | is_admin | remember_token | created_at          | updated_at          | profession_id |
++----+-----------------+---------------------------+--------------------------------------------------------------+----------+----------------+---------------------+---------------------+---------------+
+|  1 | Bettye Paucek I | klvst3r@email.com         | $2y$10$A7vdsLiL07xQZnjgTjb14ecpOEZi9iyWXMlupdjncLkyt6kUAMd6u |        1 | BxPcyfxHMk     | 2022-08-30 03:51:55 | 2022-08-30 03:51:55 |             1 |
+|  2 | Jeanie Rolfson  | sipes.jordane@example.com | $2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm |        0 | 4S5Lvypx4c     | 2022-08-30 03:51:55 | 2022-08-30 03:51:55 |             1 |
+|  3 | Thalia Hessel   | bgaylord@example.org      | $2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm |        0 | eSbe8uCIkk     | 2022-08-30 03:51:55 | 2022-08-30 03:51:55 |          NULL |
++----+-----------------+---------------------------+--------------------------------------------------------------+----------+----------------+---------------------+---------------------+---------------+
+3 rows in set (0.00 sec)
+
+
+Un usuario con nuestro correo electronico pero con un nombre aleatorio, asi que esto es bien util. Imaginemos que por ejemplo que queremos cargar de pronto 50 usuarios en la base de datos con datos aleatorios, para probar por ejemplo la paginación de usuarios en el modulo de usuarios del administrador, entonces aca podemos crear estos usuarios de la siguinte forma:
+
+
+---UserSeeder.php
+
+            factory(User::class)->create([
+            			'name' => 'Klvst3r',
+                        'email' => 'klvst3r@email.com',
+                        'password' => bcrypt('laravel'),
+                        'profession_id' => $professionId,
+                        'is_admin' => true,
+                   ]);
+
+            factory(User::class)->create([
+                'profession_id' => $professionId
+            ]);
+
+
+            factory(User::class, 48)->create();
+
+
+---
+
+Y los otros 48 usuarios de la anterior manera, regresamos a la consola y se prueban los seeders.
+
+$ php artisan db:seed
+Seeding: ProfessionSeeder
+Seeding: UserSeeder
+
+
+
+En la base de daros se tendras 
+
+mysql> select * from users;
++----+-----------------------------+---------------------------------+--------------------------------------------------------------+----------+----------------+---------------------+---------------------+---------------+
+| id | name                        | email                           | password                                                     | is_admin | remember_token | created_at          | updated_at          | profession_id |
++----+-----------------------------+---------------------------------+--------------------------------------------------------------+----------+----------------+---------------------+---------------------+---------------+
+|  1 | Klvst3r                     | klvst3r@email.com               | $2y$10$ZLttc6.lQ4MjnJzS7YBYguNGVGdDSjMKSm22uyNLTV7yNs2e9rPnO |        1 | 8Gqgmwpqb4     | 2022-08-30 03:58:01 | 2022-08-30 03:58:01 |             1 |
+|  2 | Graciela Hoppe II           | dakota.schneider@example.com    | $2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm |        0 | 1WttxC6n9C     | 2022-08-30 03:58:01 | 2022-08-30 03:58:01 |             1 |
+|  3 | Adella Schuster             | russel42@example.com            | $2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm |        0 | LxFlkVzS99     | 2022-08-30 03:58:01 | 2022-08-30 03:58:01 |          NULL |
+|  4 | Mr. Fletcher Treutel III    | clarabelle97@example.org        | $2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm |        0 | ZGvoXpee2g     | 2022-08-30 03:58:01 | 2022-08-30 03:58:01 |          NULL |
+|  5 | Hassan Conroy               | schultz.tess@example.org        | $2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm |        0 | r4i50UwH75     | 2022-08-30 03:58:01 | 2022-08-30 03:58:01 |          NULL |
+|  6 | Lee Lockman                 | roderick.luettgen@example.org   | $2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm |        0 | JIKvcN5Lrp     | 2022-08-30 03:58:01 | 2022-08-30 03:58:01 |          NULL |
+|  7 | Sterling Howe               | eunice11@example.com            | $2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm |        0 | rS5f7PzGaz     | 2022-08-30 03:58:01 | 2022-08-30 03:58:01 |          NULL |
+|  8 | Nickolas Fay                | randal.effertz@example.com      | $2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm |        0 | 4hElULdJJV     | 2022-08-30 03:58:01 | 2022-08-30 03:58:01 |          NULL |
+|  9 | Clay Bayer                  | ycassin@example.com             | $2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm |        0 | jP01otKoTg     | 2022-08-30 03:58:01 | 2022-08-30 03:58:01 |          NULL |
+| 10 | Mr. Edwardo Wisozk          | pattie.wiza@example.net         | $2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm |        0 | 9FRbK2CLmg     | 2022-08-30 03:58:01 | 2022-08-30 03:58:01 |          NULL |
+| 11 | Johnathan Cronin            | erdman.blaise@example.com       | $2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm |        0 | w4Jpm54ff7     | 2022-08-30 03:58:01 | 2022-08-30 03:58:01 |          NULL |
+| 12 | Dell Eichmann               | rempel.gay@example.com          | $2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm |        0 | 0jRZGZeZaY     | 2022-08-30 03:58:01 | 2022-08-30 03:58:01 |          NULL |
+| 13 | Ezra Anderson               | orie50@example.com              | $2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm |        0 | opdZ6q2QHt     | 2022-08-30 03:58:01 | 2022-08-30 03:58:01 |          NULL |
+| 14 | Genesis Lesch               | gwehner@example.com             | $2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm |        0 | F4p9OZacHW     | 2022-08-30 03:58:01 | 2022-08-30 03:58:01 |          NULL |
+| 15 | Demarco Zemlak              | frida58@example.org             | $2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm |        0 | dSDRwn69zL     | 2022-08-30 03:58:01 | 2022-08-30 03:58:01 |          NULL |
+| 16 | Corene Kuvalis V            | farmstrong@example.net          | $2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm |        0 | zUlTuEXfyl     | 2022-08-30 03:58:01 | 2022-08-30 03:58:01 |          NULL |
+| 17 | Merlin Deckow IV            | pupton@example.net              | $2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm |        0 | P05cmCv3L6     | 2022-08-30 03:58:01 | 2022-08-30 03:58:01 |          NULL |
+| 18 | Helena Raynor I             | meghan.shanahan@example.org     | $2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm |        0 | LpCjSgWACs     | 2022-08-30 03:58:01 | 2022-08-30 03:58:01 |          NULL |
+| 19 | Robin Kassulke              | lina14@example.com              | $2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm |        0 | Gqmh7xAQsT     | 2022-08-30 03:58:01 | 2022-08-30 03:58:01 |          NULL |
+| 20 | Hailee Barrows              | funk.jesse@example.com          | $2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm |        0 | lthzB1cqFh     | 2022-08-30 03:58:01 | 2022-08-30 03:58:01 |          NULL |
+| 21 | Osborne Halvorson PhD       | laurel.zulauf@example.net       | $2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm |        0 | Vcj6r0IE3a     | 2022-08-30 03:58:01 | 2022-08-30 03:58:01 |          NULL |
+| 22 | Pablo Wiegand               | thessel@example.net             | $2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm |        0 | xafDRFh9qC     | 2022-08-30 03:58:01 | 2022-08-30 03:58:01 |          NULL |
+| 23 | Kristian Gleichner          | lavon08@example.net             | $2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm |        0 | ZOjdFVEj9y     | 2022-08-30 03:58:01 | 2022-08-30 03:58:01 |          NULL |
+| 24 | Mr. Trace Watsica           | althea70@example.com            | $2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm |        0 | VzBIG7sKv1     | 2022-08-30 03:58:01 | 2022-08-30 03:58:01 |          NULL |
+| 25 | Diana Koch                  | orval.hansen@example.net        | $2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm |        0 | PZJWmQ0x3j     | 2022-08-30 03:58:01 | 2022-08-30 03:58:01 |          NULL |
+| 26 | Evans Kessler               | oschoen@example.com             | $2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm |        0 | 91tAlWvF7k     | 2022-08-30 03:58:01 | 2022-08-30 03:58:01 |          NULL |
+| 27 | Ms. Ellen Koss DDS          | gcrist@example.org              | $2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm |        0 | o7NV6M9zNa     | 2022-08-30 03:58:01 | 2022-08-30 03:58:01 |          NULL |
+| 28 | Audrey Harvey               | grover.wilkinson@example.net    | $2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm |        0 | GEpH3XEZjx     | 2022-08-30 03:58:01 | 2022-08-30 03:58:01 |          NULL |
+| 29 | Prof. Joe Ankunding         | runolfsdottir.clint@example.com | $2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm |        0 | vyRVp3JDSE     | 2022-08-30 03:58:01 | 2022-08-30 03:58:01 |          NULL |
+| 30 | Eleanora Simonis DVM        | zoconner@example.org            | $2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm |        0 | myesLGdeb8     | 2022-08-30 03:58:01 | 2022-08-30 03:58:01 |          NULL |
+| 31 | Ricardo Harber              | jasmin07@example.org            | $2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm |        0 | coynh93QLu     | 2022-08-30 03:58:01 | 2022-08-30 03:58:01 |          NULL |
+| 32 | Prof. Tony Bins             | slarson@example.org             | $2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm |        0 | rTOvIPlyJ2     | 2022-08-30 03:58:01 | 2022-08-30 03:58:01 |          NULL |
+| 33 | Dr. Ettie Barton MD         | ngrant@example.org              | $2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm |        0 | A2e6v0mn7Z     | 2022-08-30 03:58:01 | 2022-08-30 03:58:01 |          NULL |
+| 34 | Justina Crist               | chill@example.net               | $2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm |        0 | e4cDEtHlvi     | 2022-08-30 03:58:01 | 2022-08-30 03:58:01 |          NULL |
+| 35 | Kamren Murphy               | grimes.cheyenne@example.com     | $2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm |        0 | ck1gLOA5wh     | 2022-08-30 03:58:01 | 2022-08-30 03:58:01 |          NULL |
+| 36 | Oliver Macejkovic           | hwalker@example.com             | $2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm |        0 | bDvVTWTres     | 2022-08-30 03:58:01 | 2022-08-30 03:58:01 |          NULL |
+| 37 | Ulises Nikolaus             | caleigh02@example.com           | $2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm |        0 | 3WVlX4zZwu     | 2022-08-30 03:58:01 | 2022-08-30 03:58:01 |          NULL |
+| 38 | Dr. Alexandrea Trantow      | wolf.monty@example.com          | $2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm |        0 | 9inhQ6uxFl     | 2022-08-30 03:58:01 | 2022-08-30 03:58:01 |          NULL |
+| 39 | Ava Lesch                   | nkling@example.org              | $2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm |        0 | UPTmafeJes     | 2022-08-30 03:58:01 | 2022-08-30 03:58:01 |          NULL |
+| 40 | Jessika Lowe                | mbednar@example.net             | $2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm |        0 | lgd3oAAoN6     | 2022-08-30 03:58:01 | 2022-08-30 03:58:01 |          NULL |
+| 41 | Torrance Wisozk DVM         | abe.bins@example.com            | $2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm |        0 | la95TRD8rI     | 2022-08-30 03:58:01 | 2022-08-30 03:58:01 |          NULL |
+| 42 | Leora Baumbach              | mann.kaylin@example.org         | $2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm |        0 | MrcDXWdCbH     | 2022-08-30 03:58:01 | 2022-08-30 03:58:01 |          NULL |
+| 43 | Dr. Marlon Hagenes DVM      | lthompson@example.net           | $2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm |        0 | 6Xgt3FCg3c     | 2022-08-30 03:58:01 | 2022-08-30 03:58:01 |          NULL |
+| 44 | Kurtis Kub                  | ava07@example.net               | $2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm |        0 | AsRHg6sVfa     | 2022-08-30 03:58:01 | 2022-08-30 03:58:01 |          NULL |
+| 45 | Ms. Dayana Smith DVM        | lcollier@example.org            | $2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm |        0 | 6MHmtIx11g     | 2022-08-30 03:58:01 | 2022-08-30 03:58:01 |          NULL |
+| 46 | Prof. Alden Robel II        | tnitzsche@example.com           | $2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm |        0 | NgZZ1BZvyh     | 2022-08-30 03:58:01 | 2022-08-30 03:58:01 |          NULL |
+| 47 | Mr. Keyshawn Buckridge Sr.  | grayson34@example.org           | $2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm |        0 | PeCktbgOAr     | 2022-08-30 03:58:01 | 2022-08-30 03:58:01 |          NULL |
+| 48 | Camryn Lesch I              | rohan.madeline@example.org      | $2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm |        0 | KLh69yDGak     | 2022-08-30 03:58:01 | 2022-08-30 03:58:01 |          NULL |
+| 49 | Prof. Merritt Langworth PhD | garnett.schaden@example.com     | $2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm |        0 | cdlZz0bAG4     | 2022-08-30 03:58:01 | 2022-08-30 03:58:01 |          NULL |
+| 50 | Stella Miller V             | kaylah50@example.org            | $2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm |        0 | vubW5ecb4N     | 2022-08-30 03:58:01 | 2022-08-30 03:58:01 |          NULL |
++----+-----------------------------+---------------------------------+--------------------------------------------------------------+----------+----------------+---------------------+---------------------+---------------+
+50 rows in set (0.00 sec)
+
+
+
+
+Podemos ver que ahora tenemos cincuenta usuarios, esto se logra con un minimos esfuerzo.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 Recursos

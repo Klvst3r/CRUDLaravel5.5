@@ -224,6 +224,7 @@ class UserSeeder extends Seeder
             // Opcion 17 consultas a la BD
             $professionId = \App\Profession::where('title', 'Back-end developer')->value('id');
 
+            /*
             User::create([
                         'name' => 'Klvst3r',
                         'email' => 'klvst3r@email.com',
@@ -231,6 +232,61 @@ class UserSeeder extends Seeder
                         'profession_id' => $professionId,
                         'is_admin' => true,
                    ]);
+            */
+
+            /* Sección 34. Uso de model fctory ´*/
+
+            /*    factory(User::class)->create([
+                        'name' => 'Klvst3r',
+                        'email' => 'klvst3r@email.com',
+                        'password' => bcrypt('laravel'),
+                        'profession_id' => $professionId,
+                        'is_admin' => true,
+                   ]);
+            */
+
+            
+            //Segunda forma de agregar usuarios de forma aleatoria
+            /*
+            factory(User::class)->create([
+                        'email' => 'klvst3r@email.com',
+                        'password' => bcrypt('laravel'),
+                        'profession_id' => $professionId,
+                        'is_admin' => true,
+                   ]);
+
+
+            factory(User::class)->create([
+                'profession_id' => $professionId
+            ]);
+
+
+            factory(User::class)->create();
+            */
+
+            //Insertando 50 registros 
+
+            
+            factory(User::class)->create([
+                        'name' => 'Klvst3r',
+                        'email' => 'klvst3r@email.com',
+                        'password' => bcrypt('laravel'),
+                        'profession_id' => $professionId,
+                        'is_admin' => true,
+                   ]);
+
+            factory(User::class)->create([
+                'profession_id' => $professionId
+            ]);
+
+
+            factory(User::class, 48)->create();
+
+
+
+
+
+            /* Sección 34. Uso de model fctory ´*/
 
 
             /*********** Seccion 30 Eloquent*********************/
@@ -238,6 +294,10 @@ class UserSeeder extends Seeder
             /*********** Seccion 32 Eloquent*********************/
              /***********Se agregan dos usuarios mas*********************/
 
+
+             // En la seccion 34. se Eliminan estos dos usuarios por que se cean de forma aleatoria con los Model Factories
+
+             /*
               User::create([
                         'name' => 'Alizeth Sofia',
                         'email' => 'alizh@email.com',
@@ -253,7 +313,7 @@ class UserSeeder extends Seeder
                         'profession_id' => null
                    ]);
 
-              
+              */
             /*********** Seccion 30 Eloquent*********************/
 
 
