@@ -111,6 +111,10 @@ class ProfessionSeeder extends Seeder
             // 
             // 3da Opcion ejecutada: Importar la clase que se repite
             // ---------------------
+
+            /* Se comentan para ejecutar seccion 34 */
+
+            
             Profession::create([
                 'title' => 'Back-end developer',
                 ]);
@@ -122,6 +126,11 @@ class ProfessionSeeder extends Seeder
             Profession::create([
                 'title' => 'Web Designer'
                 ]);
+
+            
+            /*Termina sección 34  */
+
+
             // ---------------------
             // 
                   // 4ta Opcion ejecutada: Alias con la clase
@@ -143,6 +152,15 @@ class ProfessionSeeder extends Seeder
 
         /*******  Tema 30. Eloquent, el ORM de Larael *******/
 
+
+        /* Seccion 34 con el Model Factory */
+
+        //factory(Profession::class, 17)->create();
+
+        //EStgo tamien puedo lograrlo ejecutando el metodo time
+        factory(Profession::class)->times(17)->create();
+
+        /* Seccion 34 con el Model Factory */
 
     }
 }

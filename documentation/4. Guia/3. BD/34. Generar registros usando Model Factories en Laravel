@@ -465,6 +465,56 @@ mysql> select * from users;
 
 Podemos ver que ahora tenemos cincuenta usuarios, esto se logra con un minimos esfuerzo.
 
+Ahora vamos a suponer que nosotros queremos hacer lo mismo para la tabla de profesiones, nosotros queremos generar veinte profesiones aleatorias, por ejemplo. Si ahora me voy a a ProfessionSeeder.php a intento agregar las profesiones utilizando un model factory de la siguiente manera:
+
+---ProfessionSeeder.php
+
+Profession::create([
+                'title' => 'Back-end developer',
+                ]);
+
+            Profession::create([
+                'title' => 'Front-end developer'
+                ]);
+
+            Profession::create([
+                'title' => 'Web Designer'
+                ]);
+        //factory(Profession::class, 17)->create();
+
+        //Estgo tamien puedo lograrlo ejecutando el metodo time
+        factory(Profession::class)->times(17)->create();
+
+---
+
+
+Aca de pronto se van a agregar otras 17 profesiones, esto tambien se puede lograr utilizando el metodo times. 
+
+De vuelta a la consola si se reejecutan los seeders:
+
+
+$ php artisan db:seed
+Seeding: ProfessionSeeder
+
+In FactoryBuilder.php line 248:
+
+  Unable to locate factory with name [default] [App\Models\Profession].
+
+
+
+Se va a obtener un error, y esto sucede por que el Model Factory "App\Profession" no existe.
+
+Asi que para poder utilizarlo necesitamos generarlo primero con el comando:
+     
+     > php artisan make:factory Profession
+
+
+De esta forma:
+
+     > php artisan make:factory Profession
+     Factory created successfully.
+
+A continuación de regreso an el editor y en la carpeta factories dentro de database
 
 
 
@@ -474,9 +524,7 @@ Podemos ver que ahora tenemos cincuenta usuarios, esto se logra con un minimos e
 
 
 
-
-
-
+ 
 
 
 
